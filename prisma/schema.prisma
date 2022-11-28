@@ -1,0 +1,134 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime
+  updatedAt DateTime?
+  // EOA address
+  address   String    @unique
+  profiles  Profile[]
+}
+
+model Profile {
+  id             BigInt       @id
+  createdAt      DateTime
+  updatedAt      DateTime?
+  account        Account      @relation(fields: [accountId], references: [id])
+  accountId      Int
+  // EOA Address
+  owner          String
+  handle         String       @unique
+  originalHandle String
+  imageURI       String?
+  default        Boolean
+  followers      Follow[]     @relation("Follower")
+  following      Follow[]     @relation("Followee")
+  publishes      Publish[]
+  comments       Comment[]
+  subComments    SubComment[]
+  likes          Like[]
+}
+
+model Follow {
+  id         BigInt   @id
+  createdAt  DateTime
+  owner      String
+  follower   Profile  @relation("Follower", fields: [followerId], references: [id])
+  followerId BigInt
+  followee   Profile  @relation("Followee", fields: [followeeId], references: [id])
+  followeeId BigInt
+}
+
+enum Category {
+  Empty
+  Music
+  Movies
+  Entertainment
+  Sports
+  Food
+  Travel
+  Gaming
+  News
+  Animals
+  Education
+  Science
+  Technology
+  Programming
+  LifeStyle
+  Vehicles
+  Children
+  Women
+  Men
+  Other
+  NotExist
+}
+
+model Publish {
+  id                BigInt    @id
+  createdAt         DateTime
+  updatedAt         DateTime?
+  owner             String
+  creator           Profile   @relation(fields: [creatorId], references: [id])
+  creatorId         BigInt
+  imageURI          String
+  contentURI        String
+  metadataURI       String
+  title             String
+  description       String?
+  primaryCategory   Category
+  secondaryCategory Category?
+  tertiaryCategory  Category?
+  revenue           BigInt
+  likes             Like[]
+  disLikes          BigInt
+  comments          Comment[]
+}
+
+model Comment {
+  id         BigInt       @id
+  createdAt  DateTime
+  updatedAt  DateTime?
+  owner      String
+  creator    Profile      @relation(fields: [creatorId], references: [id])
+  creatorId  BigInt
+  target     Publish      @relation(fields: [targetId], references: [id])
+  targetId   BigInt
+  contentURI String
+  likes      BigInt
+  disLikes   BigInt
+  comments   SubComment[]
+}
+
+model SubComment {
+  id         BigInt    @id
+  createdAt  DateTime
+  updatedAt  DateTime?
+  owner      String
+  creator    Profile   @relation(fields: [creatorId], references: [id])
+  creatorId  BigInt
+  target     Comment   @relation(fields: [targetId], references: [id])
+  targetId   BigInt
+  contentURI String
+  likes      BigInt
+  disLikes   BigInt
+}
+
+model Like {
+  id        BigInt   @id
+  createdAt DateTime
+  profile   Profile  @relation(fields: [profileId], references: [id])
+  profileId BigInt
+  publish   Publish  @relation(fields: [publishId], references: [id])
+  publishId BigInt
+  fee       BigInt
+}
