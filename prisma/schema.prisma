@@ -20,7 +20,8 @@ model Account {
 }
 
 model Profile {
-  id             BigInt       @id
+  id             Int          @id @default(autoincrement())
+  tokenId        BigInt       @unique
   createdAt      DateTime
   updatedAt      DateTime?
   account        Account      @relation(fields: [accountId], references: [id])
@@ -31,8 +32,9 @@ model Profile {
   originalHandle String
   imageURI       String?
   default        Boolean
-  followers      Follow[]     @relation("Follower")
-  following      Follow[]     @relation("Followee")
+  revenue        String
+  followers      Follow[]     @relation("Followee")
+  following      Follow[]     @relation("Follower")
   publishes      Publish[]
   comments       Comment[]
   subComments    SubComment[]
@@ -40,95 +42,103 @@ model Profile {
 }
 
 model Follow {
-  id         BigInt   @id
+  tokenId    BigInt   @unique
   createdAt  DateTime
-  owner      String
   follower   Profile  @relation("Follower", fields: [followerId], references: [id])
-  followerId BigInt
+  followerId Int
   followee   Profile  @relation("Followee", fields: [followeeId], references: [id])
-  followeeId BigInt
+  followeeId Int
+
+  @@id([followerId, followeeId])
 }
 
-enum Category {
-  Empty
-  Music
-  Movies
-  Entertainment
-  Sports
-  Food
-  Travel
-  Gaming
-  News
-  Animals
-  Education
-  Science
-  Technology
-  Programming
-  LifeStyle
-  Vehicles
-  Children
-  Women
-  Men
-  Other
-  NotExist
-}
+// enum Category {
+//   Empty
+//   Music
+//   Movies
+//   Entertainment
+//   Sports
+//   Food
+//   Travel
+//   Gaming
+//   News
+//   Animals
+//   Education
+//   Science
+//   Technology
+//   Programming
+//   LifeStyle
+//   Vehicles
+//   Children
+//   Women
+//   Men
+//   Other
+//   NotExist
+// }
 
 model Publish {
-  id                BigInt    @id
+  id                Int       @id @default(autoincrement())
+  tokenId           BigInt    @unique
   createdAt         DateTime
   updatedAt         DateTime?
   owner             String
   creator           Profile   @relation(fields: [creatorId], references: [id])
-  creatorId         BigInt
+  creatorId         Int
   imageURI          String
   contentURI        String
   metadataURI       String
   title             String
   description       String?
-  primaryCategory   Category
-  secondaryCategory Category?
-  tertiaryCategory  Category?
-  revenue           BigInt
-  likes             Like[]
-  disLikes          BigInt
+  primaryCategory   Int
+  secondaryCategory Int?
+  tertiaryCategory  Int?
+  // Use String for ethers amount.
+  revenue           String
+  likeTokens        Like[]
+  likes             Int
+  disLikes          Int
   comments          Comment[]
 }
 
 model Comment {
-  id         BigInt       @id
+  id         Int          @id @default(autoincrement())
+  tokenId    BigInt       @unique
   createdAt  DateTime
   updatedAt  DateTime?
   owner      String
   creator    Profile      @relation(fields: [creatorId], references: [id])
-  creatorId  BigInt
+  creatorId  Int
   target     Publish      @relation(fields: [targetId], references: [id])
-  targetId   BigInt
+  targetId   Int
   contentURI String
-  likes      BigInt
-  disLikes   BigInt
+  likes      Int
+  disLikes   Int
   comments   SubComment[]
 }
 
 model SubComment {
-  id         BigInt    @id
+  id         Int       @id @default(autoincrement())
+  tokenId    BigInt    @unique
   createdAt  DateTime
   updatedAt  DateTime?
   owner      String
   creator    Profile   @relation(fields: [creatorId], references: [id])
-  creatorId  BigInt
+  creatorId  Int
   target     Comment   @relation(fields: [targetId], references: [id])
-  targetId   BigInt
+  targetId   Int
   contentURI String
-  likes      BigInt
-  disLikes   BigInt
+  likes      Int
+  disLikes   Int
 }
 
 model Like {
-  id        BigInt   @id
+  id        Int      @id @default(autoincrement())
+  tokenId   BigInt   @unique
   createdAt DateTime
   profile   Profile  @relation(fields: [profileId], references: [id])
-  profileId BigInt
+  profileId Int
   publish   Publish  @relation(fields: [publishId], references: [id])
-  publishId BigInt
-  fee       BigInt
+  publishId Int
+  // Use String for ethers amount
+  fee       String
 }

@@ -13,7 +13,8 @@ CREATE TABLE "Account" (
 
 -- CreateTable
 CREATE TABLE "Profile" (
-    "id" BIGINT NOT NULL,
+    "id" SERIAL NOT NULL,
+    "tokenId" BIGINT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL,
     "updatedAt" TIMESTAMP(3),
     "accountId" INTEGER NOT NULL,
@@ -28,22 +29,22 @@ CREATE TABLE "Profile" (
 
 -- CreateTable
 CREATE TABLE "Follow" (
-    "id" BIGINT NOT NULL,
+    "tokenId" BIGINT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL,
-    "owner" TEXT NOT NULL,
-    "followerId" BIGINT NOT NULL,
-    "followeeId" BIGINT NOT NULL,
+    "followerId" INTEGER NOT NULL,
+    "followeeId" INTEGER NOT NULL,
 
-    CONSTRAINT "Follow_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Follow_pkey" PRIMARY KEY ("followerId","followeeId")
 );
 
 -- CreateTable
 CREATE TABLE "Publish" (
-    "id" BIGINT NOT NULL,
+    "id" SERIAL NOT NULL,
+    "tokenId" BIGINT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL,
     "updatedAt" TIMESTAMP(3),
     "owner" TEXT NOT NULL,
-    "creatorId" BIGINT NOT NULL,
+    "creatorId" INTEGER NOT NULL,
     "imageURI" TEXT NOT NULL,
     "contentURI" TEXT NOT NULL,
     "metadataURI" TEXT NOT NULL,
@@ -60,12 +61,13 @@ CREATE TABLE "Publish" (
 
 -- CreateTable
 CREATE TABLE "Comment" (
-    "id" BIGINT NOT NULL,
+    "id" SERIAL NOT NULL,
+    "tokenId" BIGINT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL,
     "updatedAt" TIMESTAMP(3),
     "owner" TEXT NOT NULL,
-    "creatorId" BIGINT NOT NULL,
-    "targetId" BIGINT NOT NULL,
+    "creatorId" INTEGER NOT NULL,
+    "targetId" INTEGER NOT NULL,
     "contentURI" TEXT NOT NULL,
     "likes" BIGINT NOT NULL,
     "disLikes" BIGINT NOT NULL,
@@ -75,12 +77,13 @@ CREATE TABLE "Comment" (
 
 -- CreateTable
 CREATE TABLE "SubComment" (
-    "id" BIGINT NOT NULL,
+    "id" SERIAL NOT NULL,
+    "tokenId" BIGINT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL,
     "updatedAt" TIMESTAMP(3),
     "owner" TEXT NOT NULL,
-    "creatorId" BIGINT NOT NULL,
-    "targetId" BIGINT NOT NULL,
+    "creatorId" INTEGER NOT NULL,
+    "targetId" INTEGER NOT NULL,
     "contentURI" TEXT NOT NULL,
     "likes" BIGINT NOT NULL,
     "disLikes" BIGINT NOT NULL,
@@ -90,10 +93,11 @@ CREATE TABLE "SubComment" (
 
 -- CreateTable
 CREATE TABLE "Like" (
-    "id" BIGINT NOT NULL,
+    "id" SERIAL NOT NULL,
+    "tokenId" BIGINT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL,
-    "profileId" BIGINT NOT NULL,
-    "publishId" BIGINT NOT NULL,
+    "profileId" INTEGER NOT NULL,
+    "publishId" INTEGER NOT NULL,
     "fee" BIGINT NOT NULL,
 
     CONSTRAINT "Like_pkey" PRIMARY KEY ("id")
@@ -103,7 +107,25 @@ CREATE TABLE "Like" (
 CREATE UNIQUE INDEX "Account_address_key" ON "Account"("address");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Profile_tokenId_key" ON "Profile"("tokenId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Profile_handle_key" ON "Profile"("handle");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Follow_tokenId_key" ON "Follow"("tokenId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Publish_tokenId_key" ON "Publish"("tokenId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Comment_tokenId_key" ON "Comment"("tokenId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "SubComment_tokenId_key" ON "SubComment"("tokenId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Like_tokenId_key" ON "Like"("tokenId");
 
 -- AddForeignKey
 ALTER TABLE "Profile" ADD CONSTRAINT "Profile_accountId_fkey" FOREIGN KEY ("accountId") REFERENCES "Account"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
