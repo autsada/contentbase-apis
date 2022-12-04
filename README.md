@@ -1,1 +1,1 @@
-# A Service to handle blockchain events for Content Base Web3 project
+# Public APIs for Content Base Web3 project
