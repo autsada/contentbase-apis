@@ -151,10 +151,11 @@ model Fee {
 
 // Publish's DisLike
 model DisLike {
-  id        Int     @id @default(autoincrement())
-  publish   Publish @relation(fields: [publishId], references: [id], onDelete: Cascade)
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime
+  publish   Publish  @relation(fields: [publishId], references: [id], onDelete: Cascade)
   publishId Int
-  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId Int
 }
 
