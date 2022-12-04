@@ -159,7 +159,8 @@ model DisLike {
 
 // Comment's Like
 model CommentLike {
-  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  createdAt DateTime
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
   commentId Int
   profileId Int
 
@@ -169,7 +170,8 @@ model CommentLike {
 
 // Comment's DisLike
 model CommentDisLike {
-  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  createdAt DateTime
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
   commentId Int
   profileId Int
 
