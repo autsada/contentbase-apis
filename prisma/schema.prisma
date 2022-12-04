@@ -146,6 +146,7 @@ model Fee {
   publishId  Int
   receiver   Profile  @relation("Received", fields: [receiverId], references: [id])
   receiverId Int
+  amount     String // Use String for ether amount
 }
 
 // Publish's DisLike
