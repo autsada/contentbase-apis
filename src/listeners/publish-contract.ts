@@ -5,7 +5,7 @@
 import { Listener } from "@ethersproject/abstract-provider"
 
 import { prisma } from "../client"
-import { getContractForWs } from "."
+import { getContractForWs } from "./ethers"
 import PublishContract from "../abi/ContentBasePublishV1.json"
 import { ContentBasePublishV1 as Publish } from "../typechain-types"
 import {
@@ -19,7 +19,7 @@ import type { Category } from "@prisma/client"
 /**
  * Get the contract for listening to events
  */
-export function getPublishContractForWs() {
+function getPublishContractForWs() {
   return getContractForWs({
     address: PublishContract.address,
     contractInterface: PublishContract.abi,
@@ -30,6 +30,7 @@ export function getPublishContractForWs() {
  * A function to start listeners.
  */
 export function startListeners() {
+  console.log("publish start -->")
   const publishContract = getPublishContractForWs()
 
   /**
@@ -181,3 +182,5 @@ export function startListeners() {
     )
   }
 }
+
+startListeners()

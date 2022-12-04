@@ -5,7 +5,7 @@
 import { Listener } from "@ethersproject/abstract-provider"
 
 import { prisma } from "../client"
-import { getContractForWs } from "."
+import { getContractForWs } from "./ethers"
 import ProfileContract from "../abi/ContentBaseProfileV1.json"
 import { ContentBaseProfileV1 as Profile } from "../typechain-types"
 import {
@@ -17,7 +17,7 @@ import {
 /**
  * Get the contract for listening to events
  */
-export function getProfileContractForWs() {
+function getProfileContractForWs() {
   return getContractForWs({
     address: ProfileContract.address,
     contractInterface: ProfileContract.abi,
@@ -28,6 +28,7 @@ export function getProfileContractForWs() {
  * A function to start listeners.
  */
 export function startListeners() {
+  console.log("profile start -->")
   const profileContract = getProfileContractForWs()
 
   /**
@@ -162,3 +163,5 @@ export function startListeners() {
     )
   }
 }
+
+startListeners()

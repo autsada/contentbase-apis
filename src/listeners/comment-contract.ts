@@ -5,7 +5,7 @@
 import { Listener } from "@ethersproject/abstract-provider"
 
 import { prisma } from "../client"
-import { getContractForWs } from "."
+import { getContractForWs } from "./ethers"
 import CommentContract from "../abi/ContentBaseCommentV1.json"
 import { ContentBaseCommentV1 as Comment } from "../typechain-types"
 import {
@@ -23,7 +23,7 @@ import type { CommentType } from "@prisma/client"
 /**
  * Get contract for listening to events
  */
-export function getCommentContractForWs() {
+function getCommentContractForWs() {
   return getContractForWs({
     address: CommentContract.address,
     contractInterface: CommentContract.abi,
@@ -34,6 +34,7 @@ export function getCommentContractForWs() {
  * A function to start listeners.
  */
 export function startListeners() {
+  console.log("comment start -->")
   const commentContract = getCommentContractForWs()
 
   /**
@@ -385,3 +386,5 @@ export function startListeners() {
     )
   }
 }
+
+startListeners()

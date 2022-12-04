@@ -5,7 +5,7 @@
 import { Listener } from "@ethersproject/abstract-provider"
 
 import { prisma } from "../client"
-import { getContractForWs } from "."
+import { getContractForWs } from "./ethers"
 import FollowContract from "../abi/ContentBaseFollowV1.json"
 import { ContentBaseFollowV1 as Follow } from "../typechain-types"
 import {
@@ -16,7 +16,7 @@ import {
 /**
  * Get the contract for listening to events
  */
-export function getFollowContractForWs() {
+function getFollowContractForWs() {
   return getContractForWs({
     address: FollowContract.address,
     contractInterface: FollowContract.abi,
@@ -27,6 +27,7 @@ export function getFollowContractForWs() {
  * A function to start listeners.
  */
 export function startListeners() {
+  console.log("follow start -->")
   const followContract = getFollowContractForWs()
 
   /**
@@ -83,3 +84,5 @@ export function startListeners() {
     followContract.on("UnFollowing", unFollowingListener as unknown as Listener)
   }
 }
+
+startListeners()

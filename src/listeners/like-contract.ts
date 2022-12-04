@@ -6,7 +6,7 @@ import { utils } from "ethers"
 import { Listener } from "@ethersproject/abstract-provider"
 
 import { prisma } from "../client"
-import { getContractForWs } from "."
+import { getContractForWs } from "./ethers"
 import LikeContract from "../abi/ContentBaseLikeV1.json"
 import { ContentBaseLikeV1 as Like } from "../typechain-types"
 import {
@@ -19,7 +19,7 @@ import {
 /**
  * Get contract for listening to events
  */
-export function getLikeContractForWs() {
+function getLikeContractForWs() {
   return getContractForWs({
     address: LikeContract.address,
     contractInterface: LikeContract.abi,
@@ -30,6 +30,7 @@ export function getLikeContractForWs() {
  * A function to start listeners.
  */
 export function startListeners() {
+  console.log("like start -->")
   const likeContract = getLikeContractForWs()
 
   /**
@@ -216,3 +217,5 @@ export function startListeners() {
     )
   }
 }
+
+startListeners()
