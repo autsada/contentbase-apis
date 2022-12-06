@@ -2,8 +2,6 @@
  * Profile Contract's Event Listeners
  */
 
-import { Listener } from "@ethersproject/abstract-provider"
-
 import { prisma } from "../client"
 import { getContractForWs } from "./ethers"
 import FollowContract from "../abi/ContentBaseFollowV1.json"
@@ -16,24 +14,20 @@ import {
 /**
  * Get the contract for listening to events
  */
-function getFollowContractForWs() {
-  return getContractForWs({
+export function getFollowContractForWs() {
+  const contract = getContractForWs({
     address: FollowContract.address,
     contractInterface: FollowContract.abi,
   }) as Follow
+
+  return contract
 }
 
 /**
- * A function to start listeners.
+ * Handler for `Following` Event
  */
-export function startListeners() {
-  console.log("follow start -->")
-  const followContract = getFollowContractForWs()
-
-  /**
-   * Handler for `Following` Event
-   */
-  const followingListener = async (...args: FollowingEvent["args"]) => {
+export const followingListener = async (...args: FollowingEvent["args"]) => {
+  try {
     const [tokenId, followerId, followeeId, timestamp] = args
 
     // 1. Get the follower profile.
@@ -56,13 +50,21 @@ export function startListeners() {
           followeeId: followee.id,
         },
       })
-    }
-  }
 
-  /**
-   * Handler for `UnFollowing` Event
-   */
-  const unFollowingListener = async (...args: UnFollowingEvent["args"]) => {
+      console.log("follow done -->")
+    }
+  } catch (error) {
+    console.log("error -->", error)
+  }
+}
+
+/**
+ * Handler for `UnFollowing` Event
+ */
+export const unFollowingListener = async (
+  ...args: UnFollowingEvent["args"]
+) => {
+  try {
     const [tokenId] = args
 
     // 1. Get the follow by tokenId.
@@ -73,16 +75,9 @@ export function startListeners() {
     if (follow) {
       // 2. Delete the follow.
       await prisma.follow.delete({ where: { tokenId: tokenId.toBigInt() } })
+      console.log("unfollow done")
     }
-  }
-
-  while (true) {
-    // Listen to `Following` Event
-    followContract.on("Following", followingListener as unknown as Listener)
-
-    // Listen to `UnFollowing` Eventf
-    followContract.on("UnFollowing", unFollowingListener as unknown as Listener)
+  } catch (error) {
+    console.log("error -->", error)
   }
 }
-
-startListeners()

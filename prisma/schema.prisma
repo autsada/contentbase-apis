@@ -80,7 +80,6 @@ model Publish {
   tokenId           BigInt    @unique
   createdAt         DateTime
   updatedAt         DateTime?
-  owner             String
   creator           Profile   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   creatorId         Int
   imageURI          String
@@ -108,16 +107,17 @@ model Comment {
   tokenId     BigInt           @unique
   createdAt   DateTime
   updatedAt   DateTime?
-  owner       String
   creator     Profile          @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   creatorId   Int
   publish     Publish          @relation(fields: [publishId], references: [id], onDelete: Cascade) // The parent's publish
   publishId   Int
-  comment     Comment?         @relation("SubComments", fields: [commentId], references: [id], onDelete: Cascade) // The parent's comment, if `null` it means the comment was made on the parent's publish directly, otherwise it was made on a comment of the parent's publish.
+  comment     Comment?         @relation("CommentsOnComment", fields: [commentId], references: [id], onDelete: Cascade) // The parent's comment, if `null` it means the comment was made on the parent's publish directly, otherwise it was made on a comment of the parent's publish.
   commentId   Int?
-  comments    Comment[]        @relation("SubComments") // The child comments
-  commentType CommentType
+  comments    Comment[]        @relation("CommentsOnComment") // The child comments
   contentURI  String
+  text        String?
+  mediaURI    String?
+  commentType CommentType
   likes       CommentLike[]
   disLikes    CommentDisLike[]
 }
@@ -133,6 +133,8 @@ model Like {
   publishId Int
   fee       Fee      @relation(fields: [feeId], references: [id], onDelete: Cascade)
   feeId     Int      @unique
+
+  @@unique(fields: [profileId, publishId], name: "identifier")
 }
 
 // Like's Fee

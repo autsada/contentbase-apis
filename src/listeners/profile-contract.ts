@@ -2,8 +2,6 @@
  * Profile Contract's Event Listeners
  */
 
-import { Listener } from "@ethersproject/abstract-provider"
-
 import { prisma } from "../client"
 import { getContractForWs } from "./ethers"
 import ProfileContract from "../abi/ContentBaseProfileV1.json"
@@ -17,26 +15,22 @@ import {
 /**
  * Get the contract for listening to events
  */
-function getProfileContractForWs() {
-  return getContractForWs({
+export function getProfileContractForWs() {
+  const contract = getContractForWs({
     address: ProfileContract.address,
     contractInterface: ProfileContract.abi,
   }) as Profile
+
+  return contract
 }
 
 /**
- * A function to start listeners.
+ * Handler for `ProfileCreated` Event
  */
-export function startListeners() {
-  console.log("profile start -->")
-  const profileContract = getProfileContractForWs()
-
-  /**
-   * Handler for `ProfileCreated` Event
-   */
-  const profileCreatedListener = async (
-    ...args: ProfileCreatedEvent["args"]
-  ) => {
+export const profileCreatedListener = async (
+  ...args: ProfileCreatedEvent["args"]
+) => {
+  try {
     const [
       tokenId,
       owner,
@@ -78,14 +72,18 @@ export function startListeners() {
         default: isDefault,
       },
     })
+  } catch (error) {
+    console.log("error -->", error)
   }
+}
 
-  /**
-   * Handler for `ProfileImageUpdated` Event
-   */
-  const profileImageUpdatedListener = async (
-    ...args: ProfileImageUpdatedEvent["args"]
-  ) => {
+/**
+ * Handler for `ProfileImageUpdated` Event
+ */
+export const profileImageUpdatedListener = async (
+  ...args: ProfileImageUpdatedEvent["args"]
+) => {
+  try {
     const [tokenId, imageURI, timestamp] = args
 
     // 1. Get the profile.
@@ -93,6 +91,7 @@ export function startListeners() {
       where: { tokenId: tokenId.toBigInt() },
     })
 
+    console.log("profile -->", profile)
     // 2. Update the profile.
     if (profile) {
       await prisma.profile.update({
@@ -100,14 +99,18 @@ export function startListeners() {
         data: { imageURI, updatedAt: new Date(timestamp.toNumber() * 1000) },
       })
     }
+  } catch (error) {
+    console.log("error -->", error)
   }
+}
 
-  /**
-   * Handler for `DefaultProfileUpdated` Event
-   */
-  const defaultProfileUpdatedListener = async (
-    ...args: DefaultProfileUpdatedEvent["args"]
-  ) => {
+/**
+ * Handler for `DefaultProfileUpdated` Event
+ */
+export const defaultProfileUpdatedListener = async (
+  ...args: DefaultProfileUpdatedEvent["args"]
+) => {
+  try {
     const [newProfileId, oldProfileId, timestamp] = args
 
     // 1. Get the new default profile.
@@ -131,6 +134,7 @@ export function startListeners() {
       where: { tokenId: oldProfileId.toBigInt() },
     })
 
+    console.log("new default -->", newProfile)
     if (oldProfile && oldProfile.default) {
       // 4. Update the old default profile.
       await prisma.profile.update({
@@ -141,27 +145,7 @@ export function startListeners() {
         },
       })
     }
-  }
-
-  while (true) {
-    // Listen to `ProfileCreated` Event
-    profileContract.on(
-      "ProfileCreated",
-      profileCreatedListener as unknown as Listener
-    )
-
-    // Listen to `ProfileImageUpdated` Event
-    profileContract.on(
-      "ProfileImageUpdated",
-      profileImageUpdatedListener as unknown as Listener
-    )
-
-    // Listen to `DefaultProfileUpdated` Event
-    profileContract.on(
-      "DefaultProfileUpdated",
-      defaultProfileUpdatedListener as unknown as Listener
-    )
+  } catch (error) {
+    console.log("error -->", error)
   }
 }
-
-startListeners()
