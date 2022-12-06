@@ -87,6 +87,8 @@ export const publishUpdatedListener = async (
   try {
     const [
       tokenId,
+      creatorId,
+      owner,
       imageURI,
       contentURI,
       metadataURI,
