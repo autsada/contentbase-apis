@@ -36,8 +36,8 @@ model Profile {
   comments       Comment[]
   likes          Like[]
   disLikes       DisLike[]
-  sentFees       Fee[]     @relation("Sent")
-  receivedFees   Fee[]     @relation("Received")
+  sentFees       LikeFee[] @relation("Sent")
+  receivedFees   LikeFee[] @relation("Received")
 }
 
 model Follow {
@@ -90,7 +90,7 @@ model Publish {
   primaryCategory   Category
   secondaryCategory Category?
   tertiaryCategory  Category?
-  fees              Fee[]
+  likeFees          LikeFee[]
   likes             Like[]
   disLikes          DisLike[]
   comments          Comment[]
@@ -131,14 +131,14 @@ model Like {
   profileId Int
   publish   Publish  @relation(fields: [publishId], references: [id], onDelete: Cascade)
   publishId Int
-  fee       Fee      @relation(fields: [feeId], references: [id], onDelete: Cascade)
-  feeId     Int      @unique
+  likeFee   LikeFee  @relation(fields: [likeFeeId], references: [id], onDelete: Cascade)
+  likeFeeId Int      @unique
 
   @@unique(fields: [profileId, publishId], name: "identifier")
 }
 
 // Like's Fee
-model Fee {
+model LikeFee {
   id         Int      @id @default(autoincrement())
   createdAt  DateTime
   like       Like?
@@ -149,6 +149,7 @@ model Fee {
   receiver   Profile  @relation("Received", fields: [receiverId], references: [id])
   receiverId Int
   amount     String // Use String for ether amount
+  fee        String // Use String for ether amount
 }
 
 // Publish's DisLike

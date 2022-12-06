@@ -34,7 +34,7 @@ export const publishLikedListener = async (
   ...args: PublishLikedEvent["args"]
 ) => {
   try {
-    const [tokenId, publishId, profileId, fee, timestamp] = args
+    const [tokenId, publishId, profileId, amount, fee, timestamp] = args
 
     // 1. Get the profile of the user that liked the publish by its tokenId.
     const profile = await prisma.profile.findUnique({
@@ -53,13 +53,14 @@ export const publishLikedListener = async (
 
       if (publish) {
         // 3. Create a new Fee.
-        const feeEntity = await prisma.fee.create({
+        const feeEntity = await prisma.likeFee.create({
           data: {
             createdAt: new Date(timestamp.toNumber() * 1000),
             senderId: profile.id,
             publishId: publish.id,
             receiverId: publish.creatorId,
-            amount: utils.formatEther(fee),
+            amount: utils.formatEther(amount),
+            fee: utils.formatEther(fee),
           },
         })
 
@@ -70,7 +71,7 @@ export const publishLikedListener = async (
             createdAt: new Date(timestamp.toNumber() * 1000),
             profileId: profile.id,
             publishId: publish.id,
-            feeId: feeEntity.id,
+            likeFeeId: feeEntity.id,
           },
         })
 
