@@ -1,5 +1,0 @@
-export * from "./profile-contract"
-export * from "./follow-contract"
-export * from "./publish-contract"
-export * from "./comment-contract"
-export * from "./like-contract"

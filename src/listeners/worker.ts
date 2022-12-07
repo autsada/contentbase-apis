@@ -1,7 +1,9 @@
 /**
- * A script to run as a separate service from the main server.
+ * @dev This module contains scripts to start listener functions to listen to events emitted from the Content Base smart contracts that run on Ethereum.
+ * @dev Run this module as a worker via a worker pool when start the server in the main thread.
  */
 
+import workerpool from "workerpool"
 import { Listener } from "@ethersproject/abstract-provider"
 
 import {
@@ -9,13 +11,19 @@ import {
   profileCreatedListener,
   profileImageUpdatedListener,
   defaultProfileUpdatedListener,
+} from "./profile-contract"
+import {
   getFollowContractForWs,
   followingListener,
   unFollowingListener,
+} from "./follow-contract"
+import {
   getPublishContractForWs,
   publishCreatedListener,
   publishUpdatedListener,
   publishDeletedListener,
+} from "./publish-contract"
+import {
   getCommentContractForWs,
   commentCreatedListener,
   commentDisLikedListener,
@@ -24,15 +32,19 @@ import {
   commentUnLikedListener,
   commentUpdatedListener,
   commentDeletedListener,
+} from "./comment-contract"
+import {
   getLikeContractForWs,
   publishDisLikedListener,
   publishLikedListener,
   publishUndoDisLikedListener,
   publishUnLikedListener,
-} from "./listeners"
+} from "./like-contract"
 
-async function main() {
-  console.log("start listeners")
+function main() {
+  workerpool.workerEmit({
+    status: "start",
+  })
 
   // Listen to Profile Contract events
   const profileContract = getProfileContractForWs()
@@ -117,4 +129,7 @@ async function main() {
   )
 }
 
-main()
+// Create a worker.
+workerpool.worker({
+  start: main,
+})

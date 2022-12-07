@@ -10,10 +10,33 @@ dotenv.config({ path: path.join(__dirname, "../.env") })
 import express from "express"
 import cors from "cors"
 import http from "http"
+import workerpool from "workerpool"
 
 import { prisma } from "./client"
 
 const { PORT } = process.env
+
+// Create a worker pool to run a worker for Ethereum event listeners.
+const pool = workerpool.pool(
+  path.resolve(__dirname, "listeners", "worker.js"),
+  {
+    minWorkers: 1,
+    maxWorkers: 1,
+    workerType: "thread",
+  }
+)
+pool
+  .exec("start", [], {
+    on: (payload) => {
+      if (payload.status === "start") {
+        console.log("Start listeners")
+      }
+    },
+  })
+  .then(() => {})
+  .catch((error) => {
+    console.log("error -->", error)
+  })
 
 const app = express()
 app.use(express.json()) // for parsing application/json
@@ -36,7 +59,7 @@ app.get("/test", async (req, res) => {
     //         following: { include: { followee: true } },
     //       },
     //     },
-    //   },ƒ
+    //   },
     // })
     const profiles = await prisma.profile.findMany({
       include: {
@@ -67,10 +90,18 @@ app.get("/test", async (req, res) => {
         publishes: {
           include: {
             comments: {
-              include: { comments: true, likes: true, disLikes: true },
+              include: {
+                comments: true,
+                likes: true,
+                disLikes: true,
+              },
             },
+            likes: true,
+            disLikes: true,
           },
         },
+        sentFees: true,
+        receivedFees: true,
       },
     })
     // const accounts = await prisma.account.findMany()

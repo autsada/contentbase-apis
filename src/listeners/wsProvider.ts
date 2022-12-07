@@ -1,5 +1,5 @@
 /**
- * Create a custom web socket provider in order to deal with ethers provider doesn't fire after some times issue.
+ * Create a custom web socket provider in order to deal with the issue that the ethers provider doesn't fire after some times.
  */
 
 import { ethers } from "ethers"
