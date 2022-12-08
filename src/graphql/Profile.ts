@@ -6,6 +6,7 @@ import {
   intArg,
   stringArg,
 } from "nexus"
+import { NexusGenObjects } from "../typegen"
 
 /**
  * A Profile type that map to the prisma Profile model.
@@ -48,7 +49,9 @@ export const Profile = objectType({
         if (!following || following.length === 0) {
           return []
         } else {
-          return following.map((fol) => fol.followee)
+          return following.map(
+            (fol) => fol.followee as NexusGenObjects["Follow"]
+          )
         }
       },
     })
@@ -78,7 +81,9 @@ export const Profile = objectType({
         if (!followers || followers.length === 0) {
           return []
         } else {
-          return followers.map((fol) => fol.follower)
+          return followers.map(
+            (fol) => fol.follower as NexusGenObjects["Follow"]
+          )
         }
       },
     })
