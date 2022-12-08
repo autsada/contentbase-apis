@@ -65,7 +65,6 @@ export interface NexusGenObjects {
   }
   Follow: { // root type
     createdAt: NexusGenScalars['DateTime']; // DateTime!
-    handle: string; // String!
     id: number; // Int!
     imageURI?: string | null; // String
     originalHandle: string; // String!
@@ -91,6 +90,13 @@ export interface NexusGenObjects {
     edges: Array<NexusGenRootTypes['Edge'] | null>; // [Edge]!
     pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
   }
+  ShortProfile: { // root type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    default: boolean; // Boolean!
+    id: number; // Int!
+    imageURI?: string | null; // String
+    originalHandle: string; // String!
+  }
 }
 
 export interface NexusGenInterfaces {
@@ -108,7 +114,7 @@ export interface NexusGenFieldTypes {
     address: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
-    profiles: Array<NexusGenRootTypes['Profile'] | null>; // [Profile]!
+    profiles: Array<NexusGenRootTypes['ShortProfile'] | null>; // [ShortProfile]!
     updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
   }
   Comment: { // field return type
@@ -126,7 +132,6 @@ export interface NexusGenFieldTypes {
   }
   Follow: { // field return type
     createdAt: NexusGenScalars['DateTime']; // DateTime!
-    handle: string; // String!
     id: number; // Int!
     imageURI: string | null; // String
     originalHandle: string; // String!
@@ -150,12 +155,19 @@ export interface NexusGenFieldTypes {
     updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
   }
   Query: { // field return type
-    getMyAccount: string | null; // String
+    getAccount: NexusGenRootTypes['Account'] | null; // Account
     getProfile: NexusGenRootTypes['Profile'] | null; // Profile
   }
   Response: { // field return type
     edges: Array<NexusGenRootTypes['Edge'] | null>; // [Edge]!
     pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
+  }
+  ShortProfile: { // field return type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    default: boolean; // Boolean!
+    id: number; // Int!
+    imageURI: string | null; // String
+    originalHandle: string; // String!
   }
 }
 
@@ -164,7 +176,7 @@ export interface NexusGenFieldTypeNames {
     address: 'String'
     createdAt: 'DateTime'
     id: 'Int'
-    profiles: 'Profile'
+    profiles: 'ShortProfile'
     updatedAt: 'DateTime'
   }
   Comment: { // field return type name
@@ -182,7 +194,6 @@ export interface NexusGenFieldTypeNames {
   }
   Follow: { // field return type name
     createdAt: 'DateTime'
-    handle: 'String'
     id: 'Int'
     imageURI: 'String'
     originalHandle: 'String'
@@ -206,17 +217,27 @@ export interface NexusGenFieldTypeNames {
     updatedAt: 'DateTime'
   }
   Query: { // field return type name
-    getMyAccount: 'String'
+    getAccount: 'Account'
     getProfile: 'Profile'
   }
   Response: { // field return type name
     edges: 'Edge'
     pageInfo: 'PageInfo'
   }
+  ShortProfile: { // field return type name
+    createdAt: 'DateTime'
+    default: 'Boolean'
+    id: 'Int'
+    imageURI: 'String'
+    originalHandle: 'String'
+  }
 }
 
 export interface NexusGenArgTypes {
   Query: {
+    getAccount: { // args
+      address: string; // String!
+    }
     getProfile: { // args
       id: number; // Int!
     }

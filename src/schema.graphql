@@ -6,7 +6,7 @@ type Account {
   address: String!
   createdAt: DateTime!
   id: Int!
-  profiles: [Profile]!
+  profiles: [ShortProfile]!
   updatedAt: DateTime
 }
 
@@ -32,7 +32,6 @@ type Edge {
 
 type Follow {
   createdAt: DateTime!
-  handle: String!
   id: Int!
   imageURI: String
   originalHandle: String!
@@ -59,11 +58,19 @@ type Profile {
 }
 
 type Query {
-  getMyAccount: String
+  getAccount(address: String!): Account
   getProfile(id: Int!): Profile
 }
 
 type Response {
   edges: [Edge]!
   pageInfo: PageInfo!
+}
+
+type ShortProfile {
+  createdAt: DateTime!
+  default: Boolean!
+  id: Int!
+  imageURI: String
+  originalHandle: String!
 }

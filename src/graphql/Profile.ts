@@ -6,8 +6,10 @@ import {
   intArg,
   stringArg,
 } from "nexus"
-import { NexusGenObjects } from "../typegen"
 
+/**
+ * A Profile type that map to the prisma Profile model.
+ */
 export const Profile = objectType({
   name: "Profile",
   definition(t) {
@@ -20,20 +22,6 @@ export const Profile = objectType({
     t.nonNull.string("originalHandle")
     t.string("imageURI")
     t.nonNull.boolean("default")
-    // t.field("account", {
-    //   type: "Account",
-    //   resolve: (parent, _, { prisma }) => {
-    //     return prisma.profile
-    //       .findUnique({
-    //         where: { id: parent.id },
-    //       })
-    //       .account({
-    //         select: {
-    //           address: true
-    //         }
-    //       })
-    //   },
-    // })
     t.nonNull.list.field("following", {
       type: "Follow",
       resolve: async (parent, _, { prisma }) => {
@@ -50,7 +38,6 @@ export const Profile = objectType({
                   id: true,
                   tokenId: true,
                   createdAt: true,
-                  handle: true,
                   imageURI: true,
                   originalHandle: true,
                 },
@@ -61,10 +48,7 @@ export const Profile = objectType({
         if (!following || following.length === 0) {
           return []
         } else {
-          return following.map((fol) => {
-            const followee = fol.followee
-            return { ...followee, tokenId: followee.tokenId.toString() }
-          }) as unknown as NexusGenObjects["Follow"][]
+          return following.map((fol) => fol.followee)
         }
       },
     })
@@ -84,7 +68,6 @@ export const Profile = objectType({
                   id: true,
                   tokenId: true,
                   createdAt: true,
-                  handle: true,
                   imageURI: true,
                   originalHandle: true,
                 },
@@ -95,71 +78,28 @@ export const Profile = objectType({
         if (!followers || followers.length === 0) {
           return []
         } else {
-          return followers.map((fol) => {
-            const follower = fol.follower
-            return { ...follower, tokenId: follower.tokenId.toString() }
-          }) as unknown as NexusGenObjects["Follow"][]
+          return followers.map((fol) => fol.follower)
         }
       },
     })
   },
 })
 
+/**
+ * Create a Follow type that different than the prisma model because
+ * 1. We don't need relation here.
+ * 2. The Follow type here refer to the Profile model (not a Follow model that represent a Follow token) but with only some fields that we need to show a profile's `followers` and `following`.
+ */
 export const Follow = objectType({
   name: "Follow",
   definition(t) {
     t.nonNull.int("id")
     t.nonNull.string("tokenId")
     t.nonNull.field("createdAt", { type: "DateTime" })
-    t.nonNull.string("handle")
     t.nonNull.string("originalHandle")
     t.string("imageURI")
   },
 })
-
-// export const Follow = objectType({
-//   name: "Follow",
-//   definition(t) {
-//     t.nonNull.string("tokenId")
-//     t.nonNull.field("createdAt", { type: "DateTime" })
-//     t.nonNull.int("followerId")
-//     t.nonNull.int("followeeId")
-//     t.nonNull.field("follower", {
-//       type: "Profile",
-//       resolve: async (parent, _, { prisma }) => {
-//         const follower = await prisma.follow
-//           .findUnique({
-//             where: {
-//               followerId_followeeId: {
-//                 followerId: parent.followerId,
-//                 followeeId: parent.followeeId,
-//               },
-//             },
-//           })
-//           .follower()
-
-//         return follower as unknown as NexusGenObjects["Profile"]
-//       },
-//     })
-//     t.nonNull.field("followee", {
-//       type: "Profile",
-//       resolve: async (parent, _, { prisma }) => {
-//         const followee = await prisma.follow
-//           .findUnique({
-//             where: {
-//               followerId_followeeId: {
-//                 followerId: parent.followerId,
-//                 followeeId: parent.followeeId,
-//               },
-//             },
-//           })
-//           .followee()
-
-//         return followee as unknown as NexusGenObjects["Profile"]
-//       },
-//     })
-//   },
-// })
 
 export const FrofileQuery = extendType({
   type: "Query",
@@ -167,14 +107,11 @@ export const FrofileQuery = extendType({
     t.field("getProfile", {
       type: nullable("Profile"),
       args: { id: nonNull("Int") },
-      async resolve(_parent, { id }, { prisma }) {
+      resolve(_parent, { id }, { prisma }) {
         try {
-          const profile = (await prisma.profile.findUnique({
+          return prisma.profile.findUnique({
             where: { id },
-          })) as unknown as NexusGenObjects["Profile"]
-          profile.tokenId = profile.tokenId.toString()
-
-          return profile
+          })
         } catch (error) {
           throw error
         }
