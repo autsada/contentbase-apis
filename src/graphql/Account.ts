@@ -27,10 +27,11 @@ export const Response = objectType({
 /**
  * A short version of the Profile type.
  */
-export const ShortProfile = objectType({
-  name: "ShortProfile",
+export const AccountProfile = objectType({
+  name: "AccountProfile",
   definition(t) {
     t.nonNull.int("id")
+    t.nonNull.string("tokenId")
     t.nonNull.field("createdAt", { type: "DateTime" })
     t.nonNull.string("originalHandle")
     t.string("imageURI")
@@ -49,7 +50,7 @@ export const Account = objectType({
     t.field("updatedAt", { type: "DateTime" })
     t.nonNull.string("address")
     t.nonNull.list.field("profiles", {
-      type: "ShortProfile",
+      type: "AccountProfile",
       resolve: async (parent, _, { prisma }) => {
         const profiles = await prisma.account
           .findUnique({
@@ -60,6 +61,7 @@ export const Account = objectType({
           .profiles({
             select: {
               id: true,
+              tokenId: true,
               createdAt: true,
               originalHandle: true,
               imageURI: true,
