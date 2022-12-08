@@ -6,8 +6,41 @@ type Account {
   address: String!
   createdAt: DateTime!
   id: Int!
-  profiles: [ShortProfile]!
+  profiles: [AccountProfile]!
   updatedAt: DateTime
+}
+
+type AccountProfile {
+  createdAt: DateTime!
+  default: Boolean!
+  id: Int!
+  imageURI: String
+  originalHandle: String!
+  tokenId: String!
+}
+
+enum Category {
+  Animals
+  Children
+  Education
+  Empty
+  Entertainment
+  Food
+  Gaming
+  LifeStyle
+  Men
+  Movies
+  Music
+  News
+  NotExist
+  Other
+  Programming
+  Science
+  Sports
+  Technology
+  Travel
+  Vehicles
+  Women
 }
 
 type Comment {
@@ -57,9 +90,43 @@ type Profile {
   updatedAt: DateTime
 }
 
+type Publish {
+  contentURI: String!
+  createdAt: DateTime!
+  creator: ShortProfile
+  id: Int!
+  imageURI: String!
+  primaryCategory: Category!
+  secondaryCategory: Category!
+  tertiaryCategory: Category!
+  title: String!
+  tokenId: String!
+  updatedAt: DateTime
+}
+
+type PublishDetail {
+  contentURI: String!
+  createdAt: DateTime!
+  creator: ShortProfile
+  description: String
+  disLikes: [ShortProfile]!
+  id: Int!
+  imageURI: String!
+  likes: [ShortProfile]!
+  metadataURI: String!
+  primaryCategory: Category!
+  secondaryCategory: Category!
+  tertiaryCategory: Category!
+  title: String!
+  tokenId: String!
+  updatedAt: DateTime
+}
+
 type Query {
+  fetchPublishes: [Publish]!
   getAccount(address: String!): Account
   getProfile(id: Int!): Profile
+  getPublishById(id: Int!): PublishDetail
 }
 
 type Response {
@@ -68,9 +135,8 @@ type Response {
 }
 
 type ShortProfile {
-  createdAt: DateTime!
-  default: Boolean!
   id: Int!
   imageURI: String
   originalHandle: String!
+  tokenId: String!
 }

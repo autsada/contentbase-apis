@@ -32,6 +32,7 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
+  Category: "Animals" | "Children" | "Education" | "Empty" | "Entertainment" | "Food" | "Gaming" | "LifeStyle" | "Men" | "Movies" | "Music" | "News" | "NotExist" | "Other" | "Programming" | "Science" | "Sports" | "Technology" | "Travel" | "Vehicles" | "Women"
 }
 
 export interface NexusGenScalars {
@@ -49,6 +50,14 @@ export interface NexusGenObjects {
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  AccountProfile: { // root type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    default: boolean; // Boolean!
+    id: number; // Int!
+    imageURI?: string | null; // String
+    originalHandle: string; // String!
+    tokenId: string; // String!
   }
   Comment: { // root type
     contentURI: string; // String!
@@ -85,17 +94,42 @@ export interface NexusGenObjects {
     tokenId: string; // String!
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
+  Publish: { // root type
+    contentURI: string; // String!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    id: number; // Int!
+    imageURI: string; // String!
+    primaryCategory: NexusGenEnums['Category']; // Category!
+    secondaryCategory: NexusGenEnums['Category']; // Category!
+    tertiaryCategory: NexusGenEnums['Category']; // Category!
+    title: string; // String!
+    tokenId: string; // String!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  PublishDetail: { // root type
+    contentURI: string; // String!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    description?: string | null; // String
+    id: number; // Int!
+    imageURI: string; // String!
+    metadataURI: string; // String!
+    primaryCategory: NexusGenEnums['Category']; // Category!
+    secondaryCategory: NexusGenEnums['Category']; // Category!
+    tertiaryCategory: NexusGenEnums['Category']; // Category!
+    title: string; // String!
+    tokenId: string; // String!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
   Query: {};
   Response: { // root type
     edges: Array<NexusGenRootTypes['Edge'] | null>; // [Edge]!
     pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
   }
   ShortProfile: { // root type
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
-    default: boolean; // Boolean!
     id: number; // Int!
     imageURI?: string | null; // String
     originalHandle: string; // String!
+    tokenId: string; // String!
   }
 }
 
@@ -107,15 +141,23 @@ export interface NexusGenUnions {
 
 export type NexusGenRootTypes = NexusGenObjects
 
-export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
+export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnums
 
 export interface NexusGenFieldTypes {
   Account: { // field return type
     address: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
-    profiles: Array<NexusGenRootTypes['ShortProfile'] | null>; // [ShortProfile]!
+    profiles: Array<NexusGenRootTypes['AccountProfile'] | null>; // [AccountProfile]!
     updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  AccountProfile: { // field return type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    default: boolean; // Boolean!
+    id: number; // Int!
+    imageURI: string | null; // String
+    originalHandle: string; // String!
+    tokenId: string; // String!
   }
   Comment: { // field return type
     contentURI: string; // String!
@@ -154,20 +196,51 @@ export interface NexusGenFieldTypes {
     tokenId: string; // String!
     updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
   }
+  Publish: { // field return type
+    contentURI: string; // String!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    creator: NexusGenRootTypes['ShortProfile'] | null; // ShortProfile
+    id: number; // Int!
+    imageURI: string; // String!
+    primaryCategory: NexusGenEnums['Category']; // Category!
+    secondaryCategory: NexusGenEnums['Category']; // Category!
+    tertiaryCategory: NexusGenEnums['Category']; // Category!
+    title: string; // String!
+    tokenId: string; // String!
+    updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  PublishDetail: { // field return type
+    contentURI: string; // String!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    creator: NexusGenRootTypes['ShortProfile'] | null; // ShortProfile
+    description: string | null; // String
+    disLikes: Array<NexusGenRootTypes['ShortProfile'] | null>; // [ShortProfile]!
+    id: number; // Int!
+    imageURI: string; // String!
+    likes: Array<NexusGenRootTypes['ShortProfile'] | null>; // [ShortProfile]!
+    metadataURI: string; // String!
+    primaryCategory: NexusGenEnums['Category']; // Category!
+    secondaryCategory: NexusGenEnums['Category']; // Category!
+    tertiaryCategory: NexusGenEnums['Category']; // Category!
+    title: string; // String!
+    tokenId: string; // String!
+    updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
+  }
   Query: { // field return type
+    fetchPublishes: Array<NexusGenRootTypes['Publish'] | null>; // [Publish]!
     getAccount: NexusGenRootTypes['Account'] | null; // Account
     getProfile: NexusGenRootTypes['Profile'] | null; // Profile
+    getPublishById: NexusGenRootTypes['PublishDetail'] | null; // PublishDetail
   }
   Response: { // field return type
     edges: Array<NexusGenRootTypes['Edge'] | null>; // [Edge]!
     pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
   }
   ShortProfile: { // field return type
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
-    default: boolean; // Boolean!
     id: number; // Int!
     imageURI: string | null; // String
     originalHandle: string; // String!
+    tokenId: string; // String!
   }
 }
 
@@ -176,8 +249,16 @@ export interface NexusGenFieldTypeNames {
     address: 'String'
     createdAt: 'DateTime'
     id: 'Int'
-    profiles: 'ShortProfile'
+    profiles: 'AccountProfile'
     updatedAt: 'DateTime'
+  }
+  AccountProfile: { // field return type name
+    createdAt: 'DateTime'
+    default: 'Boolean'
+    id: 'Int'
+    imageURI: 'String'
+    originalHandle: 'String'
+    tokenId: 'String'
   }
   Comment: { // field return type name
     contentURI: 'String'
@@ -216,20 +297,51 @@ export interface NexusGenFieldTypeNames {
     tokenId: 'String'
     updatedAt: 'DateTime'
   }
+  Publish: { // field return type name
+    contentURI: 'String'
+    createdAt: 'DateTime'
+    creator: 'ShortProfile'
+    id: 'Int'
+    imageURI: 'String'
+    primaryCategory: 'Category'
+    secondaryCategory: 'Category'
+    tertiaryCategory: 'Category'
+    title: 'String'
+    tokenId: 'String'
+    updatedAt: 'DateTime'
+  }
+  PublishDetail: { // field return type name
+    contentURI: 'String'
+    createdAt: 'DateTime'
+    creator: 'ShortProfile'
+    description: 'String'
+    disLikes: 'ShortProfile'
+    id: 'Int'
+    imageURI: 'String'
+    likes: 'ShortProfile'
+    metadataURI: 'String'
+    primaryCategory: 'Category'
+    secondaryCategory: 'Category'
+    tertiaryCategory: 'Category'
+    title: 'String'
+    tokenId: 'String'
+    updatedAt: 'DateTime'
+  }
   Query: { // field return type name
+    fetchPublishes: 'Publish'
     getAccount: 'Account'
     getProfile: 'Profile'
+    getPublishById: 'PublishDetail'
   }
   Response: { // field return type name
     edges: 'Edge'
     pageInfo: 'PageInfo'
   }
   ShortProfile: { // field return type name
-    createdAt: 'DateTime'
-    default: 'Boolean'
     id: 'Int'
     imageURI: 'String'
     originalHandle: 'String'
+    tokenId: 'String'
   }
 }
 
@@ -239,6 +351,9 @@ export interface NexusGenArgTypes {
       address: string; // String!
     }
     getProfile: { // args
+      id: number; // Int!
+    }
+    getPublishById: { // args
       id: number; // Int!
     }
   }
@@ -254,7 +369,7 @@ export type NexusGenObjectNames = keyof NexusGenObjects;
 
 export type NexusGenInputNames = never;
 
-export type NexusGenEnumNames = never;
+export type NexusGenEnumNames = keyof NexusGenEnums;
 
 export type NexusGenInterfaceNames = never;
 
