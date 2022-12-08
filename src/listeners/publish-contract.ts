@@ -11,7 +11,7 @@ import {
   PublishUpdatedEvent,
   PublishDeletedEvent,
 } from "../typechain-types/contracts/publish/ContentBasePublishV1"
-import { getKeyOfCategory } from "../utils"
+import { generateTokenId, getKeyOfCategory } from "../utils"
 import type { Category } from "@prisma/client"
 
 /**
@@ -49,7 +49,7 @@ export const publishCreatedListener = async (
     ] = args
     // 1. Get the profile's token id (creatorId).
     const profile = await prisma.profile.findUnique({
-      where: { tokenId: creatorId.toBigInt() },
+      where: { tokenId: generateTokenId(creatorId) },
     })
 
     if (profile) {
@@ -59,7 +59,7 @@ export const publishCreatedListener = async (
       console.log("tertiary -->", getKeyOfCategory(tertiaryCategory))
       await prisma.publish.create({
         data: {
-          tokenId: tokenId.toBigInt(),
+          tokenId: generateTokenId(tokenId),
           createdAt: new Date(timestamp.toNumber() * 1000),
           creatorId: profile.id,
           imageURI,
@@ -102,7 +102,7 @@ export const publishUpdatedListener = async (
 
     // 1. Get the publish by its tokenId.
     const publish = await prisma.publish.findUnique({
-      where: { tokenId: tokenId.toBigInt() },
+      where: { tokenId: generateTokenId(tokenId) },
     })
 
     if (publish) {
@@ -140,7 +140,7 @@ export const publishDeletedListener = async (
 
     // 1. Get the publish by its tokenId.
     const publish = await prisma.publish.findUnique({
-      where: { tokenId: tokenId.toBigInt() },
+      where: { tokenId: generateTokenId(tokenId) },
     })
 
     if (publish) {

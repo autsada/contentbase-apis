@@ -11,6 +11,7 @@ import {
   ProfileImageUpdatedEvent,
   DefaultProfileUpdatedEvent,
 } from "../typechain-types/contracts/profile/ContentBaseProfileV1"
+import { generateTokenId } from "../utils"
 
 /**
  * Get the contract for listening to events
@@ -62,7 +63,7 @@ export const profileCreatedListener = async (
     // 3. Create a Profile.
     await prisma.profile.create({
       data: {
-        tokenId: tokenId.toBigInt(),
+        tokenId: generateTokenId(tokenId),
         createdAt: new Date(timestamp.toNumber() * 1000),
         accountId: account.id,
         owner: formattedAddress,
@@ -88,7 +89,7 @@ export const profileImageUpdatedListener = async (
 
     // 1. Get the profile.
     const profile = await prisma.profile.findUnique({
-      where: { tokenId: tokenId.toBigInt() },
+      where: { tokenId: generateTokenId(tokenId) },
     })
 
     console.log("profile -->", profile)
@@ -115,7 +116,7 @@ export const defaultProfileUpdatedListener = async (
 
     // 1. Get the new default profile.
     const newProfile = await prisma.profile.findUnique({
-      where: { tokenId: newProfileId.toBigInt() },
+      where: { tokenId: generateTokenId(newProfileId) },
     })
 
     if (newProfile && !newProfile.default) {
@@ -131,7 +132,7 @@ export const defaultProfileUpdatedListener = async (
 
     // 3. Get the old default profile.
     const oldProfile = await prisma.profile.findUnique({
-      where: { tokenId: oldProfileId.toBigInt() },
+      where: { tokenId: generateTokenId(oldProfileId) },
     })
 
     console.log("new default -->", newProfile)

@@ -1,3 +1,5 @@
+import { BigNumber } from "ethers"
+
 /**
  * Category of the publish struct
  */
@@ -51,4 +53,8 @@ export function getIndexOfCommentType(ct: CommentType) {
 // A helper function to get CommentType key.
 export function getKeyOfCommentType(index: number) {
   return Object.keys(CommentType)[index]
+}
+
+export function generateTokenId(tokenId: BigNumber) {
+  return tokenId.toBigInt().toString()
 }

@@ -15,7 +15,7 @@ import {
   CommentDisLikedEvent,
   CommentUndoDisLikedEvent,
 } from "../typechain-types/contracts/publish/ContentBaseCommentV1"
-import { getKeyOfCommentType } from "../utils"
+import { generateTokenId, getKeyOfCommentType } from "../utils"
 import type { CommentType } from "@prisma/client"
 
 /**
@@ -52,7 +52,7 @@ export const commentCreatedListener = async (
     // 1. Get the profile of the creator.
     const profile = await prisma.profile.findUnique({
       where: {
-        tokenId: creatorId.toBigInt(),
+        tokenId: generateTokenId(creatorId),
       },
     })
 
@@ -66,7 +66,7 @@ export const commentCreatedListener = async (
         // A.1. Get the publish.
         const publish = await prisma.publish.findUnique({
           where: {
-            tokenId: parentId.toBigInt(),
+            tokenId: generateTokenId(parentId),
           },
         })
 
@@ -74,7 +74,7 @@ export const commentCreatedListener = async (
           // A.2. Create a new comment.
           await prisma.comment.create({
             data: {
-              tokenId: tokenId.toBigInt(),
+              tokenId: generateTokenId(tokenId),
               createdAt: new Date(timestamp.toNumber() * 1000),
               creatorId: profile.id,
               publishId: publish.id,
@@ -90,7 +90,7 @@ export const commentCreatedListener = async (
         // B.1. Get the comment.
         const comment = await prisma.comment.findUnique({
           where: {
-            tokenId: parentId.toBigInt(),
+            tokenId: generateTokenId(parentId),
           },
         })
 
@@ -98,7 +98,7 @@ export const commentCreatedListener = async (
           // B.2. Create a new comment.
           await prisma.comment.create({
             data: {
-              tokenId: tokenId.toBigInt(),
+              tokenId: generateTokenId(tokenId),
               createdAt: new Date(timestamp.toNumber() * 1000),
               creatorId: profile.id,
               publishId: comment.publishId,
@@ -132,7 +132,7 @@ export const commentUpdatedListener = async (
     // 1. Get the comment by its token id.
     const comment = await prisma.comment.findUnique({
       where: {
-        tokenId: tokenId.toBigInt(),
+        tokenId: generateTokenId(tokenId),
       },
     })
 
@@ -169,7 +169,7 @@ export const commentDeletedListener = async (
     // 1. Get the comment by its token id.
     const comment = await prisma.comment.findUnique({
       where: {
-        tokenId: tokenId.toBigInt(),
+        tokenId: generateTokenId(tokenId),
       },
     })
 
@@ -200,7 +200,7 @@ export const commentLikedListener = async (
     // 1. Get the profile by the profile token id (profileId).
     const profile = await prisma.profile.findUnique({
       where: {
-        tokenId: profileId.toBigInt(),
+        tokenId: generateTokenId(profileId),
       },
     })
 
@@ -208,7 +208,7 @@ export const commentLikedListener = async (
       // 2. Get the comment by its token id.
       const comment = await prisma.comment.findUnique({
         where: {
-          tokenId: commentId.toBigInt(),
+          tokenId: generateTokenId(commentId),
         },
       })
 
@@ -263,7 +263,7 @@ export const commentUnLikedListener = async (
     // 1. Get the profile by the profile token id (profileId).
     const profile = await prisma.profile.findUnique({
       where: {
-        tokenId: profileId.toBigInt(),
+        tokenId: generateTokenId(profileId),
       },
     })
 
@@ -271,7 +271,7 @@ export const commentUnLikedListener = async (
       // 2. Get the comment.
       const comment = await prisma.comment.findUnique({
         where: {
-          tokenId: commentId.toBigInt(),
+          tokenId: generateTokenId(commentId),
         },
       })
 
@@ -306,7 +306,7 @@ export const commentDisLikedListener = async (
     // 1. Get the profile by the profile token id (profileId).
     const profile = await prisma.profile.findUnique({
       where: {
-        tokenId: profileId.toBigInt(),
+        tokenId: generateTokenId(profileId),
       },
     })
 
@@ -314,7 +314,7 @@ export const commentDisLikedListener = async (
       // 2. Get the comment by its token id.
       const comment = await prisma.comment.findUnique({
         where: {
-          tokenId: commentId.toBigInt(),
+          tokenId: generateTokenId(commentId),
         },
       })
 
@@ -369,7 +369,7 @@ export const commentUndoDisLikedListener = async (
     // 1. Get the profile by the profile token id (profileId).
     const profile = await prisma.profile.findUnique({
       where: {
-        tokenId: profileId.toBigInt(),
+        tokenId: generateTokenId(profileId),
       },
     })
 
@@ -377,7 +377,7 @@ export const commentUndoDisLikedListener = async (
       // 2. Get the comment.
       const comment = await prisma.comment.findUnique({
         where: {
-          tokenId: commentId.toBigInt(),
+          tokenId: generateTokenId(commentId),
         },
       })
 

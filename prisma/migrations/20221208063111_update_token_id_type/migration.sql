@@ -1,0 +1,14 @@
+-- AlterTable
+ALTER TABLE "Comment" ALTER COLUMN "tokenId" SET DATA TYPE TEXT;
+
+-- AlterTable
+ALTER TABLE "Follow" ALTER COLUMN "tokenId" SET DATA TYPE TEXT;
+
+-- AlterTable
+ALTER TABLE "Like" ALTER COLUMN "tokenId" SET DATA TYPE TEXT;
+
+-- AlterTable
+ALTER TABLE "Profile" ALTER COLUMN "tokenId" SET DATA TYPE TEXT;
+
+-- AlterTable
+ALTER TABLE "Publish" ALTER COLUMN "tokenId" SET DATA TYPE TEXT;

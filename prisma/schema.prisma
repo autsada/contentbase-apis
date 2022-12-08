@@ -20,7 +20,7 @@ model Account {
 
 model Profile {
   id             Int       @id @default(autoincrement())
-  tokenId        BigInt    @unique
+  tokenId        String    @unique
   createdAt      DateTime
   updatedAt      DateTime?
   account        Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
@@ -41,7 +41,7 @@ model Profile {
 }
 
 model Follow {
-  tokenId    BigInt   @unique
+  tokenId    String   @unique
   createdAt  DateTime
   follower   Profile  @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
   followerId Int
@@ -77,7 +77,7 @@ enum Category {
 
 model Publish {
   id                Int       @id @default(autoincrement())
-  tokenId           BigInt    @unique
+  tokenId           String    @unique
   createdAt         DateTime
   updatedAt         DateTime?
   creator           Profile   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
@@ -104,7 +104,7 @@ enum CommentType {
 // Publish's Comment
 model Comment {
   id          Int              @id @default(autoincrement())
-  tokenId     BigInt           @unique
+  tokenId     String           @unique
   createdAt   DateTime
   updatedAt   DateTime?
   creator     Profile          @relation(fields: [creatorId], references: [id], onDelete: Cascade)
@@ -125,7 +125,7 @@ model Comment {
 // Publish's Like
 model Like {
   id        Int      @id @default(autoincrement())
-  tokenId   BigInt   @unique
+  tokenId   String   @unique
   createdAt DateTime
   profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId Int

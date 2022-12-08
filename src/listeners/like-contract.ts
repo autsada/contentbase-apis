@@ -14,6 +14,7 @@ import {
   PublishDisLikedEvent,
   PublishUndoDisLikedEvent,
 } from "../typechain-types/contracts/publish/ContentBaseLikeV1"
+import { generateTokenId } from "../utils"
 
 /**
  * Get contract for listening to events
@@ -39,7 +40,7 @@ export const publishLikedListener = async (
     // 1. Get the profile of the user that liked the publish by its tokenId.
     const profile = await prisma.profile.findUnique({
       where: {
-        tokenId: profileId.toBigInt(),
+        tokenId: generateTokenId(profileId),
       },
     })
 
@@ -47,7 +48,7 @@ export const publishLikedListener = async (
       // 2. Get the publish by its tokenId.
       const publish = await prisma.publish.findUnique({
         where: {
-          tokenId: publishId.toBigInt(),
+          tokenId: generateTokenId(publishId),
         },
       })
 
@@ -67,7 +68,7 @@ export const publishLikedListener = async (
         // 4. Create a new Like.
         await prisma.like.create({
           data: {
-            tokenId: tokenId.toBigInt(),
+            tokenId: generateTokenId(tokenId),
             createdAt: new Date(timestamp.toNumber() * 1000),
             profileId: profile.id,
             publishId: publish.id,
@@ -116,7 +117,7 @@ export const publishUnLikedListener = async (
     // 1. Get the like by its tokenId.
     const like = await prisma.like.findUnique({
       where: {
-        tokenId: tokenId.toBigInt(),
+        tokenId: generateTokenId(tokenId),
       },
     })
 
@@ -147,7 +148,7 @@ export const publishDisLikedListener = async (
     // 1. Get the profile of the user that disliked the publish by its tokenId.
     const profile = await prisma.profile.findUnique({
       where: {
-        tokenId: profileId.toBigInt(),
+        tokenId: generateTokenId(profileId),
       },
     })
 
@@ -155,7 +156,7 @@ export const publishDisLikedListener = async (
       // 2. Get the publish by its tokenId.
       const publish = await prisma.publish.findUnique({
         where: {
-          tokenId: publishId.toBigInt(),
+          tokenId: generateTokenId(publishId),
         },
       })
 
@@ -210,7 +211,7 @@ export const publishUndoDisLikedListener = async (
     // 1. Get the profile of the user that undo-disliked the publish by its tokenId.
     const profile = await prisma.profile.findUnique({
       where: {
-        tokenId: profileId.toBigInt(),
+        tokenId: generateTokenId(profileId),
       },
     })
 
@@ -218,7 +219,7 @@ export const publishUndoDisLikedListener = async (
       // 2. Get the publish by its tokenId.
       const publish = await prisma.publish.findUnique({
         where: {
-          tokenId: publishId.toBigInt(),
+          tokenId: generateTokenId(publishId),
         },
       })
 

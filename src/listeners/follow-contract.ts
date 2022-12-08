@@ -10,6 +10,7 @@ import {
   FollowingEvent,
   UnFollowingEvent,
 } from "../typechain-types/contracts/profile/ContentBaseFollowV1"
+import { generateTokenId } from "../utils"
 
 /**
  * Get the contract for listening to events
@@ -32,19 +33,19 @@ export const followingListener = async (...args: FollowingEvent["args"]) => {
 
     // 1. Get the follower profile.
     const follower = await prisma.profile.findUnique({
-      where: { tokenId: followerId.toBigInt() },
+      where: { tokenId: generateTokenId(followerId) },
     })
 
     // 2. Get the followee profile.
     const followee = await prisma.profile.findUnique({
-      where: { tokenId: followeeId.toBigInt() },
+      where: { tokenId: generateTokenId(followeeId) },
     })
 
     if (follower && followee) {
       // 3. Create a Follow.
       await prisma.follow.create({
         data: {
-          tokenId: tokenId.toBigInt(),
+          tokenId: generateTokenId(tokenId),
           createdAt: new Date(timestamp.toNumber() * 1000),
           followerId: follower.id,
           followeeId: followee.id,
@@ -69,12 +70,14 @@ export const unFollowingListener = async (
 
     // 1. Get the follow by tokenId.
     const follow = await prisma.follow.findUnique({
-      where: { tokenId: tokenId.toBigInt() },
+      where: { tokenId: generateTokenId(tokenId) },
     })
 
     if (follow) {
       // 2. Delete the follow.
-      await prisma.follow.delete({ where: { tokenId: tokenId.toBigInt() } })
+      await prisma.follow.delete({
+        where: { tokenId: generateTokenId(tokenId) },
+      })
       console.log("unfollow done")
     }
   } catch (error) {
