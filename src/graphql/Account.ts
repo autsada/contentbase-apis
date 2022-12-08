@@ -1,6 +1,4 @@
-import { extendType, objectType, nullable } from "nexus"
-
-import { NexusGenObjects } from "../typegen"
+import { extendType, objectType, nullable, nonNull } from "nexus"
 
 export const Edge = objectType({
   name: "Edge",
@@ -26,6 +24,23 @@ export const Response = objectType({
   },
 })
 
+/**
+ * A short version of the Profile type.
+ */
+export const ShortProfile = objectType({
+  name: "ShortProfile",
+  definition(t) {
+    t.nonNull.int("id")
+    t.nonNull.field("createdAt", { type: "DateTime" })
+    t.nonNull.string("originalHandle")
+    t.string("imageURI")
+    t.nonNull.boolean("default")
+  },
+})
+
+/**
+ * A Account type that map to the prisma Account model.
+ */
 export const Account = objectType({
   name: "Account",
   definition(t) {
@@ -34,7 +49,7 @@ export const Account = objectType({
     t.field("updatedAt", { type: "DateTime" })
     t.nonNull.string("address")
     t.nonNull.list.field("profiles", {
-      type: "Profile",
+      type: "ShortProfile",
       resolve: async (parent, _, { prisma }) => {
         const profiles = await prisma.account
           .findUnique({
@@ -42,10 +57,18 @@ export const Account = objectType({
               id: parent.id,
             },
           })
-          .profiles()
+          .profiles({
+            select: {
+              id: true,
+              createdAt: true,
+              originalHandle: true,
+              imageURI: true,
+              default: true,
+            },
+          })
 
         if (!profiles || profiles.length === 0) return []
-        else return profiles as unknown as NexusGenObjects["Profile"][]
+        else return profiles
       },
     })
   },
@@ -54,10 +77,19 @@ export const Account = objectType({
 export const AccountQuery = extendType({
   type: "Query",
   definition(t) {
-    t.field("getMyAccount", {
-      type: nullable("String"),
-      async resolve() {
-        return ""
+    t.field("getAccount", {
+      type: nullable("Account"),
+      args: { address: nonNull("String") },
+      resolve(_parent, { address }, { prisma }) {
+        try {
+          return prisma.account.findUnique({
+            where: {
+              address,
+            },
+          })
+        } catch (error) {
+          throw error
+        }
       },
     })
   },
