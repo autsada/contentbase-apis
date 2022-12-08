@@ -109,8 +109,8 @@ model Comment {
   updatedAt   DateTime?
   creator     Profile          @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   creatorId   Int
-  publish     Publish?         @relation(fields: [publishId], references: [id], onDelete: Cascade) // The parent's publish
-  publishId   Int?
+  publish     Publish          @relation(fields: [publishId], references: [id], onDelete: Cascade) // The parent's publish
+  publishId   Int
   comment     Comment?         @relation("CommentsOnComment", fields: [commentId], references: [id], onDelete: Cascade) // The parent's comment, if `null` it means the comment was made on the parent's publish directly, otherwise it was made on a comment of the parent's publish.
   commentId   Int?
   comments    Comment[]        @relation("CommentsOnComment") // The child comments
