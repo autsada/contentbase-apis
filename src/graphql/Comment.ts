@@ -196,7 +196,7 @@ export const MainComment = objectType({
 export const CommentQuery = extendType({
   type: "Query",
   definition(t) {
-    t.field("getCommentsByPublishId", {
+    t.field("listCommentsByPublishId", {
       type: nonNull(list("MainComment")),
       args: { publishId: nonNull(intArg()) },
       async resolve(_parent, { publishId }, { prisma }) {

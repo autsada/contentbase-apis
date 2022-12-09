@@ -256,9 +256,9 @@ export interface NexusGenFieldTypes {
   Query: { // field return type
     fetchPublishes: Array<NexusGenRootTypes['Publish'] | null>; // [Publish]!
     getAccount: NexusGenRootTypes['Account'] | null; // Account
-    getCommentsByPublishId: Array<NexusGenRootTypes['MainComment'] | null>; // [MainComment]!
     getProfile: NexusGenRootTypes['Profile'] | null; // Profile
     getPublishById: NexusGenRootTypes['PublishDetail'] | null; // PublishDetail
+    listCommentsByPublishId: Array<NexusGenRootTypes['MainComment'] | null>; // [MainComment]!
     listProfileReceivedFees: Array<NexusGenRootTypes['ReceivedFee'] | null>; // [ReceivedFee]!
     listProfileSentFees: Array<NexusGenRootTypes['SentFee'] | null>; // [SentFee]!
     publishedByCategory: Array<NexusGenRootTypes['Publish'] | null>; // [Publish]!
@@ -393,9 +393,9 @@ export interface NexusGenFieldTypeNames {
   Query: { // field return type name
     fetchPublishes: 'Publish'
     getAccount: 'Account'
-    getCommentsByPublishId: 'MainComment'
     getProfile: 'Profile'
     getPublishById: 'PublishDetail'
+    listCommentsByPublishId: 'MainComment'
     listProfileReceivedFees: 'ReceivedFee'
     listProfileSentFees: 'SentFee'
     publishedByCategory: 'Publish'
@@ -443,14 +443,14 @@ export interface NexusGenArgTypes {
     getAccount: { // args
       address: string; // String!
     }
-    getCommentsByPublishId: { // args
-      publishId: number; // Int!
-    }
     getProfile: { // args
       id: number; // Int!
     }
     getPublishById: { // args
       id: number; // Int!
+    }
+    listCommentsByPublishId: { // args
+      publishId: number; // Int!
     }
     listProfileReceivedFees: { // args
       profileId: number; // Int!
