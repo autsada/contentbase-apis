@@ -43,14 +43,9 @@ enum Category {
   Women
 }
 
-type Comment {
-  contentURI: String!
-  createdAt: DateTime!
-  id: Int!
-  mediaURI: String
-  text: String
-  tokenId: String!
-  updatedAt: DateTime
+enum CommentType {
+  COMMENT
+  PUBLISH
 }
 
 """
@@ -69,6 +64,19 @@ type Follow {
   imageURI: String
   originalHandle: String!
   tokenId: String!
+}
+
+type MainComment {
+  commentType: CommentType!
+  comments: [SubComment]!
+  contentURI: String!
+  createdAt: DateTime!
+  creator: ShortProfile
+  id: Int!
+  mediaURI: String
+  text: String
+  tokenId: String!
+  updatedAt: DateTime
 }
 
 type PageInfo {
@@ -105,6 +113,7 @@ type Publish {
 }
 
 type PublishDetail {
+  comments: [MainComment]!
   contentURI: String!
   createdAt: DateTime!
   creator: ShortProfile
@@ -138,5 +147,16 @@ type ShortProfile {
   id: Int!
   imageURI: String
   originalHandle: String!
+}
+
+type SubComment {
+  commentType: CommentType!
+  contentURI: String!
+  createdAt: DateTime!
+  creator: ShortProfile
+  id: Int!
+  mediaURI: String
+  text: String
   tokenId: String!
+  updatedAt: DateTime
 }

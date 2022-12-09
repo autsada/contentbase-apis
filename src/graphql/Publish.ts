@@ -5,9 +5,8 @@ import {
   nullable,
   nonNull,
   list,
+  intArg,
 } from "nexus"
-import { resolve } from "path"
-import { NexusGenObjects } from "../typegen"
 
 export const Category = enumType({
   name: "Category",
@@ -37,13 +36,12 @@ export const Category = enumType({
 })
 
 /**
- * A publish/comment creator type which extract only 4 fields from the `AccountProfile` type.
+ * A publish/comment creator type which extract only 3 fields from the `Profile` type.
  */
 export const ShortProfile = objectType({
   name: "ShortProfile",
   definition(t) {
     t.nonNull.int("id")
-    t.nonNull.string("tokenId")
     t.nonNull.string("originalHandle")
     t.string("imageURI")
   },
@@ -80,7 +78,6 @@ export const PublishDetail = objectType({
           .creator({
             select: {
               id: true,
-              tokenId: true,
               originalHandle: true,
               imageURI: true,
             },
@@ -101,7 +98,6 @@ export const PublishDetail = objectType({
               profile: {
                 select: {
                   id: true,
-                  tokenId: true,
                   originalHandle: true,
                   imageURI: true,
                 },
@@ -142,6 +138,28 @@ export const PublishDetail = objectType({
           return []
         } else {
           return disLikes.map((disLike) => disLike.profile)
+        }
+      },
+    })
+    t.nonNull.list.field("comments", {
+      type: "MainComment",
+      resolve: async (parent, _, { prisma }) => {
+        const comments = await prisma.publish
+          .findUnique({
+            where: {
+              id: parent.id,
+            },
+          })
+          .comments({
+            where: {
+              commentType: "PUBLISH",
+            },
+          })
+
+        if (!comments || comments.length === 0) {
+          return []
+        } else {
+          return comments
         }
       },
     })
@@ -192,7 +210,7 @@ export const PublishQuery = extendType({
   definition(t) {
     t.field("getPublishById", {
       type: nullable("PublishDetail"),
-      args: { id: nonNull("Int") },
+      args: { id: nonNull(intArg()) },
       resolve(_parent, { id }, { prisma }) {
         return prisma.publish.findUnique({
           where: {

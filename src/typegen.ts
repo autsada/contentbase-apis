@@ -33,6 +33,7 @@ export interface NexusGenInputs {
 
 export interface NexusGenEnums {
   Category: "Animals" | "Children" | "Education" | "Empty" | "Entertainment" | "Food" | "Gaming" | "LifeStyle" | "Men" | "Movies" | "Music" | "News" | "NotExist" | "Other" | "Programming" | "Science" | "Sports" | "Technology" | "Travel" | "Vehicles" | "Women"
+  CommentType: "COMMENT" | "PUBLISH"
 }
 
 export interface NexusGenScalars {
@@ -59,15 +60,6 @@ export interface NexusGenObjects {
     originalHandle: string; // String!
     tokenId: string; // String!
   }
-  Comment: { // root type
-    contentURI: string; // String!
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
-    id: number; // Int!
-    mediaURI?: string | null; // String
-    text?: string | null; // String
-    tokenId: string; // String!
-    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
-  }
   Edge: { // root type
     cursor?: string | null; // String
     node?: NexusGenRootTypes['Profile'] | null; // Profile
@@ -78,6 +70,16 @@ export interface NexusGenObjects {
     imageURI?: string | null; // String
     originalHandle: string; // String!
     tokenId: string; // String!
+  }
+  MainComment: { // root type
+    commentType: NexusGenEnums['CommentType']; // CommentType!
+    contentURI: string; // String!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    id: number; // Int!
+    mediaURI?: string | null; // String
+    text?: string | null; // String
+    tokenId: string; // String!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
   PageInfo: { // root type
     endCursor?: string | null; // String
@@ -129,7 +131,16 @@ export interface NexusGenObjects {
     id: number; // Int!
     imageURI?: string | null; // String
     originalHandle: string; // String!
+  }
+  SubComment: { // root type
+    commentType: NexusGenEnums['CommentType']; // CommentType!
+    contentURI: string; // String!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    id: number; // Int!
+    mediaURI?: string | null; // String
+    text?: string | null; // String
     tokenId: string; // String!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
 }
 
@@ -159,15 +170,6 @@ export interface NexusGenFieldTypes {
     originalHandle: string; // String!
     tokenId: string; // String!
   }
-  Comment: { // field return type
-    contentURI: string; // String!
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
-    id: number; // Int!
-    mediaURI: string | null; // String
-    text: string | null; // String
-    tokenId: string; // String!
-    updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
-  }
   Edge: { // field return type
     cursor: string | null; // String
     node: NexusGenRootTypes['Profile'] | null; // Profile
@@ -178,6 +180,18 @@ export interface NexusGenFieldTypes {
     imageURI: string | null; // String
     originalHandle: string; // String!
     tokenId: string; // String!
+  }
+  MainComment: { // field return type
+    commentType: NexusGenEnums['CommentType']; // CommentType!
+    comments: Array<NexusGenRootTypes['SubComment'] | null>; // [SubComment]!
+    contentURI: string; // String!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    creator: NexusGenRootTypes['ShortProfile'] | null; // ShortProfile
+    id: number; // Int!
+    mediaURI: string | null; // String
+    text: string | null; // String
+    tokenId: string; // String!
+    updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
   }
   PageInfo: { // field return type
     endCursor: string | null; // String
@@ -210,6 +224,7 @@ export interface NexusGenFieldTypes {
     updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
   }
   PublishDetail: { // field return type
+    comments: Array<NexusGenRootTypes['MainComment'] | null>; // [MainComment]!
     contentURI: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     creator: NexusGenRootTypes['ShortProfile'] | null; // ShortProfile
@@ -240,7 +255,17 @@ export interface NexusGenFieldTypes {
     id: number; // Int!
     imageURI: string | null; // String
     originalHandle: string; // String!
+  }
+  SubComment: { // field return type
+    commentType: NexusGenEnums['CommentType']; // CommentType!
+    contentURI: string; // String!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    creator: NexusGenRootTypes['ShortProfile'] | null; // ShortProfile
+    id: number; // Int!
+    mediaURI: string | null; // String
+    text: string | null; // String
     tokenId: string; // String!
+    updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
   }
 }
 
@@ -260,15 +285,6 @@ export interface NexusGenFieldTypeNames {
     originalHandle: 'String'
     tokenId: 'String'
   }
-  Comment: { // field return type name
-    contentURI: 'String'
-    createdAt: 'DateTime'
-    id: 'Int'
-    mediaURI: 'String'
-    text: 'String'
-    tokenId: 'String'
-    updatedAt: 'DateTime'
-  }
   Edge: { // field return type name
     cursor: 'String'
     node: 'Profile'
@@ -279,6 +295,18 @@ export interface NexusGenFieldTypeNames {
     imageURI: 'String'
     originalHandle: 'String'
     tokenId: 'String'
+  }
+  MainComment: { // field return type name
+    commentType: 'CommentType'
+    comments: 'SubComment'
+    contentURI: 'String'
+    createdAt: 'DateTime'
+    creator: 'ShortProfile'
+    id: 'Int'
+    mediaURI: 'String'
+    text: 'String'
+    tokenId: 'String'
+    updatedAt: 'DateTime'
   }
   PageInfo: { // field return type name
     endCursor: 'String'
@@ -311,6 +339,7 @@ export interface NexusGenFieldTypeNames {
     updatedAt: 'DateTime'
   }
   PublishDetail: { // field return type name
+    comments: 'MainComment'
     contentURI: 'String'
     createdAt: 'DateTime'
     creator: 'ShortProfile'
@@ -341,7 +370,17 @@ export interface NexusGenFieldTypeNames {
     id: 'Int'
     imageURI: 'String'
     originalHandle: 'String'
+  }
+  SubComment: { // field return type name
+    commentType: 'CommentType'
+    contentURI: 'String'
+    createdAt: 'DateTime'
+    creator: 'ShortProfile'
+    id: 'Int'
+    mediaURI: 'String'
+    text: 'String'
     tokenId: 'String'
+    updatedAt: 'DateTime'
   }
 }
 
