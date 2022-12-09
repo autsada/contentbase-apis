@@ -112,8 +112,12 @@ export const PublishDetail = objectType({
         }
       },
     })
+
+    /**
+     * For `disLikes` we just need to know the profile id for use to display like icon and dislikes count on the UI, we don't need to know the profile detail, so just resolve to an array of profile ids.
+     */
     t.nonNull.list.field("disLikes", {
-      type: "ShortProfile",
+      type: "Int",
       resolve: async (parent, _, { prisma }) => {
         const disLikes = await prisma.publish
           .findUnique({
@@ -123,21 +127,14 @@ export const PublishDetail = objectType({
           })
           .disLikes({
             select: {
-              profile: {
-                select: {
-                  id: true,
-                  tokenId: true,
-                  originalHandle: true,
-                  imageURI: true,
-                },
-              },
+              profileId: true,
             },
           })
 
         if (!disLikes || disLikes.length === 0) {
           return []
         } else {
-          return disLikes.map((disLike) => disLike.profile)
+          return disLikes.map((disLike) => disLike.profileId)
         }
       },
     })
