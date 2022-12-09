@@ -123,9 +123,19 @@ export interface NexusGenObjects {
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
   Query: {};
+  ReceivedFee: { // root type
+    amount: string; // String!
+    fee: string; // String!
+    id: number; // Int!
+  }
   Response: { // root type
     edges: Array<NexusGenRootTypes['Edge'] | null>; // [Edge]!
     pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
+  }
+  SentFee: { // root type
+    amount: string; // String!
+    fee: string; // String!
+    id: number; // Int!
   }
   ShortProfile: { // root type
     id: number; // Int!
@@ -249,11 +259,27 @@ export interface NexusGenFieldTypes {
     getCommentsByPublishId: Array<NexusGenRootTypes['MainComment'] | null>; // [MainComment]!
     getProfile: NexusGenRootTypes['Profile'] | null; // Profile
     getPublishById: NexusGenRootTypes['PublishDetail'] | null; // PublishDetail
+    listProfileReceivedFees: Array<NexusGenRootTypes['ReceivedFee'] | null>; // [ReceivedFee]!
+    listProfileSentFees: Array<NexusGenRootTypes['SentFee'] | null>; // [SentFee]!
     publishedByCategory: Array<NexusGenRootTypes['Publish'] | null>; // [Publish]!
+  }
+  ReceivedFee: { // field return type
+    amount: string; // String!
+    fee: string; // String!
+    id: number; // Int!
+    publish: NexusGenRootTypes['Publish']; // Publish!
+    sender: NexusGenRootTypes['ShortProfile'] | null; // ShortProfile
   }
   Response: { // field return type
     edges: Array<NexusGenRootTypes['Edge'] | null>; // [Edge]!
     pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
+  }
+  SentFee: { // field return type
+    amount: string; // String!
+    fee: string; // String!
+    id: number; // Int!
+    publish: NexusGenRootTypes['Publish']; // Publish!
+    receiver: NexusGenRootTypes['ShortProfile'] | null; // ShortProfile
   }
   ShortProfile: { // field return type
     id: number; // Int!
@@ -370,11 +396,27 @@ export interface NexusGenFieldTypeNames {
     getCommentsByPublishId: 'MainComment'
     getProfile: 'Profile'
     getPublishById: 'PublishDetail'
+    listProfileReceivedFees: 'ReceivedFee'
+    listProfileSentFees: 'SentFee'
     publishedByCategory: 'Publish'
+  }
+  ReceivedFee: { // field return type name
+    amount: 'String'
+    fee: 'String'
+    id: 'Int'
+    publish: 'Publish'
+    sender: 'ShortProfile'
   }
   Response: { // field return type name
     edges: 'Edge'
     pageInfo: 'PageInfo'
+  }
+  SentFee: { // field return type name
+    amount: 'String'
+    fee: 'String'
+    id: 'Int'
+    publish: 'Publish'
+    receiver: 'ShortProfile'
   }
   ShortProfile: { // field return type name
     id: 'Int'
@@ -409,6 +451,12 @@ export interface NexusGenArgTypes {
     }
     getPublishById: { // args
       id: number; // Int!
+    }
+    listProfileReceivedFees: { // args
+      profileId: number; // Int!
+    }
+    listProfileSentFees: { // args
+      profileId: number; // Int!
     }
     publishedByCategory: { // args
       category: NexusGenEnums['Category']; // Category!

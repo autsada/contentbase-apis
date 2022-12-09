@@ -139,12 +139,30 @@ type Query {
   getCommentsByPublishId(publishId: Int!): [MainComment]!
   getProfile(id: Int!): Profile
   getPublishById(id: Int!): PublishDetail
+  listProfileReceivedFees(profileId: Int!): [ReceivedFee]!
+  listProfileSentFees(profileId: Int!): [SentFee]!
   publishedByCategory(category: Category!): [Publish]!
+}
+
+type ReceivedFee {
+  amount: String!
+  fee: String!
+  id: Int!
+  publish: Publish!
+  sender: ShortProfile
 }
 
 type Response {
   edges: [Edge]!
   pageInfo: PageInfo!
+}
+
+type SentFee {
+  amount: String!
+  fee: String!
+  id: Int!
+  publish: Publish!
+  receiver: ShortProfile
 }
 
 type ShortProfile {
