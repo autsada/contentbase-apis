@@ -1,10 +1,4 @@
-import {
-  objectType,
-  enumType,
-  extendType,
-  inputObjectType,
-  nonNull,
-} from "nexus"
+import { objectType, enumType, extendType, nonNull, list, intArg } from "nexus"
 
 export const CommentType = enumType({
   name: "CommentType",
@@ -193,6 +187,34 @@ export const MainComment = objectType({
           return []
         } else {
           return disLikes.map((disLike) => disLike.profileId)
+        }
+      },
+    })
+  },
+})
+
+export const CommentQuery = extendType({
+  type: "Query",
+  definition(t) {
+    t.field("getCommentsByPublishId", {
+      type: nonNull(list("MainComment")),
+      args: { publishId: nonNull(intArg()) },
+      async resolve(_parent, { publishId }, { prisma }) {
+        try {
+          return prisma.comment.findMany({
+            where: {
+              AND: [
+                {
+                  publishId,
+                },
+                {
+                  commentType: "PUBLISH",
+                },
+              ],
+            },
+          })
+        } catch (error) {
+          throw error
         }
       },
     })

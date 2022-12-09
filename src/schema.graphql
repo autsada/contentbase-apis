@@ -136,6 +136,7 @@ type PublishDetail {
 type Query {
   fetchPublishes: [Publish]!
   getAccount(address: String!): Account
+  getCommentsByPublishId(publishId: Int!): [MainComment]!
   getProfile(id: Int!): Profile
   getPublishById(id: Int!): PublishDetail
 }
