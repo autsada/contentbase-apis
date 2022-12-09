@@ -19,25 +19,26 @@ model Account {
 }
 
 model Profile {
-  id             Int       @id @default(autoincrement())
-  tokenId        String    @unique
+  id             Int           @id @default(autoincrement())
+  tokenId        String        @unique
   createdAt      DateTime
   updatedAt      DateTime?
-  account        Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  account        Account       @relation(fields: [accountId], references: [id], onDelete: Cascade)
   accountId      Int
   owner          String // EOA Address
-  handle         String    @unique
+  handle         String        @unique
   originalHandle String
   imageURI       String?
   default        Boolean
-  followers      Follow[]  @relation("Followee")
-  following      Follow[]  @relation("Follower")
+  followers      Follow[]      @relation("Followee")
+  following      Follow[]      @relation("Follower")
   publishes      Publish[]
   comments       Comment[]
   likes          Like[]
   disLikes       DisLike[]
-  sentFees       LikeFee[] @relation("Sent")
-  receivedFees   LikeFee[] @relation("Received")
+  sentFees       LikeFee[]     @relation("Sent")
+  receivedFees   LikeFee[]     @relation("Received")
+  CommentLike    CommentLike[]
 }
 
 model Follow {
@@ -168,6 +169,7 @@ model CommentLike {
   createdAt DateTime
   comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
   commentId Int
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId Int
 
   // @@id([commentId, profileId])
