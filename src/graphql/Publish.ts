@@ -192,7 +192,6 @@ export const Publish = objectType({
           .creator({
             select: {
               id: true,
-              tokenId: true,
               originalHandle: true,
               imageURI: true,
             },
