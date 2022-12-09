@@ -1,4 +1,4 @@
-import { extendType, objectType, nullable, nonNull } from "nexus"
+import { extendType, objectType, nullable, nonNull, stringArg } from "nexus"
 
 export const Edge = objectType({
   name: "Edge",
@@ -81,7 +81,7 @@ export const AccountQuery = extendType({
   definition(t) {
     t.field("getAccount", {
       type: nullable("Account"),
-      args: { address: nonNull("String") },
+      args: { address: nonNull(stringArg()) },
       resolve(_parent, { address }, { prisma }) {
         try {
           return prisma.account.findUnique({

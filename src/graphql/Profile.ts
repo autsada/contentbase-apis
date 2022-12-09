@@ -1,11 +1,4 @@
-import {
-  extendType,
-  objectType,
-  nullable,
-  nonNull,
-  intArg,
-  stringArg,
-} from "nexus"
+import { extendType, objectType, nullable, nonNull, intArg } from "nexus"
 import { NexusGenObjects } from "../typegen"
 
 /**
@@ -111,7 +104,7 @@ export const FrofileQuery = extendType({
   definition(t) {
     t.field("getProfile", {
       type: nullable("Profile"),
-      args: { id: nonNull("Int") },
+      args: { id: nonNull(intArg()) },
       resolve(_parent, { id }, { prisma }) {
         try {
           return prisma.profile.findUnique({
