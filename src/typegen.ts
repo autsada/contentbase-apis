@@ -249,6 +249,7 @@ export interface NexusGenFieldTypes {
     getCommentsByPublishId: Array<NexusGenRootTypes['MainComment'] | null>; // [MainComment]!
     getProfile: NexusGenRootTypes['Profile'] | null; // Profile
     getPublishById: NexusGenRootTypes['PublishDetail'] | null; // PublishDetail
+    publishedByCategory: Array<NexusGenRootTypes['Publish'] | null>; // [Publish]!
   }
   Response: { // field return type
     edges: Array<NexusGenRootTypes['Edge'] | null>; // [Edge]!
@@ -369,6 +370,7 @@ export interface NexusGenFieldTypeNames {
     getCommentsByPublishId: 'MainComment'
     getProfile: 'Profile'
     getPublishById: 'PublishDetail'
+    publishedByCategory: 'Publish'
   }
   Response: { // field return type name
     edges: 'Edge'
@@ -407,6 +409,9 @@ export interface NexusGenArgTypes {
     }
     getPublishById: { // args
       id: number; // Int!
+    }
+    publishedByCategory: { // args
+      category: NexusGenEnums['Category']; // Category!
     }
   }
 }

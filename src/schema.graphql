@@ -139,6 +139,7 @@ type Query {
   getCommentsByPublishId(publishId: Int!): [MainComment]!
   getProfile(id: Int!): Profile
   getPublishById(id: Int!): PublishDetail
+  publishedByCategory(category: Category!): [Publish]!
 }
 
 type Response {

@@ -205,22 +205,68 @@ export const Publish = objectType({
 export const PublishQuery = extendType({
   type: "Query",
   definition(t) {
+    /**
+     * Get publish by id.
+     * @return publishDetail
+     */
     t.field("getPublishById", {
       type: nullable("PublishDetail"),
       args: { id: nonNull(intArg()) },
       resolve(_parent, { id }, { prisma }) {
-        return prisma.publish.findUnique({
-          where: {
-            id,
-          },
-        })
+        try {
+          return prisma.publish.findUnique({
+            where: {
+              id,
+            },
+          })
+        } catch (error) {
+          throw error
+        }
       },
     })
 
+    /**
+     * Fetch publishes.
+     * @return an array of Publishes
+     */
     t.field("fetchPublishes", {
       type: nonNull(list("Publish")),
-      async resolve(_parent, _, { prisma }) {
-        return prisma.publish.findMany({})
+      resolve(_parent, _, { prisma }) {
+        try {
+          return prisma.publish.findMany({})
+        } catch (error) {
+          throw error
+        }
+      },
+    })
+
+    /**
+     * Fetch publishes by category.
+     * @return an array of Publishes
+     */
+    t.field("publishedByCategory", {
+      type: nonNull(list("Publish")),
+      args: { category: nonNull("Category") },
+      resolve(_parent, { category }, { prisma }) {
+        try {
+          return prisma.publish.findMany({
+            where: {
+              OR: [
+                {
+                  primaryCategory: category,
+                },
+                {
+                  secondaryCategory: category,
+                },
+                {
+                  tertiaryCategory: category,
+                },
+              ],
+            },
+          })
+        } catch (error) {
+          throw error
+        }
       },
     })
   },
