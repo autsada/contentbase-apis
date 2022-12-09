@@ -187,7 +187,9 @@ export interface NexusGenFieldTypes {
     contentURI: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     creator: NexusGenRootTypes['ShortProfile'] | null; // ShortProfile
+    disLikes: Array<number | null>; // [Int]!
     id: number; // Int!
+    likes: Array<NexusGenRootTypes['ShortProfile'] | null>; // [ShortProfile]!
     mediaURI: string | null; // String
     text: string | null; // String
     tokenId: string; // String!
@@ -229,7 +231,7 @@ export interface NexusGenFieldTypes {
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     creator: NexusGenRootTypes['ShortProfile'] | null; // ShortProfile
     description: string | null; // String
-    disLikes: Array<NexusGenRootTypes['ShortProfile'] | null>; // [ShortProfile]!
+    disLikes: Array<number | null>; // [Int]!
     id: number; // Int!
     imageURI: string; // String!
     likes: Array<NexusGenRootTypes['ShortProfile'] | null>; // [ShortProfile]!
@@ -261,7 +263,9 @@ export interface NexusGenFieldTypes {
     contentURI: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     creator: NexusGenRootTypes['ShortProfile'] | null; // ShortProfile
+    disLikes: Array<number | null>; // [Int]!
     id: number; // Int!
+    likes: Array<NexusGenRootTypes['ShortProfile'] | null>; // [ShortProfile]!
     mediaURI: string | null; // String
     text: string | null; // String
     tokenId: string; // String!
@@ -302,7 +306,9 @@ export interface NexusGenFieldTypeNames {
     contentURI: 'String'
     createdAt: 'DateTime'
     creator: 'ShortProfile'
+    disLikes: 'Int'
     id: 'Int'
+    likes: 'ShortProfile'
     mediaURI: 'String'
     text: 'String'
     tokenId: 'String'
@@ -344,7 +350,7 @@ export interface NexusGenFieldTypeNames {
     createdAt: 'DateTime'
     creator: 'ShortProfile'
     description: 'String'
-    disLikes: 'ShortProfile'
+    disLikes: 'Int'
     id: 'Int'
     imageURI: 'String'
     likes: 'ShortProfile'
@@ -376,7 +382,9 @@ export interface NexusGenFieldTypeNames {
     contentURI: 'String'
     createdAt: 'DateTime'
     creator: 'ShortProfile'
+    disLikes: 'Int'
     id: 'Int'
+    likes: 'ShortProfile'
     mediaURI: 'String'
     text: 'String'
     tokenId: 'String'

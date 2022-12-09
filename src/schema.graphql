@@ -72,7 +72,9 @@ type MainComment {
   contentURI: String!
   createdAt: DateTime!
   creator: ShortProfile
+  disLikes: [Int]!
   id: Int!
+  likes: [ShortProfile]!
   mediaURI: String
   text: String
   tokenId: String!
@@ -118,7 +120,7 @@ type PublishDetail {
   createdAt: DateTime!
   creator: ShortProfile
   description: String
-  disLikes: [ShortProfile]!
+  disLikes: [Int]!
   id: Int!
   imageURI: String!
   likes: [ShortProfile]!
@@ -154,7 +156,9 @@ type SubComment {
   contentURI: String!
   createdAt: DateTime!
   creator: ShortProfile
+  disLikes: [Int]!
   id: Int!
+  likes: [ShortProfile]!
   mediaURI: String
   text: String
   tokenId: String!

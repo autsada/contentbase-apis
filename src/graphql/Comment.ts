@@ -1,7 +1,6 @@
 import {
   objectType,
   enumType,
-  interfaceType,
   extendType,
   inputObjectType,
   nonNull,
@@ -42,6 +41,56 @@ export const SubComment = objectType({
               imageURI: true,
             },
           })
+      },
+    })
+    t.nonNull.list.field("likes", {
+      type: "ShortProfile",
+      resolve: async (parent, _, { prisma }) => {
+        const likes = await prisma.comment
+          .findUnique({
+            where: {
+              id: parent.id,
+            },
+          })
+          .likes({
+            select: {
+              profile: {
+                select: {
+                  id: true,
+                  originalHandle: true,
+                  imageURI: true,
+                },
+              },
+            },
+          })
+
+        if (!likes || likes.length === 0) {
+          return []
+        } else {
+          return likes.map((like) => like.profile)
+        }
+      },
+    })
+    t.nonNull.list.field("disLikes", {
+      type: "Int",
+      resolve: async (parent, _, { prisma }) => {
+        const disLikes = await prisma.comment
+          .findUnique({
+            where: {
+              id: parent.id,
+            },
+          })
+          .disLikes({
+            select: {
+              profileId: true,
+            },
+          })
+
+        if (!disLikes || disLikes.length === 0) {
+          return []
+        } else {
+          return disLikes.map((disLike) => disLike.profileId)
+        }
       },
     })
   },
@@ -94,6 +143,56 @@ export const MainComment = objectType({
           return []
         } else {
           return comments
+        }
+      },
+    })
+    t.nonNull.list.field("likes", {
+      type: "ShortProfile",
+      resolve: async (parent, _, { prisma }) => {
+        const likes = await prisma.comment
+          .findUnique({
+            where: {
+              id: parent.id,
+            },
+          })
+          .likes({
+            select: {
+              profile: {
+                select: {
+                  id: true,
+                  originalHandle: true,
+                  imageURI: true,
+                },
+              },
+            },
+          })
+
+        if (!likes || likes.length === 0) {
+          return []
+        } else {
+          return likes.map((like) => like.profile)
+        }
+      },
+    })
+    t.nonNull.list.field("disLikes", {
+      type: "Int",
+      resolve: async (parent, _, { prisma }) => {
+        const disLikes = await prisma.comment
+          .findUnique({
+            where: {
+              id: parent.id,
+            },
+          })
+          .disLikes({
+            select: {
+              profileId: true,
+            },
+          })
+
+        if (!disLikes || disLikes.length === 0) {
+          return []
+        } else {
+          return disLikes.map((disLike) => disLike.profileId)
         }
       },
     })
