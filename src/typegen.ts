@@ -261,7 +261,7 @@ export interface NexusGenFieldTypes {
     listCommentsByPublishId: Array<NexusGenRootTypes['MainComment'] | null>; // [MainComment]!
     listProfileReceivedFees: Array<NexusGenRootTypes['ReceivedFee'] | null>; // [ReceivedFee]!
     listProfileSentFees: Array<NexusGenRootTypes['SentFee'] | null>; // [SentFee]!
-    publishedByCategory: Array<NexusGenRootTypes['Publish'] | null>; // [Publish]!
+    listPublishesByCategory: Array<NexusGenRootTypes['Publish'] | null>; // [Publish]!
   }
   ReceivedFee: { // field return type
     amount: string; // String!
@@ -398,7 +398,7 @@ export interface NexusGenFieldTypeNames {
     listCommentsByPublishId: 'MainComment'
     listProfileReceivedFees: 'ReceivedFee'
     listProfileSentFees: 'SentFee'
-    publishedByCategory: 'Publish'
+    listPublishesByCategory: 'Publish'
   }
   ReceivedFee: { // field return type name
     amount: 'String'
@@ -458,7 +458,7 @@ export interface NexusGenArgTypes {
     listProfileSentFees: { // args
       profileId: number; // Int!
     }
-    publishedByCategory: { // args
+    listPublishesByCategory: { // args
       category: NexusGenEnums['Category']; // Category!
     }
   }

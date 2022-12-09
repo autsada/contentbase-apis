@@ -141,7 +141,7 @@ type Query {
   listCommentsByPublishId(publishId: Int!): [MainComment]!
   listProfileReceivedFees(profileId: Int!): [ReceivedFee]!
   listProfileSentFees(profileId: Int!): [SentFee]!
-  publishedByCategory(category: Category!): [Publish]!
+  listPublishesByCategory(category: Category!): [Publish]!
 }
 
 type ReceivedFee {

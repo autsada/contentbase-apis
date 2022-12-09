@@ -243,7 +243,7 @@ export const PublishQuery = extendType({
      * Fetch publishes by category.
      * @return an array of Publishes
      */
-    t.field("publishedByCategory", {
+    t.field("listPublishesByCategory", {
       type: nonNull(list("Publish")),
       args: { category: nonNull("Category") },
       resolve(_parent, { category }, { prisma }) {
