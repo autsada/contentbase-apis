@@ -93,7 +93,7 @@ model Publish {
   likeFees          LikeFee[]
   likes             Like[]
   disLikes          DisLike[]
-  comments          Comment[]
+  comments          Comment[] @relation("MainComment")
 }
 
 enum CommentType {
@@ -109,11 +109,11 @@ model Comment {
   updatedAt   DateTime?
   creator     Profile          @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   creatorId   Int
-  publish     Publish          @relation(fields: [publishId], references: [id], onDelete: Cascade) // The parent's publish
+  publish     Publish          @relation("MainComment", fields: [publishId], references: [id], onDelete: Cascade) // The publish that the comment belongs to.
   publishId   Int
-  comment     Comment?         @relation("CommentsOnComment", fields: [commentId], references: [id], onDelete: Cascade) // The parent's comment, if `null` it means the comment was made on the parent's publish directly, otherwise it was made on a comment of the parent's publish.
+  comment     Comment?         @relation("SubComment", fields: [commentId], references: [id], onDelete: Cascade) // The comment that the comment belongs to, if `null` it means the comment was made on a publish directly, otherwise it was made on a comment.
   commentId   Int?
-  comments    Comment[]        @relation("CommentsOnComment") // The child comments
+  comments    Comment[]        @relation("SubComment") // The child comments
   contentURI  String
   text        String?
   mediaURI    String?
