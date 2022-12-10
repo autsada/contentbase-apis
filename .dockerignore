@@ -1,0 +1,6 @@
+.ssl
+dist
+node_modules
+.dockerignore
+.env
+src/listeners/worker-dev.js
