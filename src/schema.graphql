@@ -6,17 +6,8 @@ type Account {
   address: String!
   createdAt: DateTime!
   id: Int!
-  profiles: [AccountProfile]!
+  profiles: [Profile]!
   updatedAt: DateTime
-}
-
-type AccountProfile {
-  createdAt: DateTime!
-  default: Boolean!
-  id: Int!
-  imageURI: String
-  originalHandle: String!
-  tokenId: String!
 }
 
 enum Category {
@@ -43,6 +34,23 @@ enum Category {
   Women
 }
 
+type Comment {
+  commentType: CommentType!
+  comments: [Comment]!
+  contentURI: String!
+  createdAt: DateTime!
+  creator: Profile
+  disLiked: Boolean!
+  disLikesCount: Int!
+  id: Int!
+  liked: Boolean!
+  likes: [Profile]!
+  likesCount: Int!
+  text: String
+  tokenId: String!
+  updatedAt: DateTime
+}
+
 enum CommentType {
   COMMENT
   PUBLISH
@@ -58,27 +66,28 @@ type Edge {
   node: Profile
 }
 
-type Follow {
-  createdAt: DateTime!
+type Fee {
+  amount: String!
+  fee: String!
   id: Int!
-  imageURI: String
-  originalHandle: String!
-  tokenId: String!
+  publish: Publish!
+  receiver: Profile
+  sender: Profile
 }
 
-type MainComment {
-  commentType: CommentType!
-  comments: [SubComment]!
-  contentURI: String!
-  createdAt: DateTime!
-  creator: ShortProfile
-  disLikes: [Int]!
-  id: Int!
-  likes: [ShortProfile]!
-  mediaURI: String
-  text: String
-  tokenId: String!
-  updatedAt: DateTime
+input GetProfileByIdInput {
+  profileId: Int!
+  userId: Int!
+}
+
+input GetPublishByIdInput {
+  profileId: Int!
+  publishId: Int!
+}
+
+input ListCommentsByPublishIdInput {
+  profileId: Int!
+  publishId: Int!
 }
 
 type PageInfo {
@@ -89,41 +98,36 @@ type PageInfo {
 type Profile {
   createdAt: DateTime!
   default: Boolean!
-  followers: [Follow]!
-  following: [Follow]!
+  followers: [Profile]!
+  followersCount: Int
+  following: [Profile]!
+  followingCount: Int
   handle: String!
   id: Int!
   imageURI: String
+  isFollowing: Boolean!
   originalHandle: String!
   owner: String!
+  publishesCount: Int!
   tokenId: String!
   updatedAt: DateTime
 }
 
 type Publish {
+  commentsCount: Int!
   contentURI: String!
   createdAt: DateTime!
-  creator: ShortProfile
-  id: Int!
-  imageURI: String!
-  primaryCategory: Category!
-  secondaryCategory: Category!
-  tertiaryCategory: Category!
-  title: String!
-  tokenId: String!
-  updatedAt: DateTime
-}
-
-type PublishDetail {
-  comments: [MainComment]!
-  contentURI: String!
-  createdAt: DateTime!
-  creator: ShortProfile
+  creator: Profile!
   description: String
-  disLikes: [Int]!
+  disLiked: Boolean!
+  disLikes: [Profile]!
+  disLikesCount: Int!
   id: Int!
   imageURI: String!
-  likes: [ShortProfile]!
+  lastComment: Comment
+  liked: Boolean!
+  likes: [Profile]!
+  likesCount: Int!
   metadataURI: String!
   primaryCategory: Category!
   secondaryCategory: Category!
@@ -131,56 +135,25 @@ type PublishDetail {
   title: String!
   tokenId: String!
   updatedAt: DateTime
+  views: Int!
 }
 
 type Query {
   fetchPublishes: [Publish]!
   getAccount(address: String!): Account
-  getProfile(id: Int!): Profile
-  getPublishById(id: Int!): PublishDetail
-  listCommentsByPublishId(publishId: Int!): [MainComment]!
-  listProfileReceivedFees(profileId: Int!): [ReceivedFee]!
-  listProfileSentFees(profileId: Int!): [SentFee]!
+  getProfileById(input: GetProfileByIdInput!): Profile
+  getPublishById(input: GetPublishByIdInput!): Publish
+  listCommentsByPublishId(input: ListCommentsByPublishIdInput!): [Comment]!
+  listMostRecentPublishesByProfileId(id: Int!): [Publish]!
+  listMostRecentPublishesByProfileTokenId(tokenId: String!): [Publish]!
   listPublishesByCategory(category: Category!): [Publish]!
-}
-
-type ReceivedFee {
-  amount: String!
-  fee: String!
-  id: Int!
-  publish: Publish!
-  sender: ShortProfile
+  listPublishesByProfileId(id: Int!): [Publish]!
+  listPublishesByProfileTokenId(tokenId: String!): [Publish]!
+  listReceivedFees(profileId: Int!): [Fee]!
+  listSentFees(profileId: Int!): [Fee]!
 }
 
 type Response {
   edges: [Edge]!
   pageInfo: PageInfo!
-}
-
-type SentFee {
-  amount: String!
-  fee: String!
-  id: Int!
-  publish: Publish!
-  receiver: ShortProfile
-}
-
-type ShortProfile {
-  id: Int!
-  imageURI: String
-  originalHandle: String!
-}
-
-type SubComment {
-  commentType: CommentType!
-  contentURI: String!
-  createdAt: DateTime!
-  creator: ShortProfile
-  disLikes: [Int]!
-  id: Int!
-  likes: [ShortProfile]!
-  mediaURI: String
-  text: String
-  tokenId: String!
-  updatedAt: DateTime
 }

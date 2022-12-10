@@ -29,6 +29,18 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  GetProfileByIdInput: { // input type
+    profileId: number; // Int!
+    userId: number; // Int!
+  }
+  GetPublishByIdInput: { // input type
+    profileId: number; // Int!
+    publishId: number; // Int!
+  }
+  ListCommentsByPublishIdInput: { // input type
+    profileId: number; // Int!
+    publishId: number; // Int!
+  }
 }
 
 export interface NexusGenEnums {
@@ -52,34 +64,23 @@ export interface NexusGenObjects {
     id: number; // Int!
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
-  AccountProfile: { // root type
+  Comment: { // root type
+    commentType: NexusGenEnums['CommentType']; // CommentType!
+    contentURI: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
-    default: boolean; // Boolean!
     id: number; // Int!
-    imageURI?: string | null; // String
-    originalHandle: string; // String!
+    text?: string | null; // String
     tokenId: string; // String!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
   Edge: { // root type
     cursor?: string | null; // String
     node?: NexusGenRootTypes['Profile'] | null; // Profile
   }
-  Follow: { // root type
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
+  Fee: { // root type
+    amount: string; // String!
+    fee: string; // String!
     id: number; // Int!
-    imageURI?: string | null; // String
-    originalHandle: string; // String!
-    tokenId: string; // String!
-  }
-  MainComment: { // root type
-    commentType: NexusGenEnums['CommentType']; // CommentType!
-    contentURI: string; // String!
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
-    id: number; // Int!
-    mediaURI?: string | null; // String
-    text?: string | null; // String
-    tokenId: string; // String!
-    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
   PageInfo: { // root type
     endCursor?: string | null; // String
@@ -99,18 +100,6 @@ export interface NexusGenObjects {
   Publish: { // root type
     contentURI: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
-    id: number; // Int!
-    imageURI: string; // String!
-    primaryCategory: NexusGenEnums['Category']; // Category!
-    secondaryCategory: NexusGenEnums['Category']; // Category!
-    tertiaryCategory: NexusGenEnums['Category']; // Category!
-    title: string; // String!
-    tokenId: string; // String!
-    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
-  }
-  PublishDetail: { // root type
-    contentURI: string; // String!
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
     description?: string | null; // String
     id: number; // Int!
     imageURI: string; // String!
@@ -121,36 +110,12 @@ export interface NexusGenObjects {
     title: string; // String!
     tokenId: string; // String!
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    views: number; // Int!
   }
   Query: {};
-  ReceivedFee: { // root type
-    amount: string; // String!
-    fee: string; // String!
-    id: number; // Int!
-  }
   Response: { // root type
     edges: Array<NexusGenRootTypes['Edge'] | null>; // [Edge]!
     pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
-  }
-  SentFee: { // root type
-    amount: string; // String!
-    fee: string; // String!
-    id: number; // Int!
-  }
-  ShortProfile: { // root type
-    id: number; // Int!
-    imageURI?: string | null; // String
-    originalHandle: string; // String!
-  }
-  SubComment: { // root type
-    commentType: NexusGenEnums['CommentType']; // CommentType!
-    contentURI: string; // String!
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
-    id: number; // Int!
-    mediaURI?: string | null; // String
-    text?: string | null; // String
-    tokenId: string; // String!
-    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
 }
 
@@ -169,41 +134,36 @@ export interface NexusGenFieldTypes {
     address: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
-    profiles: Array<NexusGenRootTypes['AccountProfile'] | null>; // [AccountProfile]!
+    profiles: Array<NexusGenRootTypes['Profile'] | null>; // [Profile]!
     updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
   }
-  AccountProfile: { // field return type
+  Comment: { // field return type
+    commentType: NexusGenEnums['CommentType']; // CommentType!
+    comments: Array<NexusGenRootTypes['Comment'] | null>; // [Comment]!
+    contentURI: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
-    default: boolean; // Boolean!
+    creator: NexusGenRootTypes['Profile'] | null; // Profile
+    disLiked: boolean; // Boolean!
+    disLikesCount: number; // Int!
     id: number; // Int!
-    imageURI: string | null; // String
-    originalHandle: string; // String!
+    liked: boolean; // Boolean!
+    likes: Array<NexusGenRootTypes['Profile'] | null>; // [Profile]!
+    likesCount: number; // Int!
+    text: string | null; // String
     tokenId: string; // String!
+    updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
   }
   Edge: { // field return type
     cursor: string | null; // String
     node: NexusGenRootTypes['Profile'] | null; // Profile
   }
-  Follow: { // field return type
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
+  Fee: { // field return type
+    amount: string; // String!
+    fee: string; // String!
     id: number; // Int!
-    imageURI: string | null; // String
-    originalHandle: string; // String!
-    tokenId: string; // String!
-  }
-  MainComment: { // field return type
-    commentType: NexusGenEnums['CommentType']; // CommentType!
-    comments: Array<NexusGenRootTypes['SubComment'] | null>; // [SubComment]!
-    contentURI: string; // String!
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
-    creator: NexusGenRootTypes['ShortProfile'] | null; // ShortProfile
-    disLikes: Array<number | null>; // [Int]!
-    id: number; // Int!
-    likes: Array<NexusGenRootTypes['ShortProfile'] | null>; // [ShortProfile]!
-    mediaURI: string | null; // String
-    text: string | null; // String
-    tokenId: string; // String!
-    updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
+    publish: NexusGenRootTypes['Publish']; // Publish!
+    receiver: NexusGenRootTypes['Profile'] | null; // Profile
+    sender: NexusGenRootTypes['Profile'] | null; // Profile
   }
   PageInfo: { // field return type
     endCursor: string | null; // String
@@ -212,39 +172,35 @@ export interface NexusGenFieldTypes {
   Profile: { // field return type
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     default: boolean; // Boolean!
-    followers: Array<NexusGenRootTypes['Follow'] | null>; // [Follow]!
-    following: Array<NexusGenRootTypes['Follow'] | null>; // [Follow]!
+    followers: Array<NexusGenRootTypes['Profile'] | null>; // [Profile]!
+    followersCount: number | null; // Int
+    following: Array<NexusGenRootTypes['Profile'] | null>; // [Profile]!
+    followingCount: number | null; // Int
     handle: string; // String!
     id: number; // Int!
     imageURI: string | null; // String
+    isFollowing: boolean; // Boolean!
     originalHandle: string; // String!
     owner: string; // String!
+    publishesCount: number; // Int!
     tokenId: string; // String!
     updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
   }
   Publish: { // field return type
+    commentsCount: number; // Int!
     contentURI: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
-    creator: NexusGenRootTypes['ShortProfile'] | null; // ShortProfile
-    id: number; // Int!
-    imageURI: string; // String!
-    primaryCategory: NexusGenEnums['Category']; // Category!
-    secondaryCategory: NexusGenEnums['Category']; // Category!
-    tertiaryCategory: NexusGenEnums['Category']; // Category!
-    title: string; // String!
-    tokenId: string; // String!
-    updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
-  }
-  PublishDetail: { // field return type
-    comments: Array<NexusGenRootTypes['MainComment'] | null>; // [MainComment]!
-    contentURI: string; // String!
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
-    creator: NexusGenRootTypes['ShortProfile'] | null; // ShortProfile
+    creator: NexusGenRootTypes['Profile']; // Profile!
     description: string | null; // String
-    disLikes: Array<number | null>; // [Int]!
+    disLiked: boolean; // Boolean!
+    disLikes: Array<NexusGenRootTypes['Profile'] | null>; // [Profile]!
+    disLikesCount: number; // Int!
     id: number; // Int!
     imageURI: string; // String!
-    likes: Array<NexusGenRootTypes['ShortProfile'] | null>; // [ShortProfile]!
+    lastComment: NexusGenRootTypes['Comment'] | null; // Comment
+    liked: boolean; // Boolean!
+    likes: Array<NexusGenRootTypes['Profile'] | null>; // [Profile]!
+    likesCount: number; // Int!
     metadataURI: string; // String!
     primaryCategory: NexusGenEnums['Category']; // Category!
     secondaryCategory: NexusGenEnums['Category']; // Category!
@@ -252,52 +208,25 @@ export interface NexusGenFieldTypes {
     title: string; // String!
     tokenId: string; // String!
     updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
+    views: number; // Int!
   }
   Query: { // field return type
     fetchPublishes: Array<NexusGenRootTypes['Publish'] | null>; // [Publish]!
     getAccount: NexusGenRootTypes['Account'] | null; // Account
-    getProfile: NexusGenRootTypes['Profile'] | null; // Profile
-    getPublishById: NexusGenRootTypes['PublishDetail'] | null; // PublishDetail
-    listCommentsByPublishId: Array<NexusGenRootTypes['MainComment'] | null>; // [MainComment]!
-    listProfileReceivedFees: Array<NexusGenRootTypes['ReceivedFee'] | null>; // [ReceivedFee]!
-    listProfileSentFees: Array<NexusGenRootTypes['SentFee'] | null>; // [SentFee]!
+    getProfileById: NexusGenRootTypes['Profile'] | null; // Profile
+    getPublishById: NexusGenRootTypes['Publish'] | null; // Publish
+    listCommentsByPublishId: Array<NexusGenRootTypes['Comment'] | null>; // [Comment]!
+    listMostRecentPublishesByProfileId: Array<NexusGenRootTypes['Publish'] | null>; // [Publish]!
+    listMostRecentPublishesByProfileTokenId: Array<NexusGenRootTypes['Publish'] | null>; // [Publish]!
     listPublishesByCategory: Array<NexusGenRootTypes['Publish'] | null>; // [Publish]!
-  }
-  ReceivedFee: { // field return type
-    amount: string; // String!
-    fee: string; // String!
-    id: number; // Int!
-    publish: NexusGenRootTypes['Publish']; // Publish!
-    sender: NexusGenRootTypes['ShortProfile'] | null; // ShortProfile
+    listPublishesByProfileId: Array<NexusGenRootTypes['Publish'] | null>; // [Publish]!
+    listPublishesByProfileTokenId: Array<NexusGenRootTypes['Publish'] | null>; // [Publish]!
+    listReceivedFees: Array<NexusGenRootTypes['Fee'] | null>; // [Fee]!
+    listSentFees: Array<NexusGenRootTypes['Fee'] | null>; // [Fee]!
   }
   Response: { // field return type
     edges: Array<NexusGenRootTypes['Edge'] | null>; // [Edge]!
     pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
-  }
-  SentFee: { // field return type
-    amount: string; // String!
-    fee: string; // String!
-    id: number; // Int!
-    publish: NexusGenRootTypes['Publish']; // Publish!
-    receiver: NexusGenRootTypes['ShortProfile'] | null; // ShortProfile
-  }
-  ShortProfile: { // field return type
-    id: number; // Int!
-    imageURI: string | null; // String
-    originalHandle: string; // String!
-  }
-  SubComment: { // field return type
-    commentType: NexusGenEnums['CommentType']; // CommentType!
-    contentURI: string; // String!
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
-    creator: NexusGenRootTypes['ShortProfile'] | null; // ShortProfile
-    disLikes: Array<number | null>; // [Int]!
-    id: number; // Int!
-    likes: Array<NexusGenRootTypes['ShortProfile'] | null>; // [ShortProfile]!
-    mediaURI: string | null; // String
-    text: string | null; // String
-    tokenId: string; // String!
-    updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
   }
 }
 
@@ -306,41 +235,36 @@ export interface NexusGenFieldTypeNames {
     address: 'String'
     createdAt: 'DateTime'
     id: 'Int'
-    profiles: 'AccountProfile'
+    profiles: 'Profile'
     updatedAt: 'DateTime'
   }
-  AccountProfile: { // field return type name
+  Comment: { // field return type name
+    commentType: 'CommentType'
+    comments: 'Comment'
+    contentURI: 'String'
     createdAt: 'DateTime'
-    default: 'Boolean'
+    creator: 'Profile'
+    disLiked: 'Boolean'
+    disLikesCount: 'Int'
     id: 'Int'
-    imageURI: 'String'
-    originalHandle: 'String'
+    liked: 'Boolean'
+    likes: 'Profile'
+    likesCount: 'Int'
+    text: 'String'
     tokenId: 'String'
+    updatedAt: 'DateTime'
   }
   Edge: { // field return type name
     cursor: 'String'
     node: 'Profile'
   }
-  Follow: { // field return type name
-    createdAt: 'DateTime'
+  Fee: { // field return type name
+    amount: 'String'
+    fee: 'String'
     id: 'Int'
-    imageURI: 'String'
-    originalHandle: 'String'
-    tokenId: 'String'
-  }
-  MainComment: { // field return type name
-    commentType: 'CommentType'
-    comments: 'SubComment'
-    contentURI: 'String'
-    createdAt: 'DateTime'
-    creator: 'ShortProfile'
-    disLikes: 'Int'
-    id: 'Int'
-    likes: 'ShortProfile'
-    mediaURI: 'String'
-    text: 'String'
-    tokenId: 'String'
-    updatedAt: 'DateTime'
+    publish: 'Publish'
+    receiver: 'Profile'
+    sender: 'Profile'
   }
   PageInfo: { // field return type name
     endCursor: 'String'
@@ -349,39 +273,35 @@ export interface NexusGenFieldTypeNames {
   Profile: { // field return type name
     createdAt: 'DateTime'
     default: 'Boolean'
-    followers: 'Follow'
-    following: 'Follow'
+    followers: 'Profile'
+    followersCount: 'Int'
+    following: 'Profile'
+    followingCount: 'Int'
     handle: 'String'
     id: 'Int'
     imageURI: 'String'
+    isFollowing: 'Boolean'
     originalHandle: 'String'
     owner: 'String'
+    publishesCount: 'Int'
     tokenId: 'String'
     updatedAt: 'DateTime'
   }
   Publish: { // field return type name
+    commentsCount: 'Int'
     contentURI: 'String'
     createdAt: 'DateTime'
-    creator: 'ShortProfile'
-    id: 'Int'
-    imageURI: 'String'
-    primaryCategory: 'Category'
-    secondaryCategory: 'Category'
-    tertiaryCategory: 'Category'
-    title: 'String'
-    tokenId: 'String'
-    updatedAt: 'DateTime'
-  }
-  PublishDetail: { // field return type name
-    comments: 'MainComment'
-    contentURI: 'String'
-    createdAt: 'DateTime'
-    creator: 'ShortProfile'
+    creator: 'Profile'
     description: 'String'
-    disLikes: 'Int'
+    disLiked: 'Boolean'
+    disLikes: 'Profile'
+    disLikesCount: 'Int'
     id: 'Int'
     imageURI: 'String'
-    likes: 'ShortProfile'
+    lastComment: 'Comment'
+    liked: 'Boolean'
+    likes: 'Profile'
+    likesCount: 'Int'
     metadataURI: 'String'
     primaryCategory: 'Category'
     secondaryCategory: 'Category'
@@ -389,52 +309,25 @@ export interface NexusGenFieldTypeNames {
     title: 'String'
     tokenId: 'String'
     updatedAt: 'DateTime'
+    views: 'Int'
   }
   Query: { // field return type name
     fetchPublishes: 'Publish'
     getAccount: 'Account'
-    getProfile: 'Profile'
-    getPublishById: 'PublishDetail'
-    listCommentsByPublishId: 'MainComment'
-    listProfileReceivedFees: 'ReceivedFee'
-    listProfileSentFees: 'SentFee'
+    getProfileById: 'Profile'
+    getPublishById: 'Publish'
+    listCommentsByPublishId: 'Comment'
+    listMostRecentPublishesByProfileId: 'Publish'
+    listMostRecentPublishesByProfileTokenId: 'Publish'
     listPublishesByCategory: 'Publish'
-  }
-  ReceivedFee: { // field return type name
-    amount: 'String'
-    fee: 'String'
-    id: 'Int'
-    publish: 'Publish'
-    sender: 'ShortProfile'
+    listPublishesByProfileId: 'Publish'
+    listPublishesByProfileTokenId: 'Publish'
+    listReceivedFees: 'Fee'
+    listSentFees: 'Fee'
   }
   Response: { // field return type name
     edges: 'Edge'
     pageInfo: 'PageInfo'
-  }
-  SentFee: { // field return type name
-    amount: 'String'
-    fee: 'String'
-    id: 'Int'
-    publish: 'Publish'
-    receiver: 'ShortProfile'
-  }
-  ShortProfile: { // field return type name
-    id: 'Int'
-    imageURI: 'String'
-    originalHandle: 'String'
-  }
-  SubComment: { // field return type name
-    commentType: 'CommentType'
-    contentURI: 'String'
-    createdAt: 'DateTime'
-    creator: 'ShortProfile'
-    disLikes: 'Int'
-    id: 'Int'
-    likes: 'ShortProfile'
-    mediaURI: 'String'
-    text: 'String'
-    tokenId: 'String'
-    updatedAt: 'DateTime'
   }
 }
 
@@ -443,23 +336,35 @@ export interface NexusGenArgTypes {
     getAccount: { // args
       address: string; // String!
     }
-    getProfile: { // args
-      id: number; // Int!
+    getProfileById: { // args
+      input: NexusGenInputs['GetProfileByIdInput']; // GetProfileByIdInput!
     }
     getPublishById: { // args
-      id: number; // Int!
+      input: NexusGenInputs['GetPublishByIdInput']; // GetPublishByIdInput!
     }
     listCommentsByPublishId: { // args
-      publishId: number; // Int!
+      input: NexusGenInputs['ListCommentsByPublishIdInput']; // ListCommentsByPublishIdInput!
     }
-    listProfileReceivedFees: { // args
-      profileId: number; // Int!
+    listMostRecentPublishesByProfileId: { // args
+      id: number; // Int!
     }
-    listProfileSentFees: { // args
-      profileId: number; // Int!
+    listMostRecentPublishesByProfileTokenId: { // args
+      tokenId: string; // String!
     }
     listPublishesByCategory: { // args
       category: NexusGenEnums['Category']; // Category!
+    }
+    listPublishesByProfileId: { // args
+      id: number; // Int!
+    }
+    listPublishesByProfileTokenId: { // args
+      tokenId: string; // String!
+    }
+    listReceivedFees: { // args
+      profileId: number; // Int!
+    }
+    listSentFees: { // args
+      profileId: number; // Int!
     }
   }
 }
@@ -472,7 +377,7 @@ export interface NexusGenTypeInterfaces {
 
 export type NexusGenObjectNames = keyof NexusGenObjects;
 
-export type NexusGenInputNames = never;
+export type NexusGenInputNames = keyof NexusGenInputs;
 
 export type NexusGenEnumNames = keyof NexusGenEnums;
 

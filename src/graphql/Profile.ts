@@ -1,5 +1,13 @@
-import { extendType, objectType, nullable, nonNull, intArg } from "nexus"
-import { NexusGenObjects } from "../typegen"
+import {
+  extendType,
+  objectType,
+  nullable,
+  nonNull,
+  inputObjectType,
+} from "nexus"
+
+import { NexusGenInputs } from "../typegen"
+import { badRequestErrMessage } from "./Publish"
 
 /**
  * A Profile type that map to the prisma Profile model.
@@ -16,8 +24,26 @@ export const Profile = objectType({
     t.nonNull.string("originalHandle")
     t.string("imageURI")
     t.nonNull.boolean("default")
+
+    /**
+     * Number of following.
+     */
+    t.field("followingCount", {
+      type: "Int",
+      resolve: (parent, _, { prisma }) => {
+        return prisma.follow.count({
+          where: {
+            followerId: parent.id,
+          },
+        })
+      },
+    })
+
+    /**
+     * Following profiles list.
+     */
     t.nonNull.list.field("following", {
-      type: "Follow",
+      type: "Profile",
       resolve: async (parent, _, { prisma }) => {
         const following = await prisma.profile
           .findUnique({
@@ -27,29 +53,34 @@ export const Profile = objectType({
           })
           .following({
             select: {
-              followee: {
-                select: {
-                  id: true,
-                  tokenId: true,
-                  createdAt: true,
-                  imageURI: true,
-                  originalHandle: true,
-                },
-              },
+              followee: true,
             },
           })
 
-        if (!following || following.length === 0) {
-          return []
-        } else {
-          return following.map(
-            (fol) => fol.followee as NexusGenObjects["Follow"]
-          )
-        }
+        if (!following) return []
+        else return following.map((fol) => fol.followee)
       },
     })
+
+    /**
+     * Followers count.
+     */
+    t.field("followersCount", {
+      type: "Int",
+      resolve: (parent, _, { prisma }) => {
+        return prisma.follow.count({
+          where: {
+            followeeId: parent.id,
+          },
+        })
+      },
+    })
+
+    /**
+     * Follower profiles list.
+     */
     t.nonNull.list.field("followers", {
-      type: "Follow",
+      type: "Profile",
       resolve: async (parent, _, { prisma }) => {
         const followers = await prisma.profile
           .findUnique({
@@ -59,56 +90,85 @@ export const Profile = objectType({
           })
           .followers({
             select: {
-              follower: {
-                select: {
-                  id: true,
-                  tokenId: true,
-                  createdAt: true,
-                  imageURI: true,
-                  originalHandle: true,
-                },
-              },
+              follower: true,
             },
           })
 
-        if (!followers || followers.length === 0) {
-          return []
-        } else {
-          return followers.map(
-            (fol) => fol.follower as NexusGenObjects["Follow"]
-          )
+        if (!followers) return []
+        else return followers.map((fol) => fol.follower)
+      },
+    })
+
+    /**
+     * A boolean to check whether a profile (who makes the query) is following the target profile or not.
+     */
+    t.nonNull.field("isFollowing", {
+      type: "Boolean",
+      resolve: async (parent, _, { prisma }, info) => {
+        const {
+          input: { userId },
+        } = info.variableValues as {
+          input: NexusGenInputs["GetProfileByIdInput"]
         }
+
+        const following = await prisma.follow.findUnique({
+          where: {
+            followerId_followeeId: {
+              followerId: userId,
+              followeeId: parent.id,
+            },
+          },
+        })
+
+        return !!following
+      },
+    })
+
+    /**
+     * Profile's publishes count.
+     */
+    t.nonNull.field("publishesCount", {
+      type: "Int",
+      resolve: (parent, _, { prisma }) => {
+        return prisma.publish.count({
+          where: {
+            creatorId: parent.id,
+          },
+        })
       },
     })
   },
 })
 
 /**
- * Create a Follow type that different than the prisma model because
- * 1. We don't need relation here.
- * 2. The Follow type here refer to the Profile model (not a Follow model that represent a Follow token) but with only some fields that we need to show a profile's `followers` and `following`.
+ * An input type for use to get a profile by id.
  */
-export const Follow = objectType({
-  name: "Follow",
+export const GetProfileByIdInput = inputObjectType({
+  name: "GetProfileByIdInput",
   definition(t) {
-    t.nonNull.int("id")
-    t.nonNull.string("tokenId")
-    t.nonNull.field("createdAt", { type: "DateTime" })
-    t.nonNull.string("originalHandle")
-    t.string("imageURI")
+    // A profile id of the target profile.
+    t.nonNull.int("profileId")
+    // A profile id of the requestor that will be used to identify if the requestor is following the target profile, this arg will be used in the field resolver.
+    t.nonNull.int("userId")
   },
 })
 
 export const FrofileQuery = extendType({
   type: "Query",
   definition(t) {
-    t.field("getProfile", {
+    /**
+     * Ge profile by id.
+     */
+    t.field("getProfileById", {
       type: nullable("Profile"),
-      args: { id: nonNull(intArg()) },
-      resolve(_parent, { id }, { prisma }) {
+      args: { input: nonNull("GetProfileByIdInput") },
+      resolve(_parent, { input }, { prisma }) {
         try {
+          if (!input) throw new Error(badRequestErrMessage)
+          const { profileId } = input
+
           return prisma.profile.findUnique({
-            where: { id },
+            where: { id: profileId },
           })
         } catch (error) {
           throw error

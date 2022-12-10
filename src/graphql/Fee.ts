@@ -1,51 +1,19 @@
 import { objectType, extendType, nonNull, list, intArg } from "nexus"
 import { NexusGenObjects } from "../typegen"
 
-export const SentFee = objectType({
-  name: "SentFee",
+/**
+ * A Fee type that map to the prisma LikeFee model.
+ */
+export const Fee = objectType({
+  name: "Fee",
   definition(t) {
     t.nonNull.int("id")
     t.nonNull.string("amount")
     t.nonNull.string("fee")
-    t.nonNull.field("publish", {
-      type: "Publish",
-      resolve: (parent, _, { prisma }) => {
-        return prisma.likeFee
-          .findUnique({
-            where: {
-              id: parent.id,
-            },
-          })
-          .publish() as unknown as NexusGenObjects["Publish"]
-      },
-    })
-    t.field("receiver", {
-      type: "ShortProfile",
-      resolve: (parent, _, { prisma }) => {
-        return prisma.likeFee
-          .findUnique({
-            where: {
-              id: parent.id,
-            },
-          })
-          .receiver({
-            select: {
-              id: true,
-              originalHandle: true,
-              imageURI: true,
-            },
-          })
-      },
-    })
-  },
-})
 
-export const ReceivedFee = objectType({
-  name: "ReceivedFee",
-  definition(t) {
-    t.nonNull.int("id")
-    t.nonNull.string("amount")
-    t.nonNull.string("fee")
+    /**
+     * A publish that the fee belongs to.
+     */
     t.nonNull.field("publish", {
       type: "Publish",
       resolve: (parent, _, { prisma }) => {
@@ -58,8 +26,12 @@ export const ReceivedFee = objectType({
           .publish() as unknown as NexusGenObjects["Publish"]
       },
     })
+
+    /**
+     * A sender of the fee.
+     */
     t.field("sender", {
-      type: "ShortProfile",
+      type: "Profile",
       resolve: (parent, _, { prisma }) => {
         return prisma.likeFee
           .findUnique({
@@ -67,23 +39,33 @@ export const ReceivedFee = objectType({
               id: parent.id,
             },
           })
-          .sender({
-            select: {
-              id: true,
-              originalHandle: true,
-              imageURI: true,
+          .sender({})
+      },
+    })
+
+    /**
+     * A receiver of the fee.
+     */
+    t.field("receiver", {
+      type: "Profile",
+      resolve: (parent, _, { prisma }) => {
+        return prisma.likeFee
+          .findUnique({
+            where: {
+              id: parent.id,
             },
           })
+          .receiver({})
       },
     })
   },
 })
 
-export const LikeQuery = extendType({
+export const FeeQuery = extendType({
   type: "Query",
   definition(t) {
-    t.field("listProfileSentFees", {
-      type: nonNull(list("SentFee")),
+    t.field("listSentFees", {
+      type: nonNull(list("Fee")),
       args: { profileId: nonNull(intArg()) },
       async resolve(_parent, { profileId }, { prisma }) {
         try {
@@ -98,8 +80,8 @@ export const LikeQuery = extendType({
       },
     })
 
-    t.field("listProfileReceivedFees", {
-      type: nonNull(list("ReceivedFee")),
+    t.field("listReceivedFees", {
+      type: nonNull(list("Fee")),
       args: { profileId: nonNull(intArg()) },
       async resolve(_parent, { profileId }, { prisma }) {
         try {

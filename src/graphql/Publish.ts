@@ -5,9 +5,18 @@ import {
   nullable,
   nonNull,
   list,
+  inputObjectType,
   intArg,
+  stringArg,
 } from "nexus"
 
+import { NexusGenInputs, NexusGenObjects } from "../typegen"
+
+export const badRequestErrMessage = "Bad Request"
+
+/**
+ * Publish's category.
+ */
 export const Category = enumType({
   name: "Category",
   members: [
@@ -36,23 +45,10 @@ export const Category = enumType({
 })
 
 /**
- * A publish/comment creator type which extract only 3 fields from the `Profile` type.
+ * A Publish type that map to the prisma Publish model.
  */
-export const ShortProfile = objectType({
-  name: "ShortProfile",
-  definition(t) {
-    t.nonNull.int("id")
-    t.nonNull.string("originalHandle")
-    t.string("imageURI")
-  },
-})
-
-/**
- * A Publish type that map to the prisma Publish model that includes all relations.
- * @dev Use this type for fetching specific publish only.
- */
-export const PublishDetail = objectType({
-  name: "PublishDetail",
+export const Publish = objectType({
+  name: "Publish",
   definition(t) {
     t.nonNull.int("id")
     t.nonNull.string("tokenId")
@@ -66,8 +62,13 @@ export const PublishDetail = objectType({
     t.nonNull.field("primaryCategory", { type: "Category" })
     t.nonNull.field("secondaryCategory", { type: "Category" })
     t.nonNull.field("tertiaryCategory", { type: "Category" })
-    t.field("creator", {
-      type: "ShortProfile",
+    t.nonNull.int("views")
+
+    /**
+     * Publish's creator.
+     */
+    t.nonNull.field("creator", {
+      type: "Profile",
       resolve: (parent, _, { prisma }) => {
         return prisma.publish
           .findUnique({
@@ -75,17 +76,29 @@ export const PublishDetail = objectType({
               id: parent.id,
             },
           })
-          .creator({
-            select: {
-              id: true,
-              originalHandle: true,
-              imageURI: true,
-            },
-          })
+          .creator({}) as unknown as NexusGenObjects["Profile"]
       },
     })
+
+    /**
+     * Likes count.
+     */
+    t.nonNull.field("likesCount", {
+      type: "Int",
+      resolve: (parent, _, { prisma }) => {
+        return prisma.like.count({
+          where: {
+            publishId: parent.id,
+          },
+        })
+      },
+    })
+
+    /**
+     * Liked profiles list
+     */
     t.nonNull.list.field("likes", {
-      type: "ShortProfile",
+      type: "Profile",
       resolve: async (parent, _, { prisma }) => {
         const likes = await prisma.publish
           .findUnique({
@@ -95,29 +108,59 @@ export const PublishDetail = objectType({
           })
           .likes({
             select: {
-              profile: {
-                select: {
-                  id: true,
-                  originalHandle: true,
-                  imageURI: true,
-                },
-              },
+              profile: true,
             },
           })
 
-        if (!likes || likes.length === 0) {
-          return []
-        } else {
-          return likes.map((like) => like.profile)
-        }
+        if (!likes) return []
+        else return likes.map((like) => like.profile)
       },
     })
 
     /**
-     * For `disLikes` we just need to know the profile id for use to display like icon and dislikes count on the UI, we don't need to know the profile detail, so just resolve to an array of profile ids.
+     * A boolean to check whether a profile (who makes the query) liked the publish or not.
+     */
+    t.nonNull.field("liked", {
+      type: "Boolean",
+      resolve: async (parent, _, { prisma }, info) => {
+        const {
+          input: { profileId },
+        } = info.variableValues as {
+          input: NexusGenInputs["GetPublishByIdInput"]
+        }
+
+        const like = await prisma.like.findUnique({
+          where: {
+            identifier: {
+              publishId: parent.id,
+              profileId,
+            },
+          },
+        })
+
+        return !!like
+      },
+    })
+
+    /**
+     * DisLikes count.
+     */
+    t.nonNull.field("disLikesCount", {
+      type: "Int",
+      resolve: (parent, _, { prisma }) => {
+        return prisma.disLike.count({
+          where: {
+            publishId: parent.id,
+          },
+        })
+      },
+    })
+
+    /**
+     * Disliked profiles list
      */
     t.nonNull.list.field("disLikes", {
-      type: "Int",
+      type: "Profile",
       resolve: async (parent, _, { prisma }) => {
         const disLikes = await prisma.publish
           .findUnique({
@@ -127,77 +170,89 @@ export const PublishDetail = objectType({
           })
           .disLikes({
             select: {
-              profileId: true,
+              profile: true,
             },
           })
 
-        if (!disLikes || disLikes.length === 0) {
-          return []
-        } else {
-          return disLikes.map((disLike) => disLike.profileId)
-        }
+        if (!disLikes) return []
+        else return disLikes.map((disLike) => disLike.profile)
       },
     })
-    t.nonNull.list.field("comments", {
-      type: "MainComment",
-      resolve: async (parent, _, { prisma }) => {
-        const comments = await prisma.publish
-          .findUnique({
-            where: {
-              id: parent.id,
-            },
-          })
-          .comments({
-            where: {
-              commentType: "PUBLISH",
-            },
-          })
 
-        if (!comments || comments.length === 0) {
-          return []
-        } else {
-          return comments
+    /**
+     * A boolean to check whether a profile (who makes the query) disliked the publish or not.
+     */
+    t.nonNull.field("disLiked", {
+      type: "Boolean",
+      resolve: async (parent, _, { prisma }, info) => {
+        const {
+          input: { profileId },
+        } = info.variableValues as {
+          input: NexusGenInputs["GetPublishByIdInput"]
         }
+
+        const disLike = await prisma.disLike.findUnique({
+          where: {
+            identifier: {
+              publishId: parent.id,
+              profileId,
+            },
+          },
+        })
+
+        return !!disLike
+      },
+    })
+
+    /**
+     * Comments count.
+     */
+    t.nonNull.field("commentsCount", {
+      type: "Int",
+      resolve: (parent, _, { prisma }) => {
+        return prisma.comment.count({
+          where: {
+            publishId: parent.id,
+          },
+        })
+      },
+    })
+
+    /**
+     * Last comments.
+     */
+    t.field("lastComment", {
+      type: "Comment",
+      resolve: async (parent, _, { prisma }) => {
+        return prisma.comment.findFirst({
+          where: {
+            AND: [
+              {
+                publishId: parent.id,
+              },
+              {
+                commentType: "PUBLISH",
+              },
+            ],
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        })
       },
     })
   },
 })
 
 /**
- * A brief version of the PublishDetail type that only has one relation.
- * @dev Use this type for fetching publishes.
+ * An input type for use to get a publish by id.
  */
-export const Publish = objectType({
-  name: "Publish",
+export const GetPublishByIdInput = inputObjectType({
+  name: "GetPublishByIdInput",
   definition(t) {
-    t.nonNull.int("id")
-    t.nonNull.string("tokenId")
-    t.nonNull.field("createdAt", { type: "DateTime" })
-    t.field("updatedAt", { type: "DateTime" })
-    t.nonNull.string("imageURI")
-    t.nonNull.string("contentURI")
-    t.nonNull.string("title")
-    t.nonNull.field("primaryCategory", { type: "Category" })
-    t.nonNull.field("secondaryCategory", { type: "Category" })
-    t.nonNull.field("tertiaryCategory", { type: "Category" })
-    t.field("creator", {
-      type: "ShortProfile",
-      resolve: (parent, _, { prisma }) => {
-        return prisma.publish
-          .findUnique({
-            where: {
-              id: parent.id,
-            },
-          })
-          .creator({
-            select: {
-              id: true,
-              originalHandle: true,
-              imageURI: true,
-            },
-          })
-      },
-    })
+    t.nonNull.int("publishId")
+    // The profileId will be used to identify if a profile `liked`/`disliked` the publish, this arg will be used in the field resolver.
+    t.nonNull.int("profileId")
   },
 })
 
@@ -205,17 +260,19 @@ export const PublishQuery = extendType({
   type: "Query",
   definition(t) {
     /**
-     * Get publish by id.
-     * @return publishDetail
+     * Get a publish by id.
      */
     t.field("getPublishById", {
-      type: nullable("PublishDetail"),
-      args: { id: nonNull(intArg()) },
-      resolve(_parent, { id }, { prisma }) {
+      type: nullable("Publish"),
+      args: { input: nonNull("GetPublishByIdInput") },
+      resolve(_parent, { input }, { prisma }) {
         try {
+          if (!input) throw new Error(badRequestErrMessage)
+          const { publishId } = input
+
           return prisma.publish.findUnique({
             where: {
-              id,
+              id: publishId,
             },
           })
         } catch (error) {
@@ -226,7 +283,6 @@ export const PublishQuery = extendType({
 
     /**
      * Fetch publishes.
-     * @return an array of Publishes
      */
     t.field("fetchPublishes", {
       type: nonNull(list("Publish")),
@@ -241,13 +297,14 @@ export const PublishQuery = extendType({
 
     /**
      * Fetch publishes by category.
-     * @return an array of Publishes
      */
     t.field("listPublishesByCategory", {
       type: nonNull(list("Publish")),
       args: { category: nonNull("Category") },
       resolve(_parent, { category }, { prisma }) {
         try {
+          if (!category) throw new Error(badRequestErrMessage)
+
           return prisma.publish.findMany({
             where: {
               OR: [
@@ -262,6 +319,102 @@ export const PublishQuery = extendType({
                 },
               ],
             },
+          })
+        } catch (error) {
+          throw error
+        }
+      },
+    })
+
+    /**
+     * Fetch publishes that a profile (database id) is the creator.
+     * @dev the `id` arg is a database table id.
+     */
+    t.field("listPublishesByProfileId", {
+      type: nonNull(list("Publish")),
+      args: { id: nonNull(intArg()) },
+      resolve(_parent, { id }, { prisma }) {
+        try {
+          if (!id) throw new Error(badRequestErrMessage)
+
+          return prisma.publish.findMany({
+            where: {
+              creatorId: id,
+            },
+          })
+        } catch (error) {
+          throw error
+        }
+      },
+    })
+
+    /**
+     * Fetch publishes that a profile (token id) is the creator.
+     * @dev the `tokenId` arg is a profile token id of the creator.
+     */
+    t.field("listPublishesByProfileTokenId", {
+      type: nonNull(list("Publish")),
+      args: { tokenId: nonNull(stringArg()) },
+      resolve(_parent, { tokenId }, { prisma }) {
+        try {
+          if (!tokenId) throw new Error(badRequestErrMessage)
+
+          return prisma.publish.findMany({
+            where: {
+              creatorTokenId: tokenId,
+            },
+          })
+        } catch (error) {
+          throw error
+        }
+      },
+    })
+
+    /**
+     * Fetch last 50 publishes of a profile
+     * @dev the `id` arg is a database table id.
+     */
+    t.field("listMostRecentPublishesByProfileId", {
+      type: nonNull(list("Publish")),
+      args: { id: nonNull(intArg()) },
+      resolve(_parent, { id }, { prisma }) {
+        try {
+          if (!id) throw new Error(badRequestErrMessage)
+
+          return prisma.publish.findMany({
+            where: {
+              creatorId: id,
+            },
+            orderBy: {
+              createdAt: "desc",
+            },
+            take: 50,
+          })
+        } catch (error) {
+          throw error
+        }
+      },
+    })
+
+    /**
+     * Fetch last 50 publishes of a profile
+     * @dev the `tokenId` arg is a profile token id of the creator.
+     */
+    t.field("listMostRecentPublishesByProfileTokenId", {
+      type: nonNull(list("Publish")),
+      args: { tokenId: nonNull(stringArg()) },
+      resolve(_parent, { tokenId }, { prisma }) {
+        try {
+          if (!tokenId) throw new Error(badRequestErrMessage)
+
+          return prisma.publish.findMany({
+            where: {
+              creatorTokenId: tokenId,
+            },
+            orderBy: {
+              createdAt: "desc",
+            },
+            take: 50,
           })
         } catch (error) {
           throw error

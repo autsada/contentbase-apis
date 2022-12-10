@@ -25,21 +25,6 @@ export const Response = objectType({
 })
 
 /**
- * A short version of the Profile type.
- */
-export const AccountProfile = objectType({
-  name: "AccountProfile",
-  definition(t) {
-    t.nonNull.int("id")
-    t.nonNull.string("tokenId")
-    t.nonNull.field("createdAt", { type: "DateTime" })
-    t.nonNull.string("originalHandle")
-    t.string("imageURI")
-    t.nonNull.boolean("default")
-  },
-})
-
-/**
  * A Account type that map to the prisma Account model.
  */
 export const Account = objectType({
@@ -50,7 +35,7 @@ export const Account = objectType({
     t.field("updatedAt", { type: "DateTime" })
     t.nonNull.string("address")
     t.nonNull.list.field("profiles", {
-      type: "AccountProfile",
+      type: "Profile",
       resolve: async (parent, _, { prisma }) => {
         const profiles = await prisma.account
           .findUnique({
@@ -58,18 +43,9 @@ export const Account = objectType({
               id: parent.id,
             },
           })
-          .profiles({
-            select: {
-              id: true,
-              tokenId: true,
-              createdAt: true,
-              originalHandle: true,
-              imageURI: true,
-              default: true,
-            },
-          })
+          .profiles({})
 
-        if (!profiles || profiles.length === 0) return []
+        if (!profiles) return []
         else return profiles
       },
     })
