@@ -83,11 +83,13 @@ model Publish {
   updatedAt         DateTime?
   creator           Profile   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   creatorId         Int
+  creatorTokenId    String    @default("")
   imageURI          String
   contentURI        String
   metadataURI       String
   title             String
   description       String?
+  views             Int       @default(0)
   primaryCategory   Category
   secondaryCategory Category
   tertiaryCategory  Category
@@ -116,8 +118,7 @@ model Comment {
   commentId   Int?
   comments    Comment[]        @relation("SubComment") // The child comments
   contentURI  String
-  text        String?
-  mediaURI    String?
+  text        String
   commentType CommentType
   likes       CommentLike[]
   disLikes    CommentDisLike[]
