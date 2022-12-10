@@ -44,7 +44,6 @@ export const commentCreatedListener = async (
       owner,
       contentURI,
       text,
-      mediaURI,
       commentType,
       timestamp,
     ] = args
@@ -124,8 +123,7 @@ export const commentUpdatedListener = async (
   ...args: CommentUpdatedEvent["args"]
 ) => {
   try {
-    const [tokenId, creatorId, owner, contentURI, text, mediaURI, timestamp] =
-      args
+    const [tokenId, creatorId, owner, contentURI, text, timestamp] = args
 
     // 1. Get the comment by its token id.
     const comment = await prisma.comment.findUnique({
