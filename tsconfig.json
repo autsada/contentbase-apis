@@ -7,5 +7,5 @@
     "resolveJsonModule": true
   },
   "include": ["src"],
-  "exclude": ["node_modules", "src/listeners/worker.js"]
+  "exclude": ["node_modules", "src/listeners/worker-dev.js"]
 }
