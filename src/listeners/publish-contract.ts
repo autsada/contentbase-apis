@@ -62,6 +62,7 @@ export const publishCreatedListener = async (
           tokenId: generateTokenId(tokenId),
           createdAt: new Date(timestamp.toNumber() * 1000),
           creatorId: profile.id,
+          creatorTokenId: profile.tokenId,
           imageURI,
           contentURI,
           metadataURI,

@@ -79,7 +79,6 @@ export const commentCreatedListener = async (
               creatorId: profile.id,
               publishId: publish.id,
               text,
-              mediaURI,
               commentType: "PUBLISH",
               contentURI,
             },
@@ -104,7 +103,6 @@ export const commentCreatedListener = async (
               publishId: comment.publishId,
               commentId: comment.id,
               text,
-              mediaURI,
               commentType: "COMMENT",
               contentURI,
             },
@@ -145,7 +143,6 @@ export const commentUpdatedListener = async (
         data: {
           contentURI,
           text,
-          mediaURI,
           updatedAt: new Date(timestamp.toNumber() * 1000),
         },
       })
