@@ -3,5 +3,4 @@ node_modules
 # Keep environment variables out of version control
 .env
 
-src/typechain-types
 src/listeners/worker-dev.js
