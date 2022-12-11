@@ -18,6 +18,7 @@ RUN chown -R node:node /usr/src/app/
 USER node
 COPY --chown=node:node --from=build /usr/src/app/package*.json ./
 COPY --chown=node:node --from=build /usr/src/app/dist ./
+COPY --chown=node:node --from=build /usr/src/app/prisma ./
 RUN npm ci --omit=dev
 EXPOSE 8080
 CMD ["dumb-init", "node", "app.js"]
