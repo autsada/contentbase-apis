@@ -15,9 +15,7 @@ export const schema = makeSchema({
   contextType: {
     module: path.join(
       process.cwd(),
-      NODE_ENV === "production" || NODE_ENV === "staging"
-        ? "context.js"
-        : "src/context.ts"
+      `src/${NODE_ENV === "development" ? "context.ts" : "context.js"}`
     ),
     export: "Context",
   },
