@@ -27,6 +27,7 @@ WORKDIR /usr/src/app
 RUN chown -R node:node /usr/src/app/
 USER node
 COPY --chown=node:node --from=build /usr/src/app/dist ./
+COPY --chown=node:node --from=build /usr/src/app/package*.json ./
 COPY --chown=node:node --from=prisma /usr/src/app/prisma ./prisma
 COPY --chown=node:node --from=prisma /usr/src/app/node_modules ./node_modules
 EXPOSE 8080
