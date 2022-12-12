@@ -20,6 +20,6 @@ steps:
       - "deploy"
 options:
   pool:
-    name: "projects/$PROJECT_ID/locations/${_REGION}/workerPools/${_POOL_NAME}"
+    name: "projects/$PROJECT_ID/locations/us-central1/workerPools/contentbase"
 images:
   - "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}"
