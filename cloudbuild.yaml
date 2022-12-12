@@ -18,8 +18,5 @@ steps:
       - "prisma"
       - "migrate"
       - "deploy"
-options:
-  pool:
-    name: "projects/$PROJECT_ID/locations/us-central1/workerPools/contentbase"
 images:
   - "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}"
