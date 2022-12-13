@@ -54,9 +54,6 @@ export const publishCreatedListener = async (
 
     if (profile) {
       // 2. Create a Publish.
-      console.log("primary -->", getKeyOfCategory(primaryCategory))
-      console.log("secondary -->", getKeyOfCategory(secondaryCategory))
-      console.log("tertiary -->", getKeyOfCategory(tertiaryCategory))
       await prisma.publish.create({
         data: {
           tokenId: generateTokenId(tokenId),
@@ -71,8 +68,11 @@ export const publishCreatedListener = async (
           primaryCategory: getKeyOfCategory(primaryCategory) as Category,
           secondaryCategory: getKeyOfCategory(secondaryCategory) as Category,
           tertiaryCategory: getKeyOfCategory(tertiaryCategory) as Category,
+          views: 0,
         },
       })
+
+      console.log("create publish done")
     }
   } catch (error) {
     console.log("error -->", error)

@@ -54,6 +54,7 @@ export const Publish = objectType({
     t.nonNull.string("tokenId")
     t.nonNull.field("createdAt", { type: "DateTime" })
     t.field("updatedAt", { type: "DateTime" })
+    t.nonNull.string("creatorTokenId")
     t.nonNull.string("imageURI")
     t.nonNull.string("contentURI")
     t.nonNull.string("metadataURI")
