@@ -10,11 +10,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum AccountType {
+  TRADITIONAL
+  WALLET
+}
+
 model Account {
-  id        Int       @id @default(autoincrement())
+  id        Int          @id @default(autoincrement())
   createdAt DateTime
   updatedAt DateTime?
-  address   String    @unique // EOA address
+  address   String       @unique // EOA address
+  uid       String?      @unique
+  type      AccountType?
   profiles  Profile[]
 }
 

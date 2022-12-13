@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Account" ALTER COLUMN "type" DROP NOT NULL,
+ALTER COLUMN "uid" DROP NOT NULL;
