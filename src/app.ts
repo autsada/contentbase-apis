@@ -21,7 +21,11 @@ const env = NODE_ENV as Environment
 
 // Create a worker pool to run a worker for Ethereum event listeners.
 const pool = workerpool.pool(
-  path.resolve(__dirname, "listeners", "worker.js"),
+  path.resolve(
+    __dirname,
+    "listeners",
+    env === "development" ? "worker-dev.js" : "worker.js"
+  ),
   {
     minWorkers: 1,
     maxWorkers: 1,
