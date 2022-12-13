@@ -1,5 +1,5 @@
 {
-  "name": "ctb-events-service",
+  "name": "contentbase-public-apis",
   "version": "1.0.0",
   "description": "",
   "main": "src/app.js",
