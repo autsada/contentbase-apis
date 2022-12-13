@@ -118,6 +118,7 @@ type Publish {
   contentURI: String!
   createdAt: DateTime!
   creator: Profile!
+  creatorTokenId: String!
   description: String
   disLiked: Boolean!
   disLikes: [Profile]!

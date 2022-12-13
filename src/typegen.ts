@@ -100,6 +100,7 @@ export interface NexusGenObjects {
   Publish: { // root type
     contentURI: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
+    creatorTokenId: string; // String!
     description?: string | null; // String
     id: number; // Int!
     imageURI: string; // String!
@@ -191,6 +192,7 @@ export interface NexusGenFieldTypes {
     contentURI: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     creator: NexusGenRootTypes['Profile']; // Profile!
+    creatorTokenId: string; // String!
     description: string | null; // String
     disLiked: boolean; // Boolean!
     disLikes: Array<NexusGenRootTypes['Profile'] | null>; // [Profile]!
@@ -292,6 +294,7 @@ export interface NexusGenFieldTypeNames {
     contentURI: 'String'
     createdAt: 'DateTime'
     creator: 'Profile'
+    creatorTokenId: 'String'
     description: 'String'
     disLiked: 'Boolean'
     disLikes: 'Profile'
