@@ -1,4 +1,7 @@
 -- CreateEnum
+CREATE TYPE "AccountType" AS ENUM ('TRADITIONAL', 'WALLET');
+
+-- CreateEnum
 CREATE TYPE "Category" AS ENUM ('Empty', 'Music', 'Movies', 'Entertainment', 'Sports', 'Food', 'Travel', 'Gaming', 'News', 'Animals', 'Education', 'Science', 'Technology', 'Programming', 'LifeStyle', 'Vehicles', 'Children', 'Women', 'Men', 'Other', 'NotExist');
 
 -- CreateEnum
@@ -10,6 +13,8 @@ CREATE TABLE "Account" (
     "createdAt" TIMESTAMP(3) NOT NULL,
     "updatedAt" TIMESTAMP(3),
     "address" TEXT NOT NULL,
+    "uid" TEXT,
+    "type" "AccountType",
 
     CONSTRAINT "Account_pkey" PRIMARY KEY ("id")
 );
@@ -125,6 +130,9 @@ CREATE TABLE "CommentDisLike" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Account_address_key" ON "Account"("address");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Account_uid_key" ON "Account"("uid");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Profile_tokenId_key" ON "Profile"("tokenId");
