@@ -43,7 +43,7 @@ enum Category {
 
 type Comment {
   commentType: CommentType!
-  comments: [Comment]!
+  comments: [SubComment]!
   contentURI: String!
   createdAt: DateTime!
   creator: Profile
@@ -164,4 +164,20 @@ type Query {
 type Response {
   edges: [Edge]!
   pageInfo: PageInfo!
+}
+
+type SubComment {
+  commentType: CommentType!
+  contentURI: String!
+  createdAt: DateTime!
+  creator: Profile
+  disLiked: Boolean!
+  disLikesCount: Int!
+  id: Int!
+  liked: Boolean!
+  likes: [Profile]!
+  likesCount: Int!
+  text: String
+  tokenId: String!
+  updatedAt: DateTime
 }

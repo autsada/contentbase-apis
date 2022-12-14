@@ -121,6 +121,15 @@ export interface NexusGenObjects {
     edges: Array<NexusGenRootTypes['Edge'] | null>; // [Edge]!
     pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
   }
+  SubComment: { // root type
+    commentType: NexusGenEnums['CommentType']; // CommentType!
+    contentURI: string; // String!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    id: number; // Int!
+    text?: string | null; // String
+    tokenId: string; // String!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
 }
 
 export interface NexusGenInterfaces {
@@ -145,7 +154,7 @@ export interface NexusGenFieldTypes {
   }
   Comment: { // field return type
     commentType: NexusGenEnums['CommentType']; // CommentType!
-    comments: Array<NexusGenRootTypes['Comment'] | null>; // [Comment]!
+    comments: Array<NexusGenRootTypes['SubComment'] | null>; // [SubComment]!
     contentURI: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     creator: NexusGenRootTypes['Profile'] | null; // Profile
@@ -235,6 +244,21 @@ export interface NexusGenFieldTypes {
     edges: Array<NexusGenRootTypes['Edge'] | null>; // [Edge]!
     pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
   }
+  SubComment: { // field return type
+    commentType: NexusGenEnums['CommentType']; // CommentType!
+    contentURI: string; // String!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    creator: NexusGenRootTypes['Profile'] | null; // Profile
+    disLiked: boolean; // Boolean!
+    disLikesCount: number; // Int!
+    id: number; // Int!
+    liked: boolean; // Boolean!
+    likes: Array<NexusGenRootTypes['Profile'] | null>; // [Profile]!
+    likesCount: number; // Int!
+    text: string | null; // String
+    tokenId: string; // String!
+    updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
+  }
 }
 
 export interface NexusGenFieldTypeNames {
@@ -249,7 +273,7 @@ export interface NexusGenFieldTypeNames {
   }
   Comment: { // field return type name
     commentType: 'CommentType'
-    comments: 'Comment'
+    comments: 'SubComment'
     contentURI: 'String'
     createdAt: 'DateTime'
     creator: 'Profile'
@@ -338,6 +362,21 @@ export interface NexusGenFieldTypeNames {
   Response: { // field return type name
     edges: 'Edge'
     pageInfo: 'PageInfo'
+  }
+  SubComment: { // field return type name
+    commentType: 'CommentType'
+    contentURI: 'String'
+    createdAt: 'DateTime'
+    creator: 'Profile'
+    disLiked: 'Boolean'
+    disLikesCount: 'Int'
+    id: 'Int'
+    liked: 'Boolean'
+    likes: 'Profile'
+    likesCount: 'Int'
+    text: 'String'
+    tokenId: 'String'
+    updatedAt: 'DateTime'
   }
 }
 
