@@ -1,10 +1,13 @@
 /**
  * Comment Contract's Event Listeners
  */
+import type { CommentType } from "@prisma/client"
 
 import { prisma } from "../client"
 import { getContractForWs } from "./ethers"
-import CommentContract from "../abi/ContentBaseCommentV1.json"
+import DevCommentContract from "../abi/localhost/ContentBaseCommentV1.json"
+import StagingCommentContract from "../abi/testnet/ContentBaseCommentV1.json"
+import ProdCommentContract from "../abi/mainnet/ContentBaseCommentV1.json"
 import { ContentBaseCommentV1 as Comment } from "../typechain-types"
 import {
   CommentCreatedEvent,
@@ -16,15 +19,28 @@ import {
   CommentUndoDisLikedEvent,
 } from "../typechain-types/contracts/publish/ContentBaseCommentV1"
 import { generateTokenId, getKeyOfCommentType } from "../utils"
-import type { CommentType } from "@prisma/client"
+import type { Environment } from "../types"
+
+const { NODE_ENV } = process.env
+const env = NODE_ENV as Environment
 
 /**
  * Get contract for listening to events
  */
 export function getCommentContractForWs() {
   const contract = getContractForWs({
-    address: CommentContract.address,
-    contractInterface: CommentContract.abi,
+    address:
+      env === "production"
+        ? ProdCommentContract.address
+        : env === "staging"
+        ? StagingCommentContract.address
+        : DevCommentContract.address,
+    contractInterface:
+      env === "production"
+        ? ProdCommentContract.abi
+        : env === "staging"
+        ? StagingCommentContract.abi
+        : DevCommentContract.abi,
   }) as Comment
 
   return contract
@@ -59,7 +75,6 @@ export const commentCreatedListener = async (
       // `parentId` can be the token id of a publish or a comment, depending of the commentType.
       const typeEnum = getKeyOfCommentType(commentType) as CommentType
 
-      console.log("comment type -->", typeEnum)
       if (typeEnum === "PUBLISH") {
         // A. `parentId` is a publish.
         // A.1. Get the publish.

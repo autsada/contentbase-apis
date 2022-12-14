@@ -2,22 +2,10 @@ import { ethers } from "ethers"
 
 import { WebSocketProvider } from "./wsProvider"
 
-const {
-  NODE_ENV,
-  LOCAL_BLOCKCHAIN_WS_URL,
-  TESTNET_BLOCKCHAIN_WS_URL,
-  MAINNET_BLOCKCHAIN_WS_URL,
-} = process.env
+const { BLOCKCHAIN_WS_URL } = process.env
 
 export function getWsProvider() {
-  const wsURL =
-    NODE_ENV === "development"
-      ? LOCAL_BLOCKCHAIN_WS_URL!
-      : NODE_ENV === "production"
-      ? MAINNET_BLOCKCHAIN_WS_URL!
-      : TESTNET_BLOCKCHAIN_WS_URL!
-
-  return new WebSocketProvider(wsURL)
+  return new WebSocketProvider(BLOCKCHAIN_WS_URL!)
 }
 
 /**

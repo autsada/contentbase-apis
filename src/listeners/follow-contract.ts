@@ -4,21 +4,37 @@
 
 import { prisma } from "../client"
 import { getContractForWs } from "./ethers"
-import FollowContract from "../abi/ContentBaseFollowV1.json"
+import DevFollowContract from "../abi/localhost/ContentBaseFollowV1.json"
+import StagingFollowContract from "../abi/testnet/ContentBaseFollowV1.json"
+import ProdFollowContract from "../abi/mainnet/ContentBaseFollowV1.json"
 import { ContentBaseFollowV1 as Follow } from "../typechain-types"
 import {
   FollowingEvent,
   UnFollowingEvent,
 } from "../typechain-types/contracts/profile/ContentBaseFollowV1"
 import { generateTokenId } from "../utils"
+import type { Environment } from "../types"
+
+const { NODE_ENV } = process.env
+const env = NODE_ENV as Environment
 
 /**
  * Get the contract for listening to events
  */
 export function getFollowContractForWs() {
   const contract = getContractForWs({
-    address: FollowContract.address,
-    contractInterface: FollowContract.abi,
+    address:
+      env === "production"
+        ? ProdFollowContract.address
+        : env === "staging"
+        ? StagingFollowContract.address
+        : DevFollowContract.address,
+    contractInterface:
+      env === "production"
+        ? ProdFollowContract.abi
+        : env === "staging"
+        ? StagingFollowContract.abi
+        : DevFollowContract.abi,
   }) as Follow
 
   return contract

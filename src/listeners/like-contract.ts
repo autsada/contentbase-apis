@@ -6,7 +6,9 @@ import { utils } from "ethers"
 
 import { prisma } from "../client"
 import { getContractForWs } from "./ethers"
-import LikeContract from "../abi/ContentBaseLikeV1.json"
+import DevLikeContract from "../abi/localhost/ContentBaseLikeV1.json"
+import StagingLikeContract from "../abi/testnet/ContentBaseLikeV1.json"
+import ProdLikeContract from "../abi/mainnet/ContentBaseLikeV1.json"
 import { ContentBaseLikeV1 as Like } from "../typechain-types"
 import {
   PublishLikedEvent,
@@ -15,14 +17,28 @@ import {
   PublishUndoDisLikedEvent,
 } from "../typechain-types/contracts/publish/ContentBaseLikeV1"
 import { generateTokenId } from "../utils"
+import type { Environment } from "../types"
+
+const { NODE_ENV } = process.env
+const env = NODE_ENV as Environment
 
 /**
  * Get contract for listening to events
  */
 export function getLikeContractForWs() {
   const contract = getContractForWs({
-    address: LikeContract.address,
-    contractInterface: LikeContract.abi,
+    address:
+      env === "production"
+        ? ProdLikeContract.address
+        : env === "staging"
+        ? StagingLikeContract.address
+        : DevLikeContract.address,
+    contractInterface:
+      env === "production"
+        ? ProdLikeContract.abi
+        : env === "staging"
+        ? StagingLikeContract.abi
+        : DevLikeContract.abi,
   }) as Like
 
   return contract

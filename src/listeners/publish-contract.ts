@@ -1,10 +1,13 @@
 /**
  * Publish Contract's Event Listeners
  */
+import type { Category } from "@prisma/client"
 
 import { prisma } from "../client"
 import { getContractForWs } from "./ethers"
-import PublishContract from "../abi/ContentBasePublishV1.json"
+import DevPublishContract from "../abi/localhost/ContentBasePublishV1.json"
+import StagingPublishContract from "../abi/testnet/ContentBasePublishV1.json"
+import ProdPublishContract from "../abi/mainnet/ContentBasePublishV1.json"
 import { ContentBasePublishV1 as Publish } from "../typechain-types"
 import {
   PublishCreatedEvent,
@@ -12,15 +15,28 @@ import {
   PublishDeletedEvent,
 } from "../typechain-types/contracts/publish/ContentBasePublishV1"
 import { generateTokenId, getKeyOfCategory } from "../utils"
-import type { Category } from "@prisma/client"
+import type { Environment } from "../types"
+
+const { NODE_ENV } = process.env
+const env = NODE_ENV as Environment
 
 /**
  * Get the contract for listening to events
  */
 export function getPublishContractForWs() {
   const contract = getContractForWs({
-    address: PublishContract.address,
-    contractInterface: PublishContract.abi,
+    address:
+      env === "production"
+        ? ProdPublishContract.address
+        : env === "staging"
+        ? StagingPublishContract.address
+        : DevPublishContract.address,
+    contractInterface:
+      env === "production"
+        ? ProdPublishContract.abi
+        : env === "staging"
+        ? StagingPublishContract.abi
+        : DevPublishContract.abi,
   }) as Publish
 
   return contract

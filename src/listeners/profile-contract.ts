@@ -4,7 +4,9 @@
 
 import { prisma } from "../client"
 import { getContractForWs } from "./ethers"
-import ProfileContract from "../abi/ContentBaseProfileV1.json"
+import DevProfileContract from "../abi/localhost/ContentBaseProfileV1.json"
+import StagingProfileContract from "../abi/testnet/ContentBaseProfileV1.json"
+import ProdProfileContract from "../abi/mainnet/ContentBaseProfileV1.json"
 import { ContentBaseProfileV1 as Profile } from "../typechain-types"
 import {
   ProfileCreatedEvent,
@@ -12,14 +14,28 @@ import {
   DefaultProfileUpdatedEvent,
 } from "../typechain-types/contracts/profile/ContentBaseProfileV1"
 import { generateTokenId } from "../utils"
+import type { Environment } from "../types"
+
+const { NODE_ENV } = process.env
+const env = NODE_ENV as Environment
 
 /**
  * Get the contract for listening to events
  */
 export function getProfileContractForWs() {
   const contract = getContractForWs({
-    address: ProfileContract.address,
-    contractInterface: ProfileContract.abi,
+    address:
+      env === "production"
+        ? ProdProfileContract.address
+        : env === "staging"
+        ? StagingProfileContract.address
+        : DevProfileContract.address,
+    contractInterface:
+      env === "production"
+        ? ProdProfileContract.abi
+        : env === "staging"
+        ? StagingProfileContract.abi
+        : DevProfileContract.abi,
   }) as Profile
 
   return contract
@@ -49,6 +65,7 @@ export const profileCreatedListener = async (
       where: { address: formattedAddress },
     })
 
+    console.log("account -->", account)
     // If no account found, it means this is the first profile of the caller (owner) so we need to create an account first.
     if (!account) {
       // 2. Create an account (if not exist).
