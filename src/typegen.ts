@@ -44,6 +44,7 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
+  AccountType: "TRADITIONAL" | "WALLET"
   Category: "Animals" | "Children" | "Education" | "Empty" | "Entertainment" | "Food" | "Gaming" | "LifeStyle" | "Men" | "Movies" | "Music" | "News" | "NotExist" | "Other" | "Programming" | "Science" | "Sports" | "Technology" | "Travel" | "Vehicles" | "Women"
   CommentType: "COMMENT" | "PUBLISH"
 }
@@ -62,6 +63,8 @@ export interface NexusGenObjects {
     address: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
+    type?: NexusGenEnums['AccountType'] | null; // AccountType
+    uid?: string | null; // String
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
   Comment: { // root type
@@ -136,6 +139,8 @@ export interface NexusGenFieldTypes {
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
     profiles: Array<NexusGenRootTypes['Profile'] | null>; // [Profile]!
+    type: NexusGenEnums['AccountType'] | null; // AccountType
+    uid: string | null; // String
     updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
   }
   Comment: { // field return type
@@ -238,6 +243,8 @@ export interface NexusGenFieldTypeNames {
     createdAt: 'DateTime'
     id: 'Int'
     profiles: 'Profile'
+    type: 'AccountType'
+    uid: 'String'
     updatedAt: 'DateTime'
   }
   Comment: { // field return type name

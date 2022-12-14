@@ -1,4 +1,11 @@
-import { extendType, objectType, nullable, nonNull, stringArg } from "nexus"
+import {
+  extendType,
+  objectType,
+  nullable,
+  nonNull,
+  stringArg,
+  enumType,
+} from "nexus"
 
 export const Edge = objectType({
   name: "Edge",
@@ -24,6 +31,11 @@ export const Response = objectType({
   },
 })
 
+export const AccountType = enumType({
+  name: "AccountType",
+  members: ["TRADITIONAL", "WALLET"],
+})
+
 /**
  * A Account type that map to the prisma Account model.
  */
@@ -34,6 +46,8 @@ export const Account = objectType({
     t.nonNull.field("createdAt", { type: "DateTime" })
     t.field("updatedAt", { type: "DateTime" })
     t.nonNull.string("address")
+    t.string("uid")
+    t.field("type", { type: "AccountType" })
     t.nonNull.list.field("profiles", {
       type: "Profile",
       resolve: async (parent, _, { prisma }) => {
@@ -62,7 +76,7 @@ export const AccountQuery = extendType({
         try {
           return prisma.account.findUnique({
             where: {
-              address,
+              address: address.toLowerCase(),
             },
           })
         } catch (error) {

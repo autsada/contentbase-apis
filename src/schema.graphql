@@ -7,7 +7,14 @@ type Account {
   createdAt: DateTime!
   id: Int!
   profiles: [Profile]!
+  type: AccountType
+  uid: String
   updatedAt: DateTime
+}
+
+enum AccountType {
+  TRADITIONAL
+  WALLET
 }
 
 enum Category {
