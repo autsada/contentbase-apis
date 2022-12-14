@@ -14,6 +14,7 @@ import { InMemoryLRUCache } from "@apollo/utils.keyvaluecache"
 
 import { schema } from "./schema"
 import { context, Context } from "./context"
+import { createAccount } from "./rest"
 import { Environment } from "./types"
 
 const { PORT, NODE_ENV } = process.env
@@ -47,6 +48,16 @@ pool
 
 async function startServer() {
   const app = express()
+
+  // Rest api for creating account.
+  app.post(
+    "/account/create",
+    express.json(),
+    express.urlencoded({ extended: true }),
+    cors<cors.CorsRequest>(),
+    createAccount
+  )
+
   const httpServer = http.createServer(app)
 
   // Set up ApolloServer.
