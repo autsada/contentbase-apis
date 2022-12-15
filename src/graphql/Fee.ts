@@ -7,6 +7,7 @@ export const Fee = objectType({
   name: "Fee",
   definition(t) {
     t.nonNull.int("id")
+    t.nonNull.field("createdAt", { type: "DateTime" })
     t.nonNull.string("amount")
     t.nonNull.string("fee")
 
