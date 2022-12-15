@@ -10,6 +10,20 @@ import { NexusGenInputs } from "../typegen"
 import { badRequestErrMessage } from "./Publish"
 
 /**
+ * A preview version of the Profile.
+ * @dev Use this type where we just need to know a profile briefly and don't need to knew the detail and relation of that profile.
+ */
+export const PreviewProfile = objectType({
+  name: "PreviewProfile",
+  definition(t) {
+    t.nonNull.int("id")
+    t.nonNull.string("tokenId")
+    t.nonNull.string("originalHandle")
+    t.string("imageURI")
+  },
+})
+
+/**
  * A Profile type that map to the prisma Profile model.
  */
 export const Profile = objectType({
@@ -28,7 +42,7 @@ export const Profile = objectType({
     /**
      * Number of following.
      */
-    t.field("followingCount", {
+    t.nonNull.field("followingCount", {
       type: "Int",
       resolve: (parent, _, { prisma }) => {
         return prisma.follow.count({
@@ -43,7 +57,7 @@ export const Profile = objectType({
      * Following profiles list.
      */
     t.nonNull.list.field("following", {
-      type: "Profile",
+      type: "PreviewProfile",
       resolve: async (parent, _, { prisma }) => {
         const following = await prisma.profile
           .findUnique({
@@ -53,7 +67,15 @@ export const Profile = objectType({
           })
           .following({
             select: {
-              followee: true,
+              followee: {
+                select: {
+                  id: true,
+                  tokenId: true,
+                  createdAt: true,
+                  originalHandle: true,
+                  imageURI: true,
+                },
+              },
             },
           })
 
@@ -65,7 +87,7 @@ export const Profile = objectType({
     /**
      * Followers count.
      */
-    t.field("followersCount", {
+    t.nonNull.field("followersCount", {
       type: "Int",
       resolve: (parent, _, { prisma }) => {
         return prisma.follow.count({
@@ -80,7 +102,7 @@ export const Profile = objectType({
      * Follower profiles list.
      */
     t.nonNull.list.field("followers", {
-      type: "Profile",
+      type: "PreviewProfile",
       resolve: async (parent, _, { prisma }) => {
         const followers = await prisma.profile
           .findUnique({
@@ -90,7 +112,15 @@ export const Profile = objectType({
           })
           .followers({
             select: {
-              follower: true,
+              follower: {
+                select: {
+                  id: true,
+                  tokenId: true,
+                  createdAt: true,
+                  originalHandle: true,
+                  imageURI: true,
+                },
+              },
             },
           })
 
@@ -100,16 +130,17 @@ export const Profile = objectType({
     })
 
     /**
-     * A boolean to check whether a profile (who makes the query) is following the target profile or not.
+     * A boolean to check whether a profile (who makes the query) is following the target profile or not, if no `userId` provided resolve to null.
      */
-    t.nonNull.field("isFollowing", {
+    t.nullable.field("isFollowing", {
       type: "Boolean",
       resolve: async (parent, _, { prisma }, info) => {
-        const {
-          input: { userId },
-        } = info.variableValues as {
+        const { input } = info.variableValues as {
           input: NexusGenInputs["GetProfileByIdInput"]
         }
+
+        if (!input || !input.userId) return null
+        const { userId } = input
 
         const following = await prisma.follow.findUnique({
           where: {
@@ -149,7 +180,7 @@ export const GetProfileByIdInput = inputObjectType({
     // A profile id of the target profile.
     t.nonNull.int("profileId")
     // A profile id of the requestor that will be used to identify if the requestor is following the target profile, this arg will be used in the field resolver.
-    t.nonNull.int("userId")
+    t.nullable.int("userId")
   },
 })
 
@@ -166,6 +197,8 @@ export const FrofileQuery = extendType({
         try {
           if (!input) throw new Error(badRequestErrMessage)
           const { profileId } = input
+
+          if (!profileId) throw new Error(badRequestErrMessage)
 
           return prisma.profile.findUnique({
             where: { id: profileId },

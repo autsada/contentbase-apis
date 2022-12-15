@@ -84,11 +84,11 @@ type Fee {
 
 input GetProfileByIdInput {
   profileId: Int!
-  userId: Int!
+  userId: Int
 }
 
 input GetPublishByIdInput {
-  profileId: Int!
+  profileId: Int
   publishId: Int!
 }
 
@@ -102,17 +102,38 @@ type PageInfo {
   hasNextPage: Boolean
 }
 
+type PreviewProfile {
+  id: Int!
+  imageURI: String
+  originalHandle: String!
+  tokenId: String!
+}
+
+type PreviewPublish {
+  contentURI: String!
+  createdAt: DateTime!
+  creator: PreviewProfile
+  id: Int!
+  imageURI: String!
+  primaryCategory: Category!
+  secondaryCategory: Category!
+  tertiaryCategory: Category!
+  title: String!
+  tokenId: String!
+  views: Int!
+}
+
 type Profile {
   createdAt: DateTime!
   default: Boolean!
-  followers: [Profile]!
-  followersCount: Int
-  following: [Profile]!
-  followingCount: Int
+  followers: [PreviewProfile]!
+  followersCount: Int!
+  following: [PreviewProfile]!
+  followingCount: Int!
   handle: String!
   id: Int!
   imageURI: String
-  isFollowing: Boolean!
+  isFollowing: Boolean
   originalHandle: String!
   owner: String!
   publishesCount: Int!
@@ -124,17 +145,16 @@ type Publish {
   commentsCount: Int!
   contentURI: String!
   createdAt: DateTime!
-  creator: Profile!
+  creator: PreviewProfile
   creatorTokenId: String!
   description: String
-  disLiked: Boolean!
-  disLikes: [Profile]!
+  disLiked: Boolean
   disLikesCount: Int!
   id: Int!
   imageURI: String!
   lastComment: Comment
-  liked: Boolean!
-  likes: [Profile]!
+  liked: Boolean
+  likes: [PreviewProfile]!
   likesCount: Int!
   metadataURI: String!
   primaryCategory: Category!
@@ -147,16 +167,14 @@ type Publish {
 }
 
 type Query {
-  fetchPublishes: [Publish]!
+  fetchPublishes: [PreviewPublish]!
   getAccount(address: String!): Account
   getProfileById(input: GetProfileByIdInput!): Profile
   getPublishById(input: GetPublishByIdInput!): Publish
   listCommentsByPublishId(input: ListCommentsByPublishIdInput!): [Comment]!
-  listMostRecentPublishesByProfileId(id: Int!): [Publish]!
-  listMostRecentPublishesByProfileTokenId(tokenId: String!): [Publish]!
-  listPublishesByCategory(category: Category!): [Publish]!
-  listPublishesByProfileId(id: Int!): [Publish]!
-  listPublishesByProfileTokenId(tokenId: String!): [Publish]!
+  listPublishesByCategory(category: Category!): [PreviewPublish]!
+  listPublishesByCreatorId(id: Int!): [PreviewPublish]!
+  listPublishesByCreatorTokenId(creatorTokenId: String!): [PreviewPublish]!
   listReceivedFees(profileId: Int!): [Fee]!
   listSentFees(profileId: Int!): [Fee]!
 }
