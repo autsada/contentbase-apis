@@ -43,15 +43,14 @@ enum Category {
 
 type Comment {
   commentType: CommentType!
-  comments: [SubComment]!
+  commentsCount: Int!
   contentURI: String!
   createdAt: DateTime!
-  creator: Profile
-  disLiked: Boolean!
-  disLikesCount: Int!
+  creator: PreviewProfile
+  disLiked: Boolean
   id: Int!
-  liked: Boolean!
-  likes: [Profile]!
+  liked: Boolean
+  likes: [PreviewProfile]!
   likesCount: Int!
   text: String
   tokenId: String!
@@ -77,9 +76,9 @@ type Fee {
   amount: String!
   fee: String!
   id: Int!
-  publish: Publish!
-  receiver: Profile
-  sender: Profile
+  publish: PreviewPublish
+  receiver: PreviewProfile
+  sender: PreviewProfile
 }
 
 input GetProfileByIdInput {
@@ -92,14 +91,21 @@ input GetPublishByIdInput {
   publishId: Int!
 }
 
-input ListCommentsByPublishIdInput {
-  profileId: Int!
-  publishId: Int!
+input ListCommentsByParentIdInput {
+  parentId: Int!
+  profileId: Int
 }
 
 type PageInfo {
   endCursor: String
   hasNextPage: Boolean
+}
+
+type PreviewComment {
+  commentType: CommentType!
+  creator: PreviewProfile
+  id: Int!
+  text: String
 }
 
 type PreviewProfile {
@@ -152,7 +158,7 @@ type Publish {
   disLikesCount: Int!
   id: Int!
   imageURI: String!
-  lastComment: Comment
+  lastComment: PreviewComment
   liked: Boolean
   likes: [PreviewProfile]!
   likesCount: Int!
@@ -171,7 +177,8 @@ type Query {
   getAccount(address: String!): Account
   getProfileById(input: GetProfileByIdInput!): Profile
   getPublishById(input: GetPublishByIdInput!): Publish
-  listCommentsByPublishId(input: ListCommentsByPublishIdInput!): [Comment]!
+  listCommentsByCommentId(input: ListCommentsByParentIdInput!): [Comment]!
+  listCommentsByPublishId(input: ListCommentsByParentIdInput!): [Comment]!
   listPublishesByCategory(category: Category!): [PreviewPublish]!
   listPublishesByCreatorId(id: Int!): [PreviewPublish]!
   listPublishesByCreatorTokenId(creatorTokenId: String!): [PreviewPublish]!
@@ -182,20 +189,4 @@ type Query {
 type Response {
   edges: [Edge]!
   pageInfo: PageInfo!
-}
-
-type SubComment {
-  commentType: CommentType!
-  contentURI: String!
-  createdAt: DateTime!
-  creator: Profile
-  disLiked: Boolean!
-  disLikesCount: Int!
-  id: Int!
-  liked: Boolean!
-  likes: [Profile]!
-  likesCount: Int!
-  text: String
-  tokenId: String!
-  updatedAt: DateTime
 }

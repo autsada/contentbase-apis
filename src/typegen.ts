@@ -37,9 +37,9 @@ export interface NexusGenInputs {
     profileId?: number | null; // Int
     publishId: number; // Int!
   }
-  ListCommentsByPublishIdInput: { // input type
-    profileId: number; // Int!
-    publishId: number; // Int!
+  ListCommentsByParentIdInput: { // input type
+    parentId: number; // Int!
+    profileId?: number | null; // Int
   }
 }
 
@@ -88,6 +88,11 @@ export interface NexusGenObjects {
   PageInfo: { // root type
     endCursor?: string | null; // String
     hasNextPage?: boolean | null; // Boolean
+  }
+  PreviewComment: { // root type
+    commentType: NexusGenEnums['CommentType']; // CommentType!
+    id: number; // Int!
+    text?: string | null; // String
   }
   PreviewProfile: { // root type
     id: number; // Int!
@@ -139,15 +144,6 @@ export interface NexusGenObjects {
     edges: Array<NexusGenRootTypes['Edge'] | null>; // [Edge]!
     pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
   }
-  SubComment: { // root type
-    commentType: NexusGenEnums['CommentType']; // CommentType!
-    contentURI: string; // String!
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
-    id: number; // Int!
-    text?: string | null; // String
-    tokenId: string; // String!
-    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
-  }
 }
 
 export interface NexusGenInterfaces {
@@ -172,15 +168,14 @@ export interface NexusGenFieldTypes {
   }
   Comment: { // field return type
     commentType: NexusGenEnums['CommentType']; // CommentType!
-    comments: Array<NexusGenRootTypes['SubComment'] | null>; // [SubComment]!
+    commentsCount: number; // Int!
     contentURI: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
-    creator: NexusGenRootTypes['Profile'] | null; // Profile
-    disLiked: boolean; // Boolean!
-    disLikesCount: number; // Int!
+    creator: NexusGenRootTypes['PreviewProfile'] | null; // PreviewProfile
+    disLiked: boolean | null; // Boolean
     id: number; // Int!
-    liked: boolean; // Boolean!
-    likes: Array<NexusGenRootTypes['Profile'] | null>; // [Profile]!
+    liked: boolean | null; // Boolean
+    likes: Array<NexusGenRootTypes['PreviewProfile'] | null>; // [PreviewProfile]!
     likesCount: number; // Int!
     text: string | null; // String
     tokenId: string; // String!
@@ -194,13 +189,19 @@ export interface NexusGenFieldTypes {
     amount: string; // String!
     fee: string; // String!
     id: number; // Int!
-    publish: NexusGenRootTypes['Publish']; // Publish!
-    receiver: NexusGenRootTypes['Profile'] | null; // Profile
-    sender: NexusGenRootTypes['Profile'] | null; // Profile
+    publish: NexusGenRootTypes['PreviewPublish'] | null; // PreviewPublish
+    receiver: NexusGenRootTypes['PreviewProfile'] | null; // PreviewProfile
+    sender: NexusGenRootTypes['PreviewProfile'] | null; // PreviewProfile
   }
   PageInfo: { // field return type
     endCursor: string | null; // String
     hasNextPage: boolean | null; // Boolean
+  }
+  PreviewComment: { // field return type
+    commentType: NexusGenEnums['CommentType']; // CommentType!
+    creator: NexusGenRootTypes['PreviewProfile'] | null; // PreviewProfile
+    id: number; // Int!
+    text: string | null; // String
   }
   PreviewProfile: { // field return type
     id: number; // Int!
@@ -249,7 +250,7 @@ export interface NexusGenFieldTypes {
     disLikesCount: number; // Int!
     id: number; // Int!
     imageURI: string; // String!
-    lastComment: NexusGenRootTypes['Comment'] | null; // Comment
+    lastComment: NexusGenRootTypes['PreviewComment'] | null; // PreviewComment
     liked: boolean | null; // Boolean
     likes: Array<NexusGenRootTypes['PreviewProfile'] | null>; // [PreviewProfile]!
     likesCount: number; // Int!
@@ -267,6 +268,7 @@ export interface NexusGenFieldTypes {
     getAccount: NexusGenRootTypes['Account'] | null; // Account
     getProfileById: NexusGenRootTypes['Profile'] | null; // Profile
     getPublishById: NexusGenRootTypes['Publish'] | null; // Publish
+    listCommentsByCommentId: Array<NexusGenRootTypes['Comment'] | null>; // [Comment]!
     listCommentsByPublishId: Array<NexusGenRootTypes['Comment'] | null>; // [Comment]!
     listPublishesByCategory: Array<NexusGenRootTypes['PreviewPublish'] | null>; // [PreviewPublish]!
     listPublishesByCreatorId: Array<NexusGenRootTypes['PreviewPublish'] | null>; // [PreviewPublish]!
@@ -277,21 +279,6 @@ export interface NexusGenFieldTypes {
   Response: { // field return type
     edges: Array<NexusGenRootTypes['Edge'] | null>; // [Edge]!
     pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
-  }
-  SubComment: { // field return type
-    commentType: NexusGenEnums['CommentType']; // CommentType!
-    contentURI: string; // String!
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
-    creator: NexusGenRootTypes['Profile'] | null; // Profile
-    disLiked: boolean; // Boolean!
-    disLikesCount: number; // Int!
-    id: number; // Int!
-    liked: boolean; // Boolean!
-    likes: Array<NexusGenRootTypes['Profile'] | null>; // [Profile]!
-    likesCount: number; // Int!
-    text: string | null; // String
-    tokenId: string; // String!
-    updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
   }
 }
 
@@ -307,15 +294,14 @@ export interface NexusGenFieldTypeNames {
   }
   Comment: { // field return type name
     commentType: 'CommentType'
-    comments: 'SubComment'
+    commentsCount: 'Int'
     contentURI: 'String'
     createdAt: 'DateTime'
-    creator: 'Profile'
+    creator: 'PreviewProfile'
     disLiked: 'Boolean'
-    disLikesCount: 'Int'
     id: 'Int'
     liked: 'Boolean'
-    likes: 'Profile'
+    likes: 'PreviewProfile'
     likesCount: 'Int'
     text: 'String'
     tokenId: 'String'
@@ -329,13 +315,19 @@ export interface NexusGenFieldTypeNames {
     amount: 'String'
     fee: 'String'
     id: 'Int'
-    publish: 'Publish'
-    receiver: 'Profile'
-    sender: 'Profile'
+    publish: 'PreviewPublish'
+    receiver: 'PreviewProfile'
+    sender: 'PreviewProfile'
   }
   PageInfo: { // field return type name
     endCursor: 'String'
     hasNextPage: 'Boolean'
+  }
+  PreviewComment: { // field return type name
+    commentType: 'CommentType'
+    creator: 'PreviewProfile'
+    id: 'Int'
+    text: 'String'
   }
   PreviewProfile: { // field return type name
     id: 'Int'
@@ -384,7 +376,7 @@ export interface NexusGenFieldTypeNames {
     disLikesCount: 'Int'
     id: 'Int'
     imageURI: 'String'
-    lastComment: 'Comment'
+    lastComment: 'PreviewComment'
     liked: 'Boolean'
     likes: 'PreviewProfile'
     likesCount: 'Int'
@@ -402,6 +394,7 @@ export interface NexusGenFieldTypeNames {
     getAccount: 'Account'
     getProfileById: 'Profile'
     getPublishById: 'Publish'
+    listCommentsByCommentId: 'Comment'
     listCommentsByPublishId: 'Comment'
     listPublishesByCategory: 'PreviewPublish'
     listPublishesByCreatorId: 'PreviewPublish'
@@ -412,21 +405,6 @@ export interface NexusGenFieldTypeNames {
   Response: { // field return type name
     edges: 'Edge'
     pageInfo: 'PageInfo'
-  }
-  SubComment: { // field return type name
-    commentType: 'CommentType'
-    contentURI: 'String'
-    createdAt: 'DateTime'
-    creator: 'Profile'
-    disLiked: 'Boolean'
-    disLikesCount: 'Int'
-    id: 'Int'
-    liked: 'Boolean'
-    likes: 'Profile'
-    likesCount: 'Int'
-    text: 'String'
-    tokenId: 'String'
-    updatedAt: 'DateTime'
   }
 }
 
@@ -441,8 +419,11 @@ export interface NexusGenArgTypes {
     getPublishById: { // args
       input: NexusGenInputs['GetPublishByIdInput']; // GetPublishByIdInput!
     }
+    listCommentsByCommentId: { // args
+      input: NexusGenInputs['ListCommentsByParentIdInput']; // ListCommentsByParentIdInput!
+    }
     listCommentsByPublishId: { // args
-      input: NexusGenInputs['ListCommentsByPublishIdInput']; // ListCommentsByPublishIdInput!
+      input: NexusGenInputs['ListCommentsByParentIdInput']; // ListCommentsByParentIdInput!
     }
     listPublishesByCategory: { // args
       category: NexusGenEnums['Category']; // Category!

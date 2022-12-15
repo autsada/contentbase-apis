@@ -10,7 +10,7 @@ import {
   stringArg,
 } from "nexus"
 
-import { NexusGenInputs, NexusGenObjects } from "../typegen"
+import { NexusGenInputs } from "../typegen"
 
 export const badRequestErrMessage = "Bad Request"
 
@@ -263,7 +263,7 @@ export const Publish = objectType({
      * A publish's last comment.
      */
     t.nullable.field("lastComment", {
-      type: "Comment",
+      type: "PreviewComment",
       resolve: async (parent, _, { prisma }) => {
         return prisma.comment.findFirst({
           where: {

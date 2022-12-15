@@ -1,5 +1,4 @@
 import { objectType, extendType, nonNull, list, intArg } from "nexus"
-import { NexusGenObjects } from "../typegen"
 
 /**
  * A Fee type that map to the prisma LikeFee model.
@@ -14,8 +13,8 @@ export const Fee = objectType({
     /**
      * A publish that the fee belongs to.
      */
-    t.nonNull.field("publish", {
-      type: "Publish",
+    t.nullable.field("publish", {
+      type: "PreviewPublish",
       resolve: (parent, _, { prisma }) => {
         return prisma.likeFee
           .findUnique({
@@ -23,7 +22,7 @@ export const Fee = objectType({
               id: parent.id,
             },
           })
-          .publish() as unknown as NexusGenObjects["Publish"]
+          .publish({})
       },
     })
 
@@ -31,7 +30,7 @@ export const Fee = objectType({
      * A sender of the fee.
      */
     t.field("sender", {
-      type: "Profile",
+      type: "PreviewProfile",
       resolve: (parent, _, { prisma }) => {
         return prisma.likeFee
           .findUnique({
@@ -39,7 +38,15 @@ export const Fee = objectType({
               id: parent.id,
             },
           })
-          .sender({})
+          .sender({
+            select: {
+              id: true,
+              tokenId: true,
+              createdAt: true,
+              originalHandle: true,
+              imageURI: true,
+            },
+          })
       },
     })
 
@@ -47,7 +54,7 @@ export const Fee = objectType({
      * A receiver of the fee.
      */
     t.field("receiver", {
-      type: "Profile",
+      type: "PreviewProfile",
       resolve: (parent, _, { prisma }) => {
         return prisma.likeFee
           .findUnique({
@@ -55,7 +62,15 @@ export const Fee = objectType({
               id: parent.id,
             },
           })
-          .receiver({})
+          .receiver({
+            select: {
+              id: true,
+              tokenId: true,
+              createdAt: true,
+              originalHandle: true,
+              imageURI: true,
+            },
+          })
       },
     })
   },
@@ -64,6 +79,8 @@ export const Fee = objectType({
 export const FeeQuery = extendType({
   type: "Query",
   definition(t) {
+    // List sent fees of a profile
+    // TODO: Implement pagination
     t.field("listSentFees", {
       type: nonNull(list("Fee")),
       args: { profileId: nonNull(intArg()) },
@@ -80,6 +97,8 @@ export const FeeQuery = extendType({
       },
     })
 
+    // List received fees of a profile
+    // TODO: Implement pagination
     t.field("listReceivedFees", {
       type: nonNull(list("Fee")),
       args: { profileId: nonNull(intArg()) },

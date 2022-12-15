@@ -16,16 +16,12 @@ export const CommentType = enumType({
 })
 
 /**
- * A type for comment's comments that map to the prisma Comment model.
+ * A preview version of the Comment type.
  */
-export const SubComment = objectType({
-  name: "SubComment",
+export const PreviewComment = objectType({
+  name: "PreviewComment",
   definition(t) {
     t.nonNull.int("id")
-    t.nonNull.string("tokenId")
-    t.nonNull.field("createdAt", { type: "DateTime" })
-    t.field("updatedAt", { type: "DateTime" })
-    t.nonNull.string("contentURI")
     t.string("text")
     t.nonNull.field("commentType", { type: "CommentType" })
 
@@ -33,7 +29,7 @@ export const SubComment = objectType({
      * Comment's creator
      */
     t.field("creator", {
-      type: "Profile",
+      type: "PreviewProfile",
       resolve: (parent, _, { prisma }) => {
         return prisma.comment
           .findUnique({
@@ -41,115 +37,22 @@ export const SubComment = objectType({
               id: parent.id,
             },
           })
-          .creator({})
-      },
-    })
-
-    /**
-     * Likes count.
-     */
-    t.nonNull.field("likesCount", {
-      type: "Int",
-      resolve: (parent, _, { prisma }) => {
-        return prisma.commentLike.count({
-          where: {
-            commentId: parent.id,
-          },
-        })
-      },
-    })
-
-    /**
-     * Liked profiles list.
-     */
-    t.nonNull.list.field("likes", {
-      type: "Profile",
-      resolve: async (parent, _, { prisma }) => {
-        const likes = await prisma.comment
-          .findUnique({
-            where: {
-              id: parent.id,
-            },
-          })
-          .likes({
+          .creator({
             select: {
-              profile: true,
+              id: true,
+              tokenId: true,
+              createdAt: true,
+              originalHandle: true,
+              imageURI: true,
             },
           })
-
-        if (!likes) return []
-        else return likes.map((like) => like.profile)
-      },
-    })
-
-    /**
-     * A boolean to check whether a profile (who makes the query) liked the publish or not.
-     */
-    t.nonNull.field("liked", {
-      type: "Boolean",
-      resolve: async (parent, _, { prisma }, info) => {
-        const {
-          input: { profileId },
-        } = info.variableValues as {
-          input: NexusGenInputs["ListCommentsByPublishIdInput"]
-        }
-
-        const like = await prisma.commentLike.findUnique({
-          where: {
-            identifier: {
-              commentId: parent.id,
-              profileId,
-            },
-          },
-        })
-
-        return !!like
-      },
-    })
-
-    /**
-     * DisLikes count.
-     */
-    t.nonNull.field("disLikesCount", {
-      type: "Int",
-      resolve: (parent, _, { prisma }) => {
-        return prisma.commentDisLike.count({
-          where: {
-            commentId: parent.id,
-          },
-        })
-      },
-    })
-
-    /**
-     * A boolean to check whether a profile (who makes the query) disliked the comment or not.
-     */
-    t.nonNull.field("disLiked", {
-      type: "Boolean",
-      resolve: async (parent, _, { prisma }, info) => {
-        const {
-          input: { profileId },
-        } = info.variableValues as {
-          input: NexusGenInputs["ListCommentsByPublishIdInput"]
-        }
-
-        const disLike = await prisma.commentDisLike.findUnique({
-          where: {
-            identifier: {
-              commentId: parent.id,
-              profileId,
-            },
-          },
-        })
-
-        return !!disLike
       },
     })
   },
 })
 
 /**
- * A type for publish's comments that map to the prisma Comment model.
+ * A type for publish's comments.
  */
 export const Comment = objectType({
   name: "Comment",
@@ -166,7 +69,7 @@ export const Comment = objectType({
      * Comment's creator
      */
     t.field("creator", {
-      type: "Profile",
+      type: "PreviewProfile",
       resolve: (parent, _, { prisma }) => {
         return prisma.comment
           .findUnique({
@@ -174,34 +77,20 @@ export const Comment = objectType({
               id: parent.id,
             },
           })
-          .creator({})
-      },
-    })
-
-    /**
-     * Comments list
-     */
-    t.nonNull.list.field("comments", {
-      type: "SubComment",
-      resolve: async (parent, _, { prisma }) => {
-        const comments = await prisma.comment
-          .findUnique({
-            where: {
-              id: parent.id,
+          .creator({
+            select: {
+              id: true,
+              tokenId: true,
+              createdAt: true,
+              originalHandle: true,
+              imageURI: true,
             },
           })
-          .comments({})
-
-        if (!comments || comments.length === 0) {
-          return []
-        } else {
-          return comments
-        }
       },
     })
 
     /**
-     * Likes count.
+     * Number of likes a comment has.
      */
     t.nonNull.field("likesCount", {
       type: "Int",
@@ -215,10 +104,10 @@ export const Comment = objectType({
     })
 
     /**
-     * Liked profiles list.
+     * A list of profiles that liked the comment.
      */
     t.nonNull.list.field("likes", {
-      type: "Profile",
+      type: "PreviewProfile",
       resolve: async (parent, _, { prisma }) => {
         const likes = await prisma.comment
           .findUnique({
@@ -228,7 +117,15 @@ export const Comment = objectType({
           })
           .likes({
             select: {
-              profile: true,
+              profile: {
+                select: {
+                  id: true,
+                  tokenId: true,
+                  createdAt: true,
+                  originalHandle: true,
+                  imageURI: true,
+                },
+              },
             },
           })
 
@@ -238,16 +135,17 @@ export const Comment = objectType({
     })
 
     /**
-     * A boolean to check whether a profile (who makes the query) liked the publish or not.
+     * A boolean to check whether a profile (who makes the query) liked the publish or not, if no `profileId` provided resolve to null.
      */
-    t.nonNull.field("liked", {
+    t.nullable.field("liked", {
       type: "Boolean",
       resolve: async (parent, _, { prisma }, info) => {
-        const {
-          input: { profileId },
-        } = info.variableValues as {
-          input: NexusGenInputs["ListCommentsByPublishIdInput"]
+        const { input } = info.variableValues as {
+          input: NexusGenInputs["ListCommentsByParentIdInput"]
         }
+
+        if (!input || !input.profileId) return null
+        const { profileId } = input
 
         const like = await prisma.commentLike.findUnique({
           where: {
@@ -263,30 +161,17 @@ export const Comment = objectType({
     })
 
     /**
-     * DisLikes count.
+     * A boolean to check whether a profile (who makes the query) disliked the comment or not, if no `profileId` provided resolve to null.
      */
-    t.nonNull.field("disLikesCount", {
-      type: "Int",
-      resolve: (parent, _, { prisma }) => {
-        return prisma.commentDisLike.count({
-          where: {
-            commentId: parent.id,
-          },
-        })
-      },
-    })
-
-    /**
-     * A boolean to check whether a profile (who makes the query) disliked the comment or not.
-     */
-    t.nonNull.field("disLiked", {
+    t.nullable.field("disLiked", {
       type: "Boolean",
       resolve: async (parent, _, { prisma }, info) => {
-        const {
-          input: { profileId },
-        } = info.variableValues as {
-          input: NexusGenInputs["ListCommentsByPublishIdInput"]
+        const { input } = info.variableValues as {
+          input: NexusGenInputs["ListCommentsByParentIdInput"]
         }
+
+        if (!input || !input.profileId) return null
+        const { profileId } = input
 
         const disLike = await prisma.commentDisLike.findUnique({
           where: {
@@ -300,39 +185,92 @@ export const Comment = objectType({
         return !!disLike
       },
     })
+
+    /**
+     * Number of sub-comments a publish has.
+     */
+    t.nonNull.field("commentsCount", {
+      type: "Int",
+      resolve: (parent, _, { prisma }) => {
+        return prisma.comment.count({
+          where: {
+            commentId: parent.id,
+          },
+        })
+      },
+    })
   },
 })
 
 /**
  * An input type for use to get comments list by a publish id.
  */
-export const ListCommentsByPublishIdInput = inputObjectType({
-  name: "ListCommentsByPublishIdInput",
+export const ListCommentsByParentIdInput = inputObjectType({
+  name: "ListCommentsByParentIdInput",
   definition(t) {
-    t.nonNull.int("publishId")
+    t.nonNull.int("parentId")
     // The profileId will be used to identify if a profile `liked`/`disliked` the publish, this arg will be used in the field resolver.
-    t.nonNull.int("profileId")
+    t.nullable.int("profileId")
   },
 })
 
 export const CommentQuery = extendType({
   type: "Query",
   definition(t) {
+    /**
+     * List comments by publish id.
+     */
+    // TODO: Implement pagination
     t.field("listCommentsByPublishId", {
       type: nonNull(list("Comment")),
-      args: { input: nonNull("ListCommentsByPublishIdInput") },
+      args: { input: nonNull("ListCommentsByParentIdInput") },
       async resolve(_parent, { input }, { prisma }) {
         try {
           if (!input) throw new Error(badRequestErrMessage)
-          const { publishId } = input
+          const { parentId } = input
+
+          if (!parentId) throw new Error(badRequestErrMessage)
+
           return prisma.comment.findMany({
             where: {
               AND: [
                 {
-                  publishId,
+                  publishId: parentId,
                 },
                 {
                   commentType: "PUBLISH",
+                },
+              ],
+            },
+          })
+        } catch (error) {
+          throw error
+        }
+      },
+    })
+
+    /**
+     * List comments by parent (comment) id.
+     */
+    // TODO: Implement pagination
+    t.field("listCommentsByCommentId", {
+      type: nonNull(list("Comment")),
+      args: { input: nonNull("ListCommentsByParentIdInput") },
+      async resolve(_parent, { input }, { prisma }) {
+        try {
+          if (!input) throw new Error(badRequestErrMessage)
+          const { parentId } = input
+
+          if (!parentId) throw new Error(badRequestErrMessage)
+
+          return prisma.comment.findMany({
+            where: {
+              AND: [
+                {
+                  commentId: parentId,
+                },
+                {
+                  commentType: "COMMENT",
                 },
               ],
             },
