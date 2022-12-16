@@ -5,6 +5,9 @@ CREATE TYPE "AccountType" AS ENUM ('TRADITIONAL', 'WALLET');
 CREATE TYPE "Category" AS ENUM ('Empty', 'Music', 'Movies', 'Entertainment', 'Sports', 'Food', 'Travel', 'Gaming', 'News', 'Animals', 'Education', 'Science', 'Technology', 'Programming', 'LifeStyle', 'Vehicles', 'Children', 'Women', 'Men', 'Other', 'NotExist');
 
 -- CreateEnum
+CREATE TYPE "PublishKind" AS ENUM ('Video', 'Short', 'Audio', 'Blog', 'Post');
+
+-- CreateEnum
 CREATE TYPE "CommentType" AS ENUM ('PUBLISH', 'COMMENT');
 
 -- CreateTable
@@ -62,6 +65,7 @@ CREATE TABLE "Publish" (
     "primaryCategory" "Category" NOT NULL,
     "secondaryCategory" "Category" NOT NULL,
     "tertiaryCategory" "Category" NOT NULL,
+    "kind" "PublishKind" NOT NULL,
 
     CONSTRAINT "Publish_pkey" PRIMARY KEY ("id")
 );
