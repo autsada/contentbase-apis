@@ -74,6 +74,7 @@ type Edge {
 
 type Fee {
   amount: String!
+  createdAt: DateTime!
   fee: String!
   id: Int!
   publish: PreviewPublish

@@ -82,6 +82,7 @@ export interface NexusGenObjects {
   }
   Fee: { // root type
     amount: string; // String!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
     fee: string; // String!
     id: number; // Int!
   }
@@ -187,6 +188,7 @@ export interface NexusGenFieldTypes {
   }
   Fee: { // field return type
     amount: string; // String!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
     fee: string; // String!
     id: number; // Int!
     publish: NexusGenRootTypes['PreviewPublish'] | null; // PreviewPublish
@@ -313,6 +315,7 @@ export interface NexusGenFieldTypeNames {
   }
   Fee: { // field return type name
     amount: 'String'
+    createdAt: 'DateTime'
     fee: 'String'
     id: 'Int'
     publish: 'PreviewPublish'
