@@ -8,7 +8,7 @@ export async function createAccount(req: Request, res: Response) {
   try {
     // Verify the headers.
     const authorization = req.headers["authorization"]
-    console.log("authorization: ", authorization)
+    console.log("headers: -->", req.headers)
     if (!authorization) throw new Error("Not allow")
 
     const accessToken = authorization.split(" ")[1]
