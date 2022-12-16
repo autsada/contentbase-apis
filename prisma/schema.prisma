@@ -20,7 +20,7 @@ model Account {
   createdAt DateTime
   updatedAt DateTime?
   address   String       @unique // EOA address
-  uid       String?      @unique
+  uid       String?
   type      AccountType?
   profiles  Profile[]
 }
