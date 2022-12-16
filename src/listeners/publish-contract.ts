@@ -1,7 +1,7 @@
 /**
  * Publish Contract's Event Listeners
  */
-import type { Category } from "@prisma/client"
+import type { Category, PublishKind } from "@prisma/client"
 
 import { prisma } from "../client"
 import { getContractForWs } from "./ethers"
@@ -14,7 +14,11 @@ import {
   PublishUpdatedEvent,
   PublishDeletedEvent,
 } from "../typechain-types/contracts/publish/ContentBasePublishV1"
-import { generateTokenId, getKeyOfCategory } from "../utils"
+import {
+  generateTokenId,
+  getKeyOfCategory,
+  getKeyOfPublishKind,
+} from "../utils"
 import type { Environment } from "../types"
 
 const { NODE_ENV } = process.env
@@ -61,6 +65,7 @@ export const publishCreatedListener = async (
       primaryCategory,
       secondaryCategory,
       tertiaryCategory,
+      kind,
       timestamp,
     ] = args
     // 1. Get the profile's token id (creatorId).
@@ -84,6 +89,7 @@ export const publishCreatedListener = async (
           primaryCategory: getKeyOfCategory(primaryCategory) as Category,
           secondaryCategory: getKeyOfCategory(secondaryCategory) as Category,
           tertiaryCategory: getKeyOfCategory(tertiaryCategory) as Category,
+          kind: getKeyOfPublishKind(kind) as PublishKind,
           views: 0,
         },
       })

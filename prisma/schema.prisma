@@ -83,12 +83,20 @@ enum Category {
   NotExist
 }
 
+enum PublishKind {
+  Video
+  Short
+  Audio
+  Blog
+  Post
+}
+
 model Publish {
-  id                Int       @id @default(autoincrement())
-  tokenId           String    @unique
+  id                Int         @id @default(autoincrement())
+  tokenId           String      @unique
   createdAt         DateTime
   updatedAt         DateTime?
-  creator           Profile   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  creator           Profile     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   creatorId         Int
   creatorTokenId    String
   imageURI          String
@@ -100,10 +108,11 @@ model Publish {
   primaryCategory   Category
   secondaryCategory Category
   tertiaryCategory  Category
+  kind              PublishKind
   likeFees          LikeFee[]
   likes             Like[]
   disLikes          DisLike[]
-  comments          Comment[] @relation("MainComment")
+  comments          Comment[]   @relation("MainComment")
 }
 
 enum CommentType {

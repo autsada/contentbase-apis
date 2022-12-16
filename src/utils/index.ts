@@ -28,6 +28,17 @@ export enum Category {
 }
 
 /**
+ * Pubish's kind
+ */
+export enum PublishKind {
+  Video = "Video",
+  Short = "Short",
+  Audio = "Audio",
+  Blog = "Blog",
+  Post = "Post",
+}
+
+/**
  * CommentType in Comment Struct
  */
 export enum CommentType {
@@ -57,4 +68,14 @@ export function getKeyOfCommentType(index: number) {
 
 export function generateTokenId(tokenId: BigNumber) {
   return tokenId.toBigInt().toString()
+}
+
+// A helper function to get Publish kind.
+export function getIndexOfPublishKind(kind: PublishKind) {
+  return Object.keys(PublishKind).indexOf(kind)
+}
+
+// A helper function to get Publish kind.
+export function getKeyOfPublishKind(index: number) {
+  return Object.keys(PublishKind)[index]
 }
