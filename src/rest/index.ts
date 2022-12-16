@@ -7,10 +7,11 @@ const { API_ACCESS_TOKEN } = process.env
 export async function createAccount(req: Request, res: Response) {
   try {
     // Verify the headers.
-    const authorization = req.headers["authorization"]
+    const authorization = req.headers["Authorization"]
     if (!authorization) throw new Error("Not allow")
 
-    const accessToken = authorization.split(" ")[1]
+    console.log("headers: ", req.headers)
+    const accessToken = (authorization as string).split(" ")[1]
     console.log("token -->", accessToken, " : ", API_ACCESS_TOKEN)
     if (!accessToken || accessToken !== API_ACCESS_TOKEN)
       throw new Error("Not allow")
