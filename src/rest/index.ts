@@ -11,6 +11,7 @@ export async function createAccount(req: Request, res: Response) {
     if (!authorization) throw new Error("Not allow")
 
     const accessToken = authorization.split(" ")[1]
+    console.log("token -->", accessToken, " : ", API_ACCESS_TOKEN)
     if (!accessToken || accessToken !== API_ACCESS_TOKEN)
       throw new Error("Not allow")
 
@@ -19,6 +20,9 @@ export async function createAccount(req: Request, res: Response) {
       uid: string
       accountType: "TRADITIONAL" | "WALLET"
     }
+    console.log("address: ", address)
+    console.log("uid: ", uid)
+    console.log("accountType: ", accountType)
     const formattedAddress = address.toLowerCase()
 
     let account = await prisma.account.findUnique({
@@ -27,6 +31,7 @@ export async function createAccount(req: Request, res: Response) {
       },
     })
 
+    console.log("account: ", account)
     if (!account) {
       await prisma.account.create({
         data: {
@@ -40,7 +45,7 @@ export async function createAccount(req: Request, res: Response) {
 
     res.status(200).json({ status: "Ok" })
   } catch (error) {
-    console.log("error")
+    console.log("error", error)
     res.status(500).send((error as any).message)
   }
 }
