@@ -136,9 +136,6 @@ CREATE TABLE "CommentDisLike" (
 CREATE UNIQUE INDEX "Account_address_key" ON "Account"("address");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Account_uid_key" ON "Account"("uid");
-
--- CreateIndex
 CREATE UNIQUE INDEX "Profile_tokenId_key" ON "Profile"("tokenId");
 
 -- CreateIndex
