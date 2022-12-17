@@ -75,56 +75,67 @@ export const commentCreatedListener = async (
       // `parentId` can be the token id of a publish or a comment, depending of the commentType.
       const typeEnum = getKeyOfCommentType(commentType) as CommentType
 
-      if (typeEnum === "PUBLISH") {
-        // A. `parentId` is a publish.
-        // A.1. Get the publish.
-        const publish = await prisma.publish.findUnique({
-          where: {
-            tokenId: generateTokenId(parentId),
-          },
-        })
+      const tokenIdString = generateTokenId(tokenId)
 
-        if (publish) {
-          // A.2. Create a new comment.
-          await prisma.comment.create({
-            data: {
-              tokenId: generateTokenId(tokenId),
-              createdAt: new Date(timestamp.toNumber() * 1000),
-              creatorId: profile.id,
-              publishId: publish.id,
-              text,
-              commentType: "PUBLISH",
-              contentURI,
+      // Check if the comment already exists.
+      const comment = await prisma.comment.findUnique({
+        where: {
+          tokenId: tokenIdString,
+        },
+      })
+
+      if (!comment) {
+        if (typeEnum === "PUBLISH") {
+          // A. `parentId` is a publish.
+          // A.1. Get the publish.
+          const publish = await prisma.publish.findUnique({
+            where: {
+              tokenId: generateTokenId(parentId),
             },
           })
-        }
-      } else if (typeEnum === "COMMENT") {
-        // B. `parentId` is a comment.
-        // B.1. Get the comment.
-        const comment = await prisma.comment.findUnique({
-          where: {
-            tokenId: generateTokenId(parentId),
-          },
-        })
 
-        if (comment) {
-          // B.2. Create a new comment.
-          await prisma.comment.create({
-            data: {
-              tokenId: generateTokenId(tokenId),
-              createdAt: new Date(timestamp.toNumber() * 1000),
-              creatorId: profile.id,
-              publishId: comment.publishId,
-              commentId: comment.id,
-              text,
-              commentType: "COMMENT",
-              contentURI,
+          if (publish) {
+            // A.2. Create a new comment.
+            await prisma.comment.create({
+              data: {
+                tokenId: tokenIdString,
+                createdAt: new Date(timestamp.toNumber() * 1000),
+                creatorId: profile.id,
+                publishId: publish.id,
+                text,
+                commentType: "PUBLISH",
+                contentURI,
+              },
+            })
+          }
+        } else if (typeEnum === "COMMENT") {
+          // B. `parentId` is a comment.
+          // B.1. Get the comment.
+          const comment = await prisma.comment.findUnique({
+            where: {
+              tokenId: generateTokenId(parentId),
             },
           })
+
+          if (comment) {
+            // B.2. Create a new comment.
+            await prisma.comment.create({
+              data: {
+                tokenId: tokenIdString,
+                createdAt: new Date(timestamp.toNumber() * 1000),
+                creatorId: profile.id,
+                publishId: comment.publishId,
+                commentId: comment.id,
+                text,
+                commentType: "COMMENT",
+                contentURI,
+              },
+            })
+          }
         }
+
+        console.log("comment created done")
       }
-
-      console.log("comment created done")
     }
   } catch (error) {
     console.log("error -->", error)

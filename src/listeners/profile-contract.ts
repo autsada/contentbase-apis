@@ -77,19 +77,30 @@ export const profileCreatedListener = async (
       })
     }
 
-    // 3. Create a Profile.
-    await prisma.profile.create({
-      data: {
-        tokenId: generateTokenId(tokenId),
-        createdAt: new Date(timestamp.toNumber() * 1000),
-        accountId: account.id,
-        owner: formattedAddress,
-        handle,
-        originalHandle,
-        imageURI,
-        default: isDefault,
+    const tokenIdString = generateTokenId(tokenId)
+
+    // Check if the profile already exists.
+    const profile = await prisma.profile.findUnique({
+      where: {
+        tokenId: tokenIdString,
       },
     })
+
+    if (!profile) {
+      // 3. Create a Profile if not exists.
+      await prisma.profile.create({
+        data: {
+          tokenId: tokenIdString,
+          createdAt: new Date(timestamp.toNumber() * 1000),
+          accountId: account.id,
+          owner: formattedAddress,
+          handle,
+          originalHandle,
+          imageURI,
+          default: isDefault,
+        },
+      })
+    }
   } catch (error) {
     console.log("error -->", error)
   }

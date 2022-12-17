@@ -81,16 +81,24 @@ export const publishLikedListener = async (
           },
         })
 
-        // 4. Create a new Like.
-        await prisma.like.create({
-          data: {
-            tokenId: generateTokenId(tokenId),
-            createdAt: new Date(timestamp.toNumber() * 1000),
-            profileId: profile.id,
-            publishId: publish.id,
-            likeFeeId: feeEntity.id,
+        // 4. Create a new Like if not exist.
+        const tokenIdString = generateTokenId(tokenId)
+        const like = await prisma.like.findUnique({
+          where: {
+            tokenId: tokenIdString,
           },
         })
+        if (!like) {
+          await prisma.like.create({
+            data: {
+              tokenId: tokenIdString,
+              createdAt: new Date(timestamp.toNumber() * 1000),
+              profileId: profile.id,
+              publishId: publish.id,
+              likeFeeId: feeEntity.id,
+            },
+          })
+        }
 
         // 5. Check if the user disliked the publish before, if so we need to delete the existing disLike as well.
         const disLike = await prisma.disLike.findUnique({

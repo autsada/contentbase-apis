@@ -74,27 +74,38 @@ export const publishCreatedListener = async (
     })
 
     if (profile) {
-      // 2. Create a Publish.
-      await prisma.publish.create({
-        data: {
-          tokenId: generateTokenId(tokenId),
-          createdAt: new Date(timestamp.toNumber() * 1000),
-          creatorId: profile.id,
-          creatorTokenId: profile.tokenId,
-          imageURI,
-          contentURI,
-          metadataURI,
-          title,
-          description,
-          primaryCategory: getKeyOfCategory(primaryCategory) as Category,
-          secondaryCategory: getKeyOfCategory(secondaryCategory) as Category,
-          tertiaryCategory: getKeyOfCategory(tertiaryCategory) as Category,
-          kind: getKeyOfPublishKind(kind) as PublishKind,
-          views: 0,
+      const tokenIdString = generateTokenId(tokenId)
+
+      // Check if the publish already exists.
+      const publish = await prisma.publish.findUnique({
+        where: {
+          tokenId: tokenIdString,
         },
       })
 
-      console.log("create publish done")
+      if (!publish) {
+        // 2. Create a Publish if not exists.
+        await prisma.publish.create({
+          data: {
+            tokenId: tokenIdString,
+            createdAt: new Date(timestamp.toNumber() * 1000),
+            creatorId: profile.id,
+            creatorTokenId: profile.tokenId,
+            imageURI,
+            contentURI,
+            metadataURI,
+            title,
+            description,
+            primaryCategory: getKeyOfCategory(primaryCategory) as Category,
+            secondaryCategory: getKeyOfCategory(secondaryCategory) as Category,
+            tertiaryCategory: getKeyOfCategory(tertiaryCategory) as Category,
+            kind: getKeyOfPublishKind(kind) as PublishKind,
+            views: 0,
+          },
+        })
+
+        console.log("create publish done")
+      }
     }
   } catch (error) {
     console.log("error -->", error)
