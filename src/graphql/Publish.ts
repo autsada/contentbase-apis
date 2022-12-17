@@ -44,6 +44,11 @@ export const Category = enumType({
   ],
 })
 
+export const PublishKind = enumType({
+  name: "PublishKind",
+  members: ["Video", "Short", "Audio", "Blog", "Post"],
+})
+
 /**
  * A preview verion of the Publish type.
  * @dev Use this type for publishes listing queries that doesn't require to have much details of a publish.
@@ -60,6 +65,7 @@ export const PreviewPublish = objectType({
     t.nonNull.field("primaryCategory", { type: "Category" })
     t.nonNull.field("secondaryCategory", { type: "Category" })
     t.nonNull.field("tertiaryCategory", { type: "Category" })
+    t.nonNull.field("kind", { type: "PublishKind" })
     t.nonNull.int("views")
 
     /**
@@ -108,6 +114,7 @@ export const Publish = objectType({
     t.nonNull.field("primaryCategory", { type: "Category" })
     t.nonNull.field("secondaryCategory", { type: "Category" })
     t.nonNull.field("tertiaryCategory", { type: "Category" })
+    t.nonNull.field("kind", { type: "PublishKind" })
     t.nonNull.int("views")
 
     /**

@@ -122,6 +122,7 @@ type PreviewPublish {
   creator: PreviewProfile
   id: Int!
   imageURI: String!
+  kind: PublishKind!
   primaryCategory: Category!
   secondaryCategory: Category!
   tertiaryCategory: Category!
@@ -159,6 +160,7 @@ type Publish {
   disLikesCount: Int!
   id: Int!
   imageURI: String!
+  kind: PublishKind!
   lastComment: PreviewComment
   liked: Boolean
   likes: [PreviewProfile]!
@@ -171,6 +173,14 @@ type Publish {
   tokenId: String!
   updatedAt: DateTime
   views: Int!
+}
+
+enum PublishKind {
+  Audio
+  Blog
+  Post
+  Short
+  Video
 }
 
 type Query {

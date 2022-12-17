@@ -47,6 +47,7 @@ export interface NexusGenEnums {
   AccountType: "TRADITIONAL" | "WALLET"
   Category: "Animals" | "Children" | "Education" | "Empty" | "Entertainment" | "Food" | "Gaming" | "LifeStyle" | "Men" | "Movies" | "Music" | "News" | "NotExist" | "Other" | "Programming" | "Science" | "Sports" | "Technology" | "Travel" | "Vehicles" | "Women"
   CommentType: "COMMENT" | "PUBLISH"
+  PublishKind: "Audio" | "Blog" | "Post" | "Short" | "Video"
 }
 
 export interface NexusGenScalars {
@@ -106,6 +107,7 @@ export interface NexusGenObjects {
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
     imageURI: string; // String!
+    kind: NexusGenEnums['PublishKind']; // PublishKind!
     primaryCategory: NexusGenEnums['Category']; // Category!
     secondaryCategory: NexusGenEnums['Category']; // Category!
     tertiaryCategory: NexusGenEnums['Category']; // Category!
@@ -131,6 +133,7 @@ export interface NexusGenObjects {
     description?: string | null; // String
     id: number; // Int!
     imageURI: string; // String!
+    kind: NexusGenEnums['PublishKind']; // PublishKind!
     metadataURI: string; // String!
     primaryCategory: NexusGenEnums['Category']; // Category!
     secondaryCategory: NexusGenEnums['Category']; // Category!
@@ -217,6 +220,7 @@ export interface NexusGenFieldTypes {
     creator: NexusGenRootTypes['PreviewProfile'] | null; // PreviewProfile
     id: number; // Int!
     imageURI: string; // String!
+    kind: NexusGenEnums['PublishKind']; // PublishKind!
     primaryCategory: NexusGenEnums['Category']; // Category!
     secondaryCategory: NexusGenEnums['Category']; // Category!
     tertiaryCategory: NexusGenEnums['Category']; // Category!
@@ -252,6 +256,7 @@ export interface NexusGenFieldTypes {
     disLikesCount: number; // Int!
     id: number; // Int!
     imageURI: string; // String!
+    kind: NexusGenEnums['PublishKind']; // PublishKind!
     lastComment: NexusGenRootTypes['PreviewComment'] | null; // PreviewComment
     liked: boolean | null; // Boolean
     likes: Array<NexusGenRootTypes['PreviewProfile'] | null>; // [PreviewProfile]!
@@ -344,6 +349,7 @@ export interface NexusGenFieldTypeNames {
     creator: 'PreviewProfile'
     id: 'Int'
     imageURI: 'String'
+    kind: 'PublishKind'
     primaryCategory: 'Category'
     secondaryCategory: 'Category'
     tertiaryCategory: 'Category'
@@ -379,6 +385,7 @@ export interface NexusGenFieldTypeNames {
     disLikesCount: 'Int'
     id: 'Int'
     imageURI: 'String'
+    kind: 'PublishKind'
     lastComment: 'PreviewComment'
     liked: 'Boolean'
     likes: 'PreviewProfile'
