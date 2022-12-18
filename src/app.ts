@@ -3,7 +3,6 @@ import dotenv from "dotenv"
 dotenv.config({ path: path.join(__dirname, "../.env") })
 import express from "express"
 import cors from "cors"
-import bodyParser from "body-parser"
 import http from "http"
 import workerpool from "workerpool"
 import { ApolloServer } from "@apollo/server"
@@ -11,10 +10,12 @@ import { expressMiddleware } from "@apollo/server/express4"
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer"
 import { ApolloServerPluginLandingPageLocalDefault } from "@apollo/server/plugin/landingPage/default"
 import { InMemoryLRUCache } from "@apollo/utils.keyvaluecache"
+import * as lw from "@google-cloud/logging-winston"
 
 import { schema } from "./schema"
 import { context, Context } from "./context"
 import { createAccount } from "./rest"
+import { logger } from "./utils/logger"
 import { Environment } from "./types"
 
 const { PORT, NODE_ENV } = process.env
@@ -37,26 +38,30 @@ pool
   .exec("start", [], {
     on: (payload) => {
       if (payload.status === "start") {
-        console.log("Start listeners")
+        logger.info("Start listeners")
       }
     },
   })
   .then(() => {})
   .catch((error) => {
-    console.log("error: ", error)
+    logger.error("error: ", error)
   })
 
 async function startServer() {
+  // Create a middleware that will use the provided logger.
+  // A Cloud Logging transport will be created automatically
+  // and added onto the provided logger.
+  const mw = await lw.express.makeMiddleware(logger)
   const app = express()
 
+  // Use the logging middleware.
+  app.use(mw)
+  app.use(express.json())
+  app.use(express.urlencoded({ extended: true }))
+  app.use(cors<cors.CorsRequest>())
+
   // Rest api for creating account.
-  app.post(
-    "/account/create",
-    express.json(),
-    express.urlencoded({ extended: true }),
-    cors<cors.CorsRequest>(),
-    createAccount
-  )
+  app.post("/account/create", createAccount)
 
   const httpServer = http.createServer(app)
 
@@ -81,8 +86,6 @@ async function startServer() {
   await server.start()
   app.use(
     "/graphql",
-    cors<cors.CorsRequest>(),
-    bodyParser.json(),
     expressMiddleware(server, {
       context: async () => context,
     })
@@ -91,7 +94,7 @@ async function startServer() {
   await new Promise<void>((resolver) => {
     httpServer.listen({ port: Number(PORT) }, resolver)
   })
-  console.log(`APIs ready at port: ${PORT}`)
+  logger.info(`APIs ready at port: ${PORT}`)
 
   return { server, app }
 }

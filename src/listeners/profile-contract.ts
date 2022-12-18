@@ -14,6 +14,7 @@ import {
   DefaultProfileUpdatedEvent,
 } from "../typechain-types/contracts/profile/ContentBaseProfileV1"
 import { generateTokenId } from "../utils"
+import { logger } from "../utils/logger"
 import type { Environment } from "../types"
 
 const { NODE_ENV } = process.env
@@ -65,7 +66,6 @@ export const profileCreatedListener = async (
       where: { address: formattedAddress },
     })
 
-    console.log("account -->", account)
     // If no account found, it means this is the first profile of the caller (owner) so we need to create an account first.
     if (!account) {
       // 2. Create an account (if not exist).
@@ -100,9 +100,11 @@ export const profileCreatedListener = async (
           default: isDefault,
         },
       })
+
+      logger.info("Profile created done")
     }
   } catch (error) {
-    console.log("error -->", error)
+    logger.error((error as any).message)
   }
 }
 
@@ -120,16 +122,17 @@ export const profileImageUpdatedListener = async (
       where: { tokenId: generateTokenId(tokenId) },
     })
 
-    console.log("profile -->", profile)
     // 2. Update the profile.
     if (profile) {
       await prisma.profile.update({
         where: { id: profile.id },
         data: { imageURI, updatedAt: new Date(timestamp.toNumber() * 1000) },
       })
+
+      logger.info("Profile updated done")
     }
   } catch (error) {
-    console.log("error -->", error)
+    logger.error((error as any).message)
   }
 }
 
@@ -163,7 +166,6 @@ export const defaultProfileUpdatedListener = async (
       where: { tokenId: generateTokenId(oldProfileId) },
     })
 
-    console.log("new default -->", newProfile)
     if (oldProfile && oldProfile.default) {
       // 4. Update the old default profile.
       await prisma.profile.update({
@@ -173,8 +175,10 @@ export const defaultProfileUpdatedListener = async (
           updatedAt: new Date(timestamp.toNumber() * 1000),
         },
       })
+
+      logger.info("update default profile done")
     }
   } catch (error) {
-    console.log("error -->", error)
+    logger.error((error as any).message)
   }
 }

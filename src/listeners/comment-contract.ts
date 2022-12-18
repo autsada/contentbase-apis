@@ -19,6 +19,7 @@ import {
   CommentUndoDisLikedEvent,
 } from "../typechain-types/contracts/publish/ContentBaseCommentV1"
 import { generateTokenId, getKeyOfCommentType } from "../utils"
+import { logger } from "../utils/logger"
 import type { Environment } from "../types"
 
 const { NODE_ENV } = process.env
@@ -134,11 +135,11 @@ export const commentCreatedListener = async (
           }
         }
 
-        console.log("comment created done")
+        logger.info("comment created done")
       }
     }
   } catch (error) {
-    console.log("error -->", error)
+    logger.error((error as any).message)
   }
 }
 
@@ -171,10 +172,10 @@ export const commentUpdatedListener = async (
         },
       })
 
-      console.log("comment updated done")
+      logger.info("comment updated done")
     }
   } catch (error) {
-    console.log("error -->", error)
+    logger.error((error as any).message)
   }
 }
 
@@ -202,10 +203,10 @@ export const commentDeletedListener = async (
         },
       })
 
-      console.log("comment deleted done")
+      logger.info("comment deleted done")
     }
   } catch (error) {
-    console.log("error -->", error)
+    logger.error((error as any).message)
   }
 }
 
@@ -264,11 +265,11 @@ export const commentLikedListener = async (
           })
         }
 
-        console.log("comment liked done")
+        logger.info("comment liked done")
       }
     }
   } catch (error) {
-    console.log("error -->", error)
+    logger.error((error as any).message)
   }
 }
 
@@ -307,11 +308,11 @@ export const commentUnLikedListener = async (
           },
         })
 
-        console.log("comment unliked done")
+        logger.info("comment unliked done")
       }
     }
   } catch (error) {
-    console.log("error -->", error)
+    logger.error((error as any).message)
   }
 }
 
@@ -370,11 +371,11 @@ export const commentDisLikedListener = async (
           })
         }
 
-        console.log("comment disliked done")
+        logger.info("comment disliked done")
       }
     }
   } catch (error) {
-    console.log("error -->", error)
+    logger.error((error as any).message)
   }
 }
 
@@ -413,10 +414,10 @@ export const commentUndoDisLikedListener = async (
           },
         })
 
-        console.log("comment undo disliked done")
+        logger.info("comment undo disliked done")
       }
     }
   } catch (error) {
-    console.log("error -->", error)
+    logger.error((error as any).message)
   }
 }

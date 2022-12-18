@@ -13,6 +13,7 @@ import {
   UnFollowingEvent,
 } from "../typechain-types/contracts/profile/ContentBaseFollowV1"
 import { generateTokenId } from "../utils"
+import { logger } from "../utils/logger"
 import type { Environment } from "../types"
 
 const { NODE_ENV } = process.env
@@ -78,11 +79,11 @@ export const followingListener = async (...args: FollowingEvent["args"]) => {
           },
         })
 
-        console.log("follow done -->")
+        logger.info("following done")
       }
     }
   } catch (error) {
-    console.log("error -->", error)
+    logger.error((error as any).message)
   }
 }
 
@@ -105,9 +106,9 @@ export const unFollowingListener = async (
       await prisma.follow.delete({
         where: { tokenId: generateTokenId(tokenId) },
       })
-      console.log("unfollow done")
+      logger.info("unfollowing done")
     }
   } catch (error) {
-    console.log("error -->", error)
+    logger.error((error as any).message)
   }
 }

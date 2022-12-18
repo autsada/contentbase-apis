@@ -17,6 +17,7 @@ import {
   PublishUndoDisLikedEvent,
 } from "../typechain-types/contracts/publish/ContentBaseLikeV1"
 import { generateTokenId } from "../utils"
+import { logger } from "../utils/logger"
 import type { Environment } from "../types"
 
 const { NODE_ENV } = process.env
@@ -121,11 +122,11 @@ export const publishLikedListener = async (
           })
         }
 
-        console.log("publish liked done")
+        logger.info("like publish done")
       }
     }
   } catch (error) {
-    console.log("error -->", error)
+    logger.error((error as any).message)
   }
 }
 
@@ -153,10 +154,10 @@ export const publishUnLikedListener = async (
         },
       })
 
-      console.log("publish unliked done")
+      logger.info("unlike publish done")
     }
   } catch (error) {
-    console.log("error -->", error)
+    logger.error((error as any).message)
   }
 }
 
@@ -215,11 +216,11 @@ export const publishDisLikedListener = async (
           })
         }
 
-        console.log("publish disliked done")
+        logger.info("dislike publish done")
       }
     }
   } catch (error) {
-    console.log("error -->", error)
+    logger.error((error as any).message)
   }
 }
 
@@ -258,10 +259,10 @@ export const publishUndoDisLikedListener = async (
           },
         })
 
-        console.log("publish undo disliked done")
+        logger.info("undo dislike publish done")
       }
     }
   } catch (error) {
-    console.log("error -->", error)
+    logger.error((error as any).message)
   }
 }

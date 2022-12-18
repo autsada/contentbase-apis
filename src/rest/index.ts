@@ -1,6 +1,7 @@
 import type { Request, Response } from "express"
 
 import { prisma } from "../client"
+import { logger } from "../utils/logger"
 
 const { API_ACCESS_TOKEN } = process.env
 
@@ -36,10 +37,13 @@ export async function createAccount(req: Request, res: Response) {
           type: accountType,
         },
       })
+
+      logger.info("account created done")
     }
 
     res.status(200).json({ status: "Ok" })
   } catch (error) {
+    logger.error((error as any).message)
     res.status(500).send((error as any).message)
   }
 }
