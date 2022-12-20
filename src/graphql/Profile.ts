@@ -7,7 +7,7 @@ import {
 } from "nexus"
 
 import { NexusGenInputs } from "../typegen"
-import { badRequestErrMessage } from "./Publish"
+import { throwError, badInputErrMessage } from "./Error"
 
 /**
  * A preview version of the Profile.
@@ -195,10 +195,10 @@ export const FrofileQuery = extendType({
       args: { input: nonNull("GetProfileByIdInput") },
       resolve(_parent, { input }, { prisma }) {
         try {
-          if (!input) throw new Error(badRequestErrMessage)
+          if (!input) throwError(badInputErrMessage, "BAD_USER_INPUT")
           const { profileId } = input
 
-          if (!profileId) throw new Error(badRequestErrMessage)
+          if (!profileId) throwError(badInputErrMessage, "BAD_USER_INPUT")
 
           return prisma.profile.findUnique({
             where: { id: profileId },

@@ -8,7 +8,7 @@ import {
 } from "nexus"
 
 import { NexusGenInputs } from "../typegen"
-import { badRequestErrMessage } from "./Publish"
+import { throwError, badInputErrMessage } from "./Error"
 
 export const CommentType = enumType({
   name: "CommentType",
@@ -226,10 +226,10 @@ export const CommentQuery = extendType({
       args: { input: nonNull("ListCommentsByParentIdInput") },
       async resolve(_parent, { input }, { prisma }) {
         try {
-          if (!input) throw new Error(badRequestErrMessage)
+          if (!input) throwError(badInputErrMessage, "BAD_USER_INPUT")
           const { parentId } = input
 
-          if (!parentId) throw new Error(badRequestErrMessage)
+          if (!parentId) throwError(badInputErrMessage, "BAD_USER_INPUT")
 
           return prisma.comment.findMany({
             where: {
@@ -258,10 +258,10 @@ export const CommentQuery = extendType({
       args: { input: nonNull("ListCommentsByParentIdInput") },
       async resolve(_parent, { input }, { prisma }) {
         try {
-          if (!input) throw new Error(badRequestErrMessage)
+          if (!input) throwError(badInputErrMessage, "BAD_USER_INPUT")
           const { parentId } = input
 
-          if (!parentId) throw new Error(badRequestErrMessage)
+          if (!parentId) throwError(badInputErrMessage, "BAD_USER_INPUT")
 
           return prisma.comment.findMany({
             where: {

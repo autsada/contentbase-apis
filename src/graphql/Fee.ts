@@ -1,5 +1,7 @@
 import { objectType, extendType, nonNull, list, intArg } from "nexus"
 
+import { throwError, badInputErrMessage } from "./Error"
+
 /**
  * A Fee type that map to the prisma LikeFee model.
  */
@@ -109,6 +111,8 @@ export const FeeQuery = extendType({
       args: { profileId: nonNull(intArg()) },
       async resolve(_parent, { profileId }, { prisma }) {
         try {
+          if (!profileId) throwError(badInputErrMessage, "BAD_USER_INPUT")
+
           return prisma.likeFee.findMany({
             where: {
               senderId: profileId,
@@ -127,6 +131,8 @@ export const FeeQuery = extendType({
       args: { profileId: nonNull(intArg()) },
       async resolve(_parent, { profileId }, { prisma }) {
         try {
+          if (!profileId) throwError(badInputErrMessage, "BAD_USER_INPUT")
+
           return prisma.likeFee.findMany({
             where: {
               receiverId: profileId,

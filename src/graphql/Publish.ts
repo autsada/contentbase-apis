@@ -11,8 +11,7 @@ import {
 } from "nexus"
 
 import { NexusGenInputs } from "../typegen"
-
-export const badRequestErrMessage = "Bad Request"
+import { badInputErrMessage, throwError } from "./Error"
 
 /**
  * Publish's category.
@@ -315,10 +314,10 @@ export const PublishQuery = extendType({
       args: { input: nonNull("GetPublishByIdInput") },
       resolve(_parent, { input }, { prisma }) {
         try {
-          if (!input) throw new Error(badRequestErrMessage)
+          if (!input) throwError(badInputErrMessage, "BAD_USER_INPUT")
           const { publishId } = input
 
-          if (!publishId) throw new Error(badRequestErrMessage)
+          if (!publishId) throwError(badInputErrMessage, "BAD_USER_INPUT")
 
           return prisma.publish.findUnique({
             where: {
@@ -355,7 +354,7 @@ export const PublishQuery = extendType({
       args: { category: nonNull("Category") },
       resolve(_parent, { category }, { prisma }) {
         try {
-          if (!category) throw new Error(badRequestErrMessage)
+          if (!category) throwError(badInputErrMessage, "BAD_USER_INPUT")
 
           return prisma.publish.findMany({
             where: {
@@ -388,7 +387,7 @@ export const PublishQuery = extendType({
       args: { id: nonNull(intArg()) },
       resolve(_parent, { id }, { prisma }) {
         try {
-          if (!id) throw new Error(badRequestErrMessage)
+          if (!id) throwError(badInputErrMessage, "BAD_USER_INPUT")
 
           return prisma.publish.findMany({
             where: {
@@ -410,7 +409,7 @@ export const PublishQuery = extendType({
       args: { creatorTokenId: nonNull(stringArg()) },
       resolve(_parent, { creatorTokenId }, { prisma }) {
         try {
-          if (!creatorTokenId) throw new Error(badRequestErrMessage)
+          if (!creatorTokenId) throwError(badInputErrMessage, "BAD_USER_INPUT")
 
           return prisma.publish.findMany({
             where: {

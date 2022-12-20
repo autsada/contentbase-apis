@@ -7,6 +7,8 @@ import {
   enumType,
 } from "nexus"
 
+import { throwError, badInputErrMessage } from "./Error"
+
 export const Edge = objectType({
   name: "Edge",
   definition(t) {
@@ -74,6 +76,8 @@ export const AccountQuery = extendType({
       args: { address: nonNull(stringArg()) },
       resolve(_parent, { address }, { prisma }) {
         try {
+          if (!address) throwError(badInputErrMessage, "BAD_USER_INPUT")
+
           return prisma.account.findUnique({
             where: {
               address: address.toLowerCase(),
