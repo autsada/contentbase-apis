@@ -12,6 +12,28 @@ export const Fee = objectType({
     t.nonNull.string("fee")
 
     /**
+     * A like that the fee links to
+     */
+    t.nullable.field("likeTokenId", {
+      type: "String",
+      resolve: async (parent, _, { prisma }) => {
+        const like = await prisma.likeFee
+          .findUnique({
+            where: {
+              id: parent.id,
+            },
+          })
+          .like({
+            select: {
+              tokenId: true,
+            },
+          })
+
+        return like ? like.tokenId : null
+      },
+    })
+
+    /**
      * A publish that the fee belongs to.
      */
     t.nullable.field("publish", {

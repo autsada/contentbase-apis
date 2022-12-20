@@ -194,6 +194,7 @@ export interface NexusGenFieldTypes {
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     fee: string; // String!
     id: number; // Int!
+    likeTokenId: string | null; // String
     publish: NexusGenRootTypes['PreviewPublish'] | null; // PreviewPublish
     receiver: NexusGenRootTypes['PreviewProfile'] | null; // PreviewProfile
     sender: NexusGenRootTypes['PreviewProfile'] | null; // PreviewProfile
@@ -323,6 +324,7 @@ export interface NexusGenFieldTypeNames {
     createdAt: 'DateTime'
     fee: 'String'
     id: 'Int'
+    likeTokenId: 'String'
     publish: 'PreviewPublish'
     receiver: 'PreviewProfile'
     sender: 'PreviewProfile'
