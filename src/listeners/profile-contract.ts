@@ -14,7 +14,6 @@ import {
   DefaultProfileUpdatedEvent,
 } from "../typechain-types/contracts/profile/ContentBaseProfileV1"
 import { generateTokenId } from "../utils"
-import { logger } from "../utils/logger"
 import type { Environment } from "../types"
 
 const { NODE_ENV } = process.env
@@ -101,10 +100,10 @@ export const profileCreatedListener = async (
         },
       })
 
-      logger.info("Profile created done")
+      console.log("Profile created done")
     }
   } catch (error) {
-    logger.error((error as any).message)
+    console.error((error as any).message)
   }
 }
 
@@ -129,10 +128,10 @@ export const profileImageUpdatedListener = async (
         data: { imageURI, updatedAt: new Date(timestamp.toNumber() * 1000) },
       })
 
-      logger.info("Profile updated done")
+      console.log("Profile updated done")
     }
   } catch (error) {
-    logger.error((error as any).message)
+    console.error((error as any).message)
   }
 }
 
@@ -176,9 +175,9 @@ export const defaultProfileUpdatedListener = async (
         },
       })
 
-      logger.info("update default profile done")
+      console.log("update default profile done")
     }
   } catch (error) {
-    logger.error((error as any).message)
+    console.error((error as any).message)
   }
 }

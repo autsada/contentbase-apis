@@ -19,7 +19,6 @@ import {
   getKeyOfCategory,
   getKeyOfPublishKind,
 } from "../utils"
-import { logger } from "../utils/logger"
 import type { Environment } from "../types"
 
 const { NODE_ENV } = process.env
@@ -105,11 +104,11 @@ export const publishCreatedListener = async (
           },
         })
 
-        logger.info("create publish done")
+        console.log("create publish done")
       }
     }
   } catch (error) {
-    logger.error((error as any).message)
+    console.error((error as any).message)
   }
 }
 
@@ -157,10 +156,10 @@ export const publishUpdatedListener = async (
         },
       })
 
-      logger.info("publish updated done")
+      console.log("publish updated done")
     }
   } catch (error) {
-    logger.error((error as any).message)
+    console.error((error as any).message)
   }
 }
 
@@ -184,9 +183,9 @@ export const publishDeletedListener = async (
         where: { id: publish.id },
       })
 
-      logger.info("publish deleted done")
+      console.log("publish deleted done")
     }
   } catch (error) {
-    logger.error((error as any).message)
+    console.error((error as any).message)
   }
 }

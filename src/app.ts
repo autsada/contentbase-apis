@@ -10,12 +10,10 @@ import { expressMiddleware } from "@apollo/server/express4"
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer"
 import { ApolloServerPluginLandingPageLocalDefault } from "@apollo/server/plugin/landingPage/default"
 import { InMemoryLRUCache } from "@apollo/utils.keyvaluecache"
-import * as lw from "@google-cloud/logging-winston"
 
 import { schema } from "./schema"
 import { context, Context } from "./context"
 import { createAccount } from "./rest"
-import { logger } from "./utils/logger"
 import { Environment } from "./types"
 
 const { PORT, NODE_ENV } = process.env
@@ -38,24 +36,18 @@ pool
   .exec("start", [], {
     on: (payload) => {
       if (payload.status === "start") {
-        logger.info("Start listeners")
+        console.log("Start listeners")
       }
     },
   })
   .then(() => {})
   .catch((error) => {
-    logger.error("error: ", error)
+    console.error("error: ", error)
   })
 
 async function startServer() {
-  // Create a middleware that will use the provided logger.
-  // A Cloud Logging transport will be created automatically
-  // and added onto the provided logger.
-  const mw = await lw.express.makeMiddleware(logger)
   const app = express()
 
-  // Use the logging middleware.
-  app.use(mw)
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
   app.use(cors<cors.CorsRequest>())
@@ -94,7 +86,7 @@ async function startServer() {
   await new Promise<void>((resolver) => {
     httpServer.listen({ port: Number(PORT) }, resolver)
   })
-  logger.info(`APIs ready at port: ${PORT}`)
+  console.log(`APIs ready at port: ${PORT}`)
 
   return { server, app }
 }
