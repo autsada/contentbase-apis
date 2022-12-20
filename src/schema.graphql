@@ -93,6 +93,14 @@ input GetPublishByIdInput {
   publishId: Int!
 }
 
+type Like {
+  createdAt: DateTime!
+  id: Int!
+  likeFeeId: String!
+  profile: PreviewProfile
+  tokenId: String!
+}
+
 input ListCommentsByParentIdInput {
   parentId: Int!
   profileId: Int
@@ -191,6 +199,7 @@ type Query {
   getPublishById(input: GetPublishByIdInput!): Publish
   listCommentsByCommentId(input: ListCommentsByParentIdInput!): [Comment]!
   listCommentsByPublishId(input: ListCommentsByParentIdInput!): [Comment]!
+  listLikesByPublishId(publishId: Int!): [Like]!
   listPublishesByCategory(category: Category!): [PreviewPublish]!
   listPublishesByCreatorId(id: Int!): [PreviewPublish]!
   listPublishesByCreatorTokenId(creatorTokenId: String!): [PreviewPublish]!

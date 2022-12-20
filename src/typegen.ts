@@ -87,6 +87,12 @@ export interface NexusGenObjects {
     fee: string; // String!
     id: number; // Int!
   }
+  Like: { // root type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    id: number; // Int!
+    likeFeeId: string; // String!
+    tokenId: string; // String!
+  }
   PageInfo: { // root type
     endCursor?: string | null; // String
     hasNextPage?: boolean | null; // Boolean
@@ -199,6 +205,13 @@ export interface NexusGenFieldTypes {
     receiver: NexusGenRootTypes['PreviewProfile'] | null; // PreviewProfile
     sender: NexusGenRootTypes['PreviewProfile'] | null; // PreviewProfile
   }
+  Like: { // field return type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    id: number; // Int!
+    likeFeeId: string; // String!
+    profile: NexusGenRootTypes['PreviewProfile'] | null; // PreviewProfile
+    tokenId: string; // String!
+  }
   PageInfo: { // field return type
     endCursor: string | null; // String
     hasNextPage: boolean | null; // Boolean
@@ -278,6 +291,7 @@ export interface NexusGenFieldTypes {
     getPublishById: NexusGenRootTypes['Publish'] | null; // Publish
     listCommentsByCommentId: Array<NexusGenRootTypes['Comment'] | null>; // [Comment]!
     listCommentsByPublishId: Array<NexusGenRootTypes['Comment'] | null>; // [Comment]!
+    listLikesByPublishId: Array<NexusGenRootTypes['Like'] | null>; // [Like]!
     listPublishesByCategory: Array<NexusGenRootTypes['PreviewPublish'] | null>; // [PreviewPublish]!
     listPublishesByCreatorId: Array<NexusGenRootTypes['PreviewPublish'] | null>; // [PreviewPublish]!
     listPublishesByCreatorTokenId: Array<NexusGenRootTypes['PreviewPublish'] | null>; // [PreviewPublish]!
@@ -328,6 +342,13 @@ export interface NexusGenFieldTypeNames {
     publish: 'PreviewPublish'
     receiver: 'PreviewProfile'
     sender: 'PreviewProfile'
+  }
+  Like: { // field return type name
+    createdAt: 'DateTime'
+    id: 'Int'
+    likeFeeId: 'String'
+    profile: 'PreviewProfile'
+    tokenId: 'String'
   }
   PageInfo: { // field return type name
     endCursor: 'String'
@@ -408,6 +429,7 @@ export interface NexusGenFieldTypeNames {
     getPublishById: 'Publish'
     listCommentsByCommentId: 'Comment'
     listCommentsByPublishId: 'Comment'
+    listLikesByPublishId: 'Like'
     listPublishesByCategory: 'PreviewPublish'
     listPublishesByCreatorId: 'PreviewPublish'
     listPublishesByCreatorTokenId: 'PreviewPublish'
@@ -436,6 +458,9 @@ export interface NexusGenArgTypes {
     }
     listCommentsByPublishId: { // args
       input: NexusGenInputs['ListCommentsByParentIdInput']; // ListCommentsByParentIdInput!
+    }
+    listLikesByPublishId: { // args
+      publishId: number; // Int!
     }
     listPublishesByCategory: { // args
       category: NexusGenEnums['Category']; // Category!
