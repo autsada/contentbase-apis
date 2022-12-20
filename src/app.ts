@@ -19,31 +19,31 @@ import { Environment } from "./types"
 const { PORT, NODE_ENV } = process.env
 const env = NODE_ENV as Environment
 
-// // Create a worker pool to run a worker for Ethereum event listeners.
-// const pool = workerpool.pool(
-//   path.resolve(
-//     __dirname,
-//     "listeners",
-//     env === "development" ? "worker-dev.js" : "worker.js"
-//   ),
-//   {
-//     minWorkers: 1,
-//     maxWorkers: 1,
-//     workerType: "thread",
-//   }
-// )
-// pool
-//   .exec("start", [], {
-//     on: (payload) => {
-//       if (payload.status === "start") {
-//         console.log("Start listeners")
-//       }
-//     },
-//   })
-//   .then(() => {})
-//   .catch((error) => {
-//     console.error("error: ", error)
-//   })
+// Create a worker pool to run a worker for Ethereum event listeners.
+const pool = workerpool.pool(
+  path.resolve(
+    __dirname,
+    "listeners",
+    env === "development" ? "worker-dev.js" : "worker.js"
+  ),
+  {
+    minWorkers: 1,
+    maxWorkers: 1,
+    workerType: "thread",
+  }
+)
+pool
+  .exec("start", [], {
+    on: (payload) => {
+      if (payload.status === "start") {
+        console.log("Start listeners")
+      }
+    },
+  })
+  .then(() => {})
+  .catch((error) => {
+    console.error("error: ", error)
+  })
 
 async function startServer() {
   const app = express()
