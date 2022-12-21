@@ -44,7 +44,6 @@ enum Category {
 type Comment {
   commentType: CommentType!
   commentsCount: Int!
-  contentURI: String!
   createdAt: DateTime!
   creator: PreviewProfile
   disLiked: Boolean
@@ -78,7 +77,6 @@ type Fee {
   fee: String!
   id: Int!
   likeTokenId: String
-  publish: PreviewPublish
   receiver: PreviewProfile
   sender: PreviewProfile
 }
@@ -130,7 +128,6 @@ type PreviewPublish {
   createdAt: DateTime!
   creator: PreviewProfile
   id: Int!
-  imageURI: String!
   kind: PublishKind!
   primaryCategory: Category!
   secondaryCategory: Category!
@@ -168,13 +165,11 @@ type Publish {
   disLiked: Boolean
   disLikesCount: Int!
   id: Int!
-  imageURI: String!
   kind: PublishKind!
   lastComment: PreviewComment
   liked: Boolean
   likes: [PreviewProfile]!
   likesCount: Int!
-  metadataURI: String!
   primaryCategory: Category!
   secondaryCategory: Category!
   tertiaryCategory: Category!

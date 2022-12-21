@@ -53,16 +53,8 @@ export const commentCreatedListener = async (
   ...args: CommentCreatedEvent["args"]
 ) => {
   try {
-    const [
-      tokenId,
-      parentId,
-      creatorId,
-      owner,
-      contentURI,
-      text,
-      commentType,
-      timestamp,
-    ] = args
+    const [tokenId, parentId, creatorId, owner, text, commentType, timestamp] =
+      args
 
     // 1. Get the profile of the creator.
     const profile = await prisma.profile.findUnique({
@@ -104,7 +96,6 @@ export const commentCreatedListener = async (
                 publishId: publish.id,
                 text,
                 commentType: "PUBLISH",
-                contentURI,
               },
             })
           }
@@ -128,7 +119,6 @@ export const commentCreatedListener = async (
                 commentId: comment.id,
                 text,
                 commentType: "COMMENT",
-                contentURI,
               },
             })
           }
@@ -149,7 +139,7 @@ export const commentUpdatedListener = async (
   ...args: CommentUpdatedEvent["args"]
 ) => {
   try {
-    const [tokenId, creatorId, owner, contentURI, text, timestamp] = args
+    const [tokenId, creatorId, owner, text, timestamp] = args
 
     // 1. Get the comment by its token id.
     const comment = await prisma.comment.findUnique({
@@ -165,7 +155,6 @@ export const commentUpdatedListener = async (
           id: comment.id,
         },
         data: {
-          contentURI,
           text,
           updatedAt: new Date(timestamp.toNumber() * 1000),
         },

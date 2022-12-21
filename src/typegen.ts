@@ -70,7 +70,6 @@ export interface NexusGenObjects {
   }
   Comment: { // root type
     commentType: NexusGenEnums['CommentType']; // CommentType!
-    contentURI: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
     text?: string | null; // String
@@ -112,7 +111,6 @@ export interface NexusGenObjects {
     contentURI: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
-    imageURI: string; // String!
     kind: NexusGenEnums['PublishKind']; // PublishKind!
     primaryCategory: NexusGenEnums['Category']; // Category!
     secondaryCategory: NexusGenEnums['Category']; // Category!
@@ -138,9 +136,7 @@ export interface NexusGenObjects {
     creatorTokenId: string; // String!
     description?: string | null; // String
     id: number; // Int!
-    imageURI: string; // String!
     kind: NexusGenEnums['PublishKind']; // PublishKind!
-    metadataURI: string; // String!
     primaryCategory: NexusGenEnums['Category']; // Category!
     secondaryCategory: NexusGenEnums['Category']; // Category!
     tertiaryCategory: NexusGenEnums['Category']; // Category!
@@ -179,7 +175,6 @@ export interface NexusGenFieldTypes {
   Comment: { // field return type
     commentType: NexusGenEnums['CommentType']; // CommentType!
     commentsCount: number; // Int!
-    contentURI: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     creator: NexusGenRootTypes['PreviewProfile'] | null; // PreviewProfile
     disLiked: boolean | null; // Boolean
@@ -201,7 +196,6 @@ export interface NexusGenFieldTypes {
     fee: string; // String!
     id: number; // Int!
     likeTokenId: string | null; // String
-    publish: NexusGenRootTypes['PreviewPublish'] | null; // PreviewPublish
     receiver: NexusGenRootTypes['PreviewProfile'] | null; // PreviewProfile
     sender: NexusGenRootTypes['PreviewProfile'] | null; // PreviewProfile
   }
@@ -233,7 +227,6 @@ export interface NexusGenFieldTypes {
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     creator: NexusGenRootTypes['PreviewProfile'] | null; // PreviewProfile
     id: number; // Int!
-    imageURI: string; // String!
     kind: NexusGenEnums['PublishKind']; // PublishKind!
     primaryCategory: NexusGenEnums['Category']; // Category!
     secondaryCategory: NexusGenEnums['Category']; // Category!
@@ -269,13 +262,11 @@ export interface NexusGenFieldTypes {
     disLiked: boolean | null; // Boolean
     disLikesCount: number; // Int!
     id: number; // Int!
-    imageURI: string; // String!
     kind: NexusGenEnums['PublishKind']; // PublishKind!
     lastComment: NexusGenRootTypes['PreviewComment'] | null; // PreviewComment
     liked: boolean | null; // Boolean
     likes: Array<NexusGenRootTypes['PreviewProfile'] | null>; // [PreviewProfile]!
     likesCount: number; // Int!
-    metadataURI: string; // String!
     primaryCategory: NexusGenEnums['Category']; // Category!
     secondaryCategory: NexusGenEnums['Category']; // Category!
     tertiaryCategory: NexusGenEnums['Category']; // Category!
@@ -317,7 +308,6 @@ export interface NexusGenFieldTypeNames {
   Comment: { // field return type name
     commentType: 'CommentType'
     commentsCount: 'Int'
-    contentURI: 'String'
     createdAt: 'DateTime'
     creator: 'PreviewProfile'
     disLiked: 'Boolean'
@@ -339,7 +329,6 @@ export interface NexusGenFieldTypeNames {
     fee: 'String'
     id: 'Int'
     likeTokenId: 'String'
-    publish: 'PreviewPublish'
     receiver: 'PreviewProfile'
     sender: 'PreviewProfile'
   }
@@ -371,7 +360,6 @@ export interface NexusGenFieldTypeNames {
     createdAt: 'DateTime'
     creator: 'PreviewProfile'
     id: 'Int'
-    imageURI: 'String'
     kind: 'PublishKind'
     primaryCategory: 'Category'
     secondaryCategory: 'Category'
@@ -407,13 +395,11 @@ export interface NexusGenFieldTypeNames {
     disLiked: 'Boolean'
     disLikesCount: 'Int'
     id: 'Int'
-    imageURI: 'String'
     kind: 'PublishKind'
     lastComment: 'PreviewComment'
     liked: 'Boolean'
     likes: 'PreviewProfile'
     likesCount: 'Int'
-    metadataURI: 'String'
     primaryCategory: 'Category'
     secondaryCategory: 'Category'
     tertiaryCategory: 'Category'

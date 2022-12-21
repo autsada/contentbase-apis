@@ -61,7 +61,6 @@ export const Comment = objectType({
     t.nonNull.string("tokenId")
     t.nonNull.field("createdAt", { type: "DateTime" })
     t.field("updatedAt", { type: "DateTime" })
-    t.nonNull.string("contentURI")
     t.string("text")
     t.nonNull.field("commentType", { type: "CommentType" })
 
@@ -228,9 +227,7 @@ export const CommentQuery = extendType({
         try {
           if (!input) throwError(badInputErrMessage, "BAD_USER_INPUT")
           const { parentId } = input
-
           if (!parentId) throwError(badInputErrMessage, "BAD_USER_INPUT")
-
           return prisma.comment.findMany({
             where: {
               AND: [
@@ -260,9 +257,7 @@ export const CommentQuery = extendType({
         try {
           if (!input) throwError(badInputErrMessage, "BAD_USER_INPUT")
           const { parentId } = input
-
           if (!parentId) throwError(badInputErrMessage, "BAD_USER_INPUT")
-
           return prisma.comment.findMany({
             where: {
               AND: [

@@ -58,7 +58,6 @@ export const PreviewPublish = objectType({
     t.nonNull.int("id")
     t.nonNull.string("tokenId")
     t.nonNull.field("createdAt", { type: "DateTime" })
-    t.nonNull.string("imageURI")
     t.nonNull.string("contentURI")
     t.nonNull.string("title")
     t.nonNull.field("primaryCategory", { type: "Category" })
@@ -105,9 +104,7 @@ export const Publish = objectType({
     t.nonNull.field("createdAt", { type: "DateTime" })
     t.field("updatedAt", { type: "DateTime" })
     t.nonNull.string("creatorTokenId")
-    t.nonNull.string("imageURI")
     t.nonNull.string("contentURI")
-    t.nonNull.string("metadataURI")
     t.nonNull.string("title")
     t.string("description")
     t.nonNull.field("primaryCategory", { type: "Category" })
@@ -316,9 +313,7 @@ export const PublishQuery = extendType({
         try {
           if (!input) throwError(badInputErrMessage, "BAD_USER_INPUT")
           const { publishId } = input
-
           if (!publishId) throwError(badInputErrMessage, "BAD_USER_INPUT")
-
           return prisma.publish.findUnique({
             where: {
               id: publishId,
@@ -355,7 +350,6 @@ export const PublishQuery = extendType({
       resolve(_parent, { category }, { prisma }) {
         try {
           if (!category) throwError(badInputErrMessage, "BAD_USER_INPUT")
-
           return prisma.publish.findMany({
             where: {
               OR: [
@@ -388,7 +382,6 @@ export const PublishQuery = extendType({
       resolve(_parent, { id }, { prisma }) {
         try {
           if (!id) throwError(badInputErrMessage, "BAD_USER_INPUT")
-
           return prisma.publish.findMany({
             where: {
               creatorId: id,
@@ -410,7 +403,6 @@ export const PublishQuery = extendType({
       resolve(_parent, { creatorTokenId }, { prisma }) {
         try {
           if (!creatorTokenId) throwError(badInputErrMessage, "BAD_USER_INPUT")
-
           return prisma.publish.findMany({
             where: {
               creatorTokenId,

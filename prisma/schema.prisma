@@ -99,9 +99,7 @@ model Publish {
   creator           Profile     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   creatorId         Int
   creatorTokenId    String
-  imageURI          String
   contentURI        String
-  metadataURI       String
   title             String
   description       String?
   views             Int
@@ -109,6 +107,8 @@ model Publish {
   secondaryCategory Category
   tertiaryCategory  Category
   kind              PublishKind
+  thumbnailURL      String? // Publish's thumbnail image
+  url               String? // Publish's content url used for displaying on the UI
   likeFees          LikeFee[]
   likes             Like[]
   disLikes          DisLike[]
@@ -133,7 +133,6 @@ model Comment {
   comment     Comment?         @relation("SubComment", fields: [commentId], references: [id], onDelete: Cascade) // The comment that the comment belongs to, if `null` it means the comment was made on a publish directly, otherwise it was made on a comment.
   commentId   Int?
   comments    Comment[]        @relation("SubComment") // The child comments
-  contentURI  String
   text        String
   commentType CommentType
   likes       CommentLike[]

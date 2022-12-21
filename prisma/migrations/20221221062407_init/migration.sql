@@ -56,9 +56,7 @@ CREATE TABLE "Publish" (
     "updatedAt" TIMESTAMP(3),
     "creatorId" INTEGER NOT NULL,
     "creatorTokenId" TEXT NOT NULL,
-    "imageURI" TEXT NOT NULL,
     "contentURI" TEXT NOT NULL,
-    "metadataURI" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT,
     "views" INTEGER NOT NULL,
@@ -66,6 +64,8 @@ CREATE TABLE "Publish" (
     "secondaryCategory" "Category" NOT NULL,
     "tertiaryCategory" "Category" NOT NULL,
     "kind" "PublishKind" NOT NULL,
+    "thumbnailURL" TEXT,
+    "url" TEXT,
 
     CONSTRAINT "Publish_pkey" PRIMARY KEY ("id")
 );
@@ -79,7 +79,6 @@ CREATE TABLE "Comment" (
     "creatorId" INTEGER NOT NULL,
     "publishId" INTEGER NOT NULL,
     "commentId" INTEGER,
-    "contentURI" TEXT NOT NULL,
     "text" TEXT NOT NULL,
     "commentType" "CommentType" NOT NULL,
 
