@@ -13,7 +13,7 @@ import { InMemoryLRUCache } from "@apollo/utils.keyvaluecache"
 
 import { schema } from "./schema"
 import { context, Context } from "./context"
-import { createAccount } from "./rest"
+import { restRouter } from "./rest/router"
 import { Environment } from "./types"
 
 const { PORT, NODE_ENV } = process.env
@@ -52,8 +52,8 @@ async function startServer() {
   app.use(express.urlencoded({ extended: true }))
   app.use(cors<cors.CorsRequest>())
 
-  // Rest api for creating account.
-  app.post("/account/create", createAccount)
+  // Rest api route.
+  app.use("/api", restRouter)
 
   const httpServer = http.createServer(app)
 
