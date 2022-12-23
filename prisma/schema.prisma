@@ -35,7 +35,7 @@ model Profile {
   owner          String // EOA Address
   handle         String        @unique
   originalHandle String
-  imageURI       String? // Original uploaded image
+  imageURI       String?
   default        Boolean
   followers      Follow[]      @relation("Followee")
   following      Follow[]      @relation("Follower")
