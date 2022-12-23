@@ -58,6 +58,7 @@ export const publishCreatedListener = async (
       creatorId,
       owner,
       contentURI,
+      contentRef,
       title,
       description,
       primaryCategory,
@@ -90,6 +91,7 @@ export const publishCreatedListener = async (
             creatorId: profile.id,
             creatorTokenId: profile.tokenId,
             contentURI,
+            contentRef,
             title,
             description,
             primaryCategory: getKeyOfCategory(primaryCategory) as Category,
@@ -119,7 +121,6 @@ export const publishUpdatedListener = async (
       tokenId,
       creatorId,
       owner,
-      contentURI,
       title,
       description,
       primaryCategory,
@@ -139,7 +140,6 @@ export const publishUpdatedListener = async (
         where: { id: publish.id },
         data: {
           updatedAt: new Date(timestamp.toNumber() * 1000),
-          contentURI,
           title,
           description,
           primaryCategory: getKeyOfCategory(primaryCategory) as Category,
@@ -174,6 +174,21 @@ export const publishDeletedListener = async (
       await prisma.publish.delete({
         where: { id: publish.id },
       })
+
+      // 3. Delete the playback that belongs to the publish.
+      // Need to delete manually as the relation is on the Publish side.
+      const playback = await prisma.playback.findUnique({
+        where: {
+          contentRef: publish.contentRef,
+        },
+      })
+      if (playback) {
+        await prisma.playback.delete({
+          where: {
+            id: playback.id,
+          },
+        })
+      }
 
       console.log("publish deleted done")
     }

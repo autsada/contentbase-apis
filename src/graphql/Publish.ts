@@ -48,6 +48,18 @@ export const PublishKind = enumType({
   members: ["Video", "Short", "Audio", "Blog", "Post"],
 })
 
+export const Playback = objectType({
+  name: "Playback",
+  definition(t) {
+    t.nonNull.int("id")
+    t.nonNull.string("thumbnail")
+    t.nonNull.string("preview")
+    t.nonNull.float("duration")
+    t.nonNull.string("hls")
+    t.nonNull.string("dash")
+  },
+})
+
 /**
  * A preview verion of the Publish type.
  * @dev Use this type for publishes listing queries that doesn't require to have much details of a publish.
@@ -87,6 +99,22 @@ export const PreviewPublish = objectType({
               imageURI: true,
             },
           })
+      },
+    })
+
+    /**
+     * Publish's playback
+     */
+    t.field("playback", {
+      type: "Playback",
+      resolve: (parent, _, { prisma }) => {
+        return prisma.publish
+          .findUnique({
+            where: {
+              id: parent.id,
+            },
+          })
+          .playback()
       },
     })
   },
@@ -283,6 +311,22 @@ export const Publish = objectType({
             createdAt: "desc",
           },
         })
+      },
+    })
+
+    /**
+     * Publish's playback
+     */
+    t.field("playback", {
+      type: "Playback",
+      resolve: (parent, _, { prisma }) => {
+        return prisma.publish
+          .findUnique({
+            where: {
+              id: parent.id,
+            },
+          })
+          .playback()
       },
     })
   },

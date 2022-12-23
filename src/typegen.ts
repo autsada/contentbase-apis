@@ -96,6 +96,14 @@ export interface NexusGenObjects {
     endCursor?: string | null; // String
     hasNextPage?: boolean | null; // Boolean
   }
+  Playback: { // root type
+    dash: string; // String!
+    duration: number; // Float!
+    hls: string; // String!
+    id: number; // Int!
+    preview: string; // String!
+    thumbnail: string; // String!
+  }
   PreviewComment: { // root type
     commentType: NexusGenEnums['CommentType']; // CommentType!
     id: number; // Int!
@@ -211,6 +219,14 @@ export interface NexusGenFieldTypes {
     endCursor: string | null; // String
     hasNextPage: boolean | null; // Boolean
   }
+  Playback: { // field return type
+    dash: string; // String!
+    duration: number; // Float!
+    hls: string; // String!
+    id: number; // Int!
+    preview: string; // String!
+    thumbnail: string; // String!
+  }
   PreviewComment: { // field return type
     commentType: NexusGenEnums['CommentType']; // CommentType!
     creator: NexusGenRootTypes['PreviewProfile'] | null; // PreviewProfile
@@ -229,6 +245,7 @@ export interface NexusGenFieldTypes {
     creator: NexusGenRootTypes['PreviewProfile'] | null; // PreviewProfile
     id: number; // Int!
     kind: NexusGenEnums['PublishKind']; // PublishKind!
+    playback: NexusGenRootTypes['Playback'] | null; // Playback
     primaryCategory: NexusGenEnums['Category']; // Category!
     secondaryCategory: NexusGenEnums['Category']; // Category!
     tertiaryCategory: NexusGenEnums['Category']; // Category!
@@ -268,6 +285,7 @@ export interface NexusGenFieldTypes {
     liked: boolean | null; // Boolean
     likes: Array<NexusGenRootTypes['PreviewProfile'] | null>; // [PreviewProfile]!
     likesCount: number; // Int!
+    playback: NexusGenRootTypes['Playback'] | null; // Playback
     primaryCategory: NexusGenEnums['Category']; // Category!
     secondaryCategory: NexusGenEnums['Category']; // Category!
     tertiaryCategory: NexusGenEnums['Category']; // Category!
@@ -345,6 +363,14 @@ export interface NexusGenFieldTypeNames {
     endCursor: 'String'
     hasNextPage: 'Boolean'
   }
+  Playback: { // field return type name
+    dash: 'String'
+    duration: 'Float'
+    hls: 'String'
+    id: 'Int'
+    preview: 'String'
+    thumbnail: 'String'
+  }
   PreviewComment: { // field return type name
     commentType: 'CommentType'
     creator: 'PreviewProfile'
@@ -363,6 +389,7 @@ export interface NexusGenFieldTypeNames {
     creator: 'PreviewProfile'
     id: 'Int'
     kind: 'PublishKind'
+    playback: 'Playback'
     primaryCategory: 'Category'
     secondaryCategory: 'Category'
     tertiaryCategory: 'Category'
@@ -402,6 +429,7 @@ export interface NexusGenFieldTypeNames {
     liked: 'Boolean'
     likes: 'PreviewProfile'
     likesCount: 'Int'
+    playback: 'Playback'
     primaryCategory: 'Category'
     secondaryCategory: 'Category'
     tertiaryCategory: 'Category'

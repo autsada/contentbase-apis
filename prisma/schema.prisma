@@ -35,7 +35,7 @@ model Profile {
   owner          String // EOA Address
   handle         String        @unique
   originalHandle String
-  imageURI       String?
+  imageURI       String? // Original uploaded image
   default        Boolean
   followers      Follow[]      @relation("Followee")
   following      Follow[]      @relation("Follower")
@@ -91,6 +91,22 @@ enum PublishKind {
   Post
 }
 
+// A model that contains a publish's (type `Video`) playback urls and other related info.
+// Link to Publish with `contentRef`.
+// A Playback will be created when the background service finished transcode a video.
+model Playback {
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime?
+  thumbnail  String // Thumbnail image
+  preview    String // Preview url
+  duration   Float // Duration
+  hls        String // Playback url - hls
+  dash       String // Playback url - dash
+  publish    Publish?
+  contentRef String    @unique
+}
+
 model Publish {
   id                Int         @id @default(autoincrement())
   tokenId           String      @unique
@@ -100,6 +116,7 @@ model Publish {
   creatorId         Int
   creatorTokenId    String
   contentURI        String
+  contentRef        String      @unique // Path to the content that stored on the cloud or ipfs, which is uniuqe.      
   title             String
   description       String?
   views             Int
@@ -107,8 +124,7 @@ model Publish {
   secondaryCategory Category
   tertiaryCategory  Category
   kind              PublishKind
-  thumbnailURL      String? // Publish's thumbnail image
-  url               String? // Publish's content url used for displaying on the UI
+  playback          Playback?   @relation(fields: [contentRef], references: [contentRef])
   likeFees          LikeFee[]
   likes             Like[]
   disLikes          DisLike[]

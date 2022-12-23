@@ -110,6 +110,15 @@ type PageInfo {
   hasNextPage: Boolean
 }
 
+type Playback {
+  dash: String!
+  duration: Float!
+  hls: String!
+  id: Int!
+  preview: String!
+  thumbnail: String!
+}
+
 type PreviewComment {
   commentType: CommentType!
   creator: PreviewProfile
@@ -130,6 +139,7 @@ type PreviewPublish {
   creator: PreviewProfile
   id: Int!
   kind: PublishKind!
+  playback: Playback
   primaryCategory: Category!
   secondaryCategory: Category!
   tertiaryCategory: Category!
@@ -171,6 +181,7 @@ type Publish {
   liked: Boolean
   likes: [PreviewProfile]!
   likesCount: Int!
+  playback: Playback
   primaryCategory: Category!
   secondaryCategory: Category!
   tertiaryCategory: Category!

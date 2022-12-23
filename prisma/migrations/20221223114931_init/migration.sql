@@ -49,6 +49,21 @@ CREATE TABLE "Follow" (
 );
 
 -- CreateTable
+CREATE TABLE "Playback" (
+    "id" SERIAL NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3),
+    "thumbnail" TEXT NOT NULL,
+    "preview" TEXT NOT NULL,
+    "duration" DOUBLE PRECISION NOT NULL,
+    "hls" TEXT NOT NULL,
+    "dash" TEXT NOT NULL,
+    "contentRef" TEXT NOT NULL,
+
+    CONSTRAINT "Playback_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Publish" (
     "id" SERIAL NOT NULL,
     "tokenId" TEXT NOT NULL,
@@ -57,6 +72,7 @@ CREATE TABLE "Publish" (
     "creatorId" INTEGER NOT NULL,
     "creatorTokenId" TEXT NOT NULL,
     "contentURI" TEXT NOT NULL,
+    "contentRef" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT,
     "views" INTEGER NOT NULL,
@@ -64,8 +80,6 @@ CREATE TABLE "Publish" (
     "secondaryCategory" "Category" NOT NULL,
     "tertiaryCategory" "Category" NOT NULL,
     "kind" "PublishKind" NOT NULL,
-    "thumbnailURL" TEXT,
-    "url" TEXT,
 
     CONSTRAINT "Publish_pkey" PRIMARY KEY ("id")
 );
@@ -144,7 +158,13 @@ CREATE UNIQUE INDEX "Profile_handle_key" ON "Profile"("handle");
 CREATE UNIQUE INDEX "Follow_tokenId_key" ON "Follow"("tokenId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Playback_contentRef_key" ON "Playback"("contentRef");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Publish_tokenId_key" ON "Publish"("tokenId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Publish_contentRef_key" ON "Publish"("contentRef");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Comment_tokenId_key" ON "Comment"("tokenId");
@@ -178,6 +198,9 @@ ALTER TABLE "Follow" ADD CONSTRAINT "Follow_followeeId_fkey" FOREIGN KEY ("follo
 
 -- AddForeignKey
 ALTER TABLE "Publish" ADD CONSTRAINT "Publish_creatorId_fkey" FOREIGN KEY ("creatorId") REFERENCES "Profile"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Publish" ADD CONSTRAINT "Publish_contentRef_fkey" FOREIGN KEY ("contentRef") REFERENCES "Playback"("contentRef") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Comment" ADD CONSTRAINT "Comment_creatorId_fkey" FOREIGN KEY ("creatorId") REFERENCES "Profile"("id") ON DELETE CASCADE ON UPDATE CASCADE;
