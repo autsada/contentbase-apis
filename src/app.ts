@@ -14,6 +14,7 @@ import { InMemoryLRUCache } from "@apollo/utils.keyvaluecache"
 import { schema } from "./schema"
 import { context, Context } from "./context"
 import { restRouter } from "./rest/router"
+import { webhookRouter } from "./webhooks/router"
 import { Environment } from "./types"
 
 const { PORT, NODE_ENV } = process.env
@@ -48,12 +49,21 @@ pool
 async function startServer() {
   const app = express()
 
-  app.use(express.json())
+  app.use(
+    express.json({
+      verify: (req, res, buf) => {
+        req.rawBody = buf.toString("utf-8")
+      },
+    })
+  )
   app.use(express.urlencoded({ extended: true }))
   app.use(cors<cors.CorsRequest>())
 
   // Rest api route.
   app.use("/api", restRouter)
+
+  // Webhooks api route.
+  app.use("/webhooks", webhookRouter)
 
   const httpServer = http.createServer(app)
 
