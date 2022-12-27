@@ -15,7 +15,7 @@ export async function createTranscodeWebhook(req: Request, res: Response) {
     if (!webhookURL) {
       res.status(400).send("Bad Request")
     } else {
-      await axios({
+      const response = await axios({
         method: "PUT",
         url: `${CLOUDFLAR_BASE_URL}/${CLOUDFLAR_ACCOUNT_ID}/stream/webhook`,
         headers: {
@@ -26,7 +26,9 @@ export async function createTranscodeWebhook(req: Request, res: Response) {
         },
       })
 
-      res.status(200).json({ status: "Ok" })
+      res
+        .status(200)
+        .json({ result: response.data.result, success: response.data.success })
     }
   } catch (error) {
     res.status(500).end()
