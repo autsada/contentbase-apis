@@ -1,8 +1,12 @@
-import type { Request, Response } from "express"
+import type { Request, Response, NextFunction } from "express"
 
 import { prisma } from "../client"
 
-export async function createAccount(req: Request, res: Response) {
+export async function createAccount(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   try {
     if (!req.authenticated) {
       res.status(401).send("Unauthorized")
@@ -36,7 +40,6 @@ export async function createAccount(req: Request, res: Response) {
       res.status(200).json({ status: "Ok" })
     }
   } catch (error) {
-    console.error((error as any).message)
-    res.status(500).send((error as any).message)
+    next(error)
   }
 }

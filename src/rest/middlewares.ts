@@ -18,6 +18,6 @@ export function auth(req: Request, res: Response, next: NextFunction) {
       }
     }
   } catch (error) {
-    res.status(500).send("Server Error")
+    next(error)
   }
 }
